@@ -68,6 +68,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logMethodName(name: String) {
-        //Log.d("TEST_TAG", "Мы в методе " + name);
+        Log.d("TEST_TAG", "Мы в методе " + name);
     }
 }

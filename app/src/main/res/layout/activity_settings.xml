@@ -14,10 +14,10 @@
         android:layout_marginBottom="@dimen/header_margin_bottom">
 
         <FrameLayout
+            android:id="@+id/b_to_main_screen"
             android:layout_width="@dimen/header_active_width"
             android:layout_height="48dp"
             android:layout_marginStart="4dp"
-            android:id="@+id/b_to_main_screen"
             android:layout_marginTop="4dp">
 
             <FrameLayout

@@ -24,7 +24,7 @@
                 android:layout_height="26dp"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="10dp"
-                android:fontFamily="@font/ys_display_bold_regular"
+                android:fontFamily="@font/ys_display_medium"
                 android:text="@string/main_screen_title"
                 android:textColor="@color/main_title"
                 android:textSize="@dimen/header_text_size" />
