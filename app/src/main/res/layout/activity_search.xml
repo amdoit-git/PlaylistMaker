@@ -54,19 +54,26 @@
         android:layout_width="match_parent"
         android:layout_height="52dp">
 
-        <EditText
-            android:id="@+id/editText"
-            style="@style/Search_edittext"
-            android:hint="@string/search_edittext_hint" />
+        <FrameLayout style="@style/Search_edittext_container">
 
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:id="@+id/editText_delete"
-            android:src="@drawable/delete_edittext"
-            android:layout_gravity="center|right"
-            android:layout_marginRight="24dp"
-            android:visibility="gone"
-            />
+            <EditText
+                android:id="@+id/editText"
+                style="@style/Search_edittext"
+                android:hint="@string/search_edittext_hint" />
+
+            <FrameLayout
+                android:layout_width="28dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center|right"
+                android:id="@+id/editText_delete"
+                android:elevation="1dp">
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/delete_edittext" />
+            </FrameLayout>
+        </FrameLayout>
+
     </FrameLayout>
 </LinearLayout>
