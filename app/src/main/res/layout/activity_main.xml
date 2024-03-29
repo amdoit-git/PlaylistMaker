@@ -32,19 +32,19 @@
     </FrameLayout>
 
     <Button
-        android:id="@+id/b_search"
+        android:id="@+id/button_search"
         style="@style/MainButton"
         android:text="@string/search"
         app:icon="@drawable/search" />
 
     <Button
-        android:id="@+id/b_play_list"
+        android:id="@+id/button_play_list"
         style="@style/MainButton"
         android:text="@string/media_list"
         app:icon="@drawable/play_list" />
 
     <Button
-        android:id="@+id/b_settings"
+        android:id="@+id/button_settings"
         style="@style/MainButton"
         android:layout_marginBottom="24dp"
         android:text="@string/settings"

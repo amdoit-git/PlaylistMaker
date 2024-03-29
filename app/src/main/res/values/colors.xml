@@ -8,6 +8,8 @@
     <color name="main_button_icon_bg">#1A1B22</color>
     <color name="main_button_text">#1A1B22</color>
     <color name="settings_screen_bg">#FFF</color>
-    <color name="settings_screen_text">#000</color>
-    <color name="settings_screen_icon_bg">@null</color>
+    <color name="arrow_back_title">#000</color>
+    <color name="arrow_back_icon_bg">@null</color>
+    <color name="search_edittext_bd">#E6E8EB</color>
+    <color name="search_edittext_color">#AEAFB4</color>
 </resources>
