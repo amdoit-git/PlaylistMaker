@@ -44,6 +44,7 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="10dp"
                     android:text="@string/settings"
+                    android:fontFamily="@font/ys_display_medium"
                     android:textColor="@color/arrow_back_title"
                     android:textSize="@dimen/header_text_size" />
             </FrameLayout>

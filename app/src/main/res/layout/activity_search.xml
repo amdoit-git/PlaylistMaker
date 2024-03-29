@@ -45,6 +45,7 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/search"
                     android:textColor="@color/arrow_back_title"
+                    android:fontFamily="@font/ys_display_medium"
                     android:textSize="@dimen/header_text_size" />
             </FrameLayout>
         </FrameLayout>
@@ -66,6 +67,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center|right"
                 android:id="@+id/editText_delete"
+                android:visibility="gone"
                 android:elevation="1dp">
                 <ImageView
                     android:layout_width="16dp"
