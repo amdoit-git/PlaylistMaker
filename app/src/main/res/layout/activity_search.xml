@@ -62,7 +62,7 @@
                 android:hint="@string/search_edittext_hint" />
 
             <FrameLayout
-                android:layout_width="28dp"
+                android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center|right"
                 android:id="@+id/editText_delete"
