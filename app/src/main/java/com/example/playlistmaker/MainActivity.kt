@@ -13,21 +13,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val listenerFor_b_search: View.OnClickListener = object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                if (v != null) {
-                    val intent = Intent(v.context, SearchActivity::class.java);
-                    startActivity(intent);
-                }
-            }
-        }
+        val b_search = findViewById<View>(R.id.button_search);
+        val b_play_list = findViewById<View>(R.id.button_play_list);
+        val b_settings = findViewById<View>(R.id.button_settings);
 
-
-        val b_search = findViewById<View>(R.id.b_search);
-        val b_play_list = findViewById<View>(R.id.b_play_list);
-        val b_settings = findViewById<View>(R.id.b_settings);
-
-        b_search.setOnClickListener(listenerFor_b_search);
+        b_search.setOnClickListener({
+            val intent = Intent(this, SearchActivity::class.java);
+            startActivity(intent);
+        });
 
         b_play_list.setOnClickListener({
             val intent = Intent(this, PlayListActivity::class.java);
@@ -68,6 +61,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logMethodName(name: String) {
-        Log.d("TEST_TAG", "Мы в методе " + name);
+       //Log.d("TEST_TAG", "Мы в методе !!! " + name);
     }
 }

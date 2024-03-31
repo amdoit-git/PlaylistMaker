@@ -14,7 +14,7 @@
         android:layout_marginBottom="@dimen/header_margin_bottom">
 
         <FrameLayout
-            android:id="@+id/b_to_main_screen"
+            android:id="@+id/button_to_main_screen"
             android:layout_width="@dimen/header_active_width"
             android:layout_height="48dp"
             android:layout_marginStart="4dp"
@@ -28,8 +28,8 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/arrow_back"
-                    android:backgroundTint="@color/settings_screen_icon_bg" />
+                    android:background="@drawable/arrow_back_bg"
+                    android:backgroundTint="@color/arrow_back_icon_bg" />
 
             </FrameLayout>
 
@@ -44,7 +44,8 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="10dp"
                     android:text="@string/settings"
-                    android:textColor="@color/settings_screen_text"
+                    android:fontFamily="@font/ys_display_medium"
+                    android:textColor="@color/arrow_back_title"
                     android:textSize="@dimen/header_text_size" />
             </FrameLayout>
         </FrameLayout>
@@ -73,7 +74,7 @@
 
         </FrameLayout>
 
-        <FrameLayout style="@style/SettingsItemCenter">
+        <FrameLayout style="@style/SettingsItemCenter" android:id="@+id/button_share">
 
             <TextView
                 style="@style/SettingsItemCenter_text"
@@ -85,7 +86,7 @@
 
         </FrameLayout>
 
-        <FrameLayout style="@style/SettingsItemCenter">
+        <FrameLayout style="@style/SettingsItemCenter" android:id="@+id/button_support_email">
 
             <TextView
                 style="@style/SettingsItemCenter_text"
@@ -100,7 +101,7 @@
 
         </FrameLayout>
 
-        <FrameLayout style="@style/SettingsItemCenter">
+        <FrameLayout style="@style/SettingsItemCenter" android:id="@+id/button_user_agreement">
 
             <TextView
                 style="@style/SettingsItemCenter_text"
@@ -127,6 +128,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:visibility="gone"
         android:orientation="horizontal">
 
         <LinearLayout style="@style/SettingsItemBottom">

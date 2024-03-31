@@ -10,4 +10,10 @@
     <string name="user_agreement">Пользовательское соглашение</string>
     <string name="search_plug">Тут будет экран поиска по трекам</string>
     <string name="play_list_plug">Тут будет плейлист и медиатека</string>
+    <string name="settings_share_text">Крутой курс по Андроид разработке https://practicum.yandex.ru/android-developer/</string>
+    <string name="settings_email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="settings_email_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="settings_email_address">amdoit@ya.ru</string>
+    <string name="settings_user_agreement_url">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="search_edittext_hint">Поиск</string>
 </resources>

@@ -2,6 +2,8 @@
 <resources>
     <color name="main_bg">#1A1B22</color>
     <color name="settings_screen_bg">#1A1B22</color>
-    <color name="settings_screen_text">#FFF</color>
-    <color name="settings_screen_icon_bg">#FFF</color>
+    <color name="arrow_back_title">#FFF</color>
+    <color name="arrow_back_icon_bg">#FFF</color>
+    <color name="search_edittext_bd">#FFFFFF</color>
+    <color name="search_edittext_hint">#1A1B22</color>
 </resources>
