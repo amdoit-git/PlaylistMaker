@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/track_item"
+    style="@style/track">
+
+    <ImageView
+        android:id="@+id/trackCover"
+        style="@style/trackCover" />
+
+    <FrameLayout style="@style/trackCenter">
+
+        <TextView
+            android:id="@+id/trackName"
+            style="@style/trackName"
+            android:text="@string/trackName" />
+
+        <FrameLayout style="@style/artistName_group">
+
+            <TextView
+                android:id="@+id/artistName"
+                style="@style/artistName"
+                android:text="@string/artistName" />
+
+            <LinearLayout style="@style/trackTime_group">
+
+                <ImageView style="@style/trackTime_dot" />
+
+                <TextView
+                    android:id="@+id/trackTime"
+                    style="@style/trackTime"
+                    android:text="@string/trackTime" />
+            </LinearLayout>
+        </FrameLayout>
+    </FrameLayout>
+
+    <ImageView style="@style/trackRightArrow" />
+
+</FrameLayout>

@@ -16,4 +16,7 @@
     <string name="settings_email_address">amdoit@ya.ru</string>
     <string name="settings_user_agreement_url">https://yandex.ru/legal/practicum_offer/</string>
     <string name="search_edittext_hint">Поиск</string>
+    <string name="trackName">Something About The Way You Look Tonight</string>
+    <string name="artistName">Sir Elton Hercules John</string>
+    <string name="trackTime">05:13</string>
 </resources>
