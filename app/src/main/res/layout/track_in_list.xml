@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/track_item"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/track">
 
     <ImageView
@@ -12,14 +13,14 @@
         <TextView
             android:id="@+id/trackName"
             style="@style/trackName"
-            android:text="@string/trackName" />
+            tools:text="Something About The Way You Look Tonight" />
 
         <FrameLayout style="@style/artistName_group">
 
             <TextView
                 android:id="@+id/artistName"
                 style="@style/artistName"
-                android:text="@string/artistName" />
+                tools:text="Sir Elton Hercules John" />
 
             <LinearLayout style="@style/trackTime_group">
 
@@ -28,7 +29,7 @@
                 <TextView
                     android:id="@+id/trackTime"
                     style="@style/trackTime"
-                    android:text="@string/trackTime" />
+                    tools:text="05:13" />
             </LinearLayout>
         </FrameLayout>
     </FrameLayout>
