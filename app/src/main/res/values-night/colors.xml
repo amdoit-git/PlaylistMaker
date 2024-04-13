@@ -6,4 +6,9 @@
     <color name="arrow_back_icon_bg">#FFF</color>
     <color name="search_edittext_bd">#FFFFFF</color>
     <color name="search_edittext_hint">#1A1B22</color>
+    <color name="trackName">#FFF</color>
+    <color name="artistName">#FFF</color>
+    <color name="trackTime">#FFF</color>
+    <color name="trackRightArrow">#FFF</color>
+    <color name="trackTextDot">#FFF</color>
 </resources>

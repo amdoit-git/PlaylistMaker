@@ -7,12 +7,18 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.testapp.FakeTracks
+import com.example.testapp.Track
 
 
 class SearchActivity : AppCompatActivity() {
 
     val SEARCH_FIELD_STATE_KEY = "SEARCH_FIELD_STATE_KEY";
-    private var searchText:String ="";
+    private var searchText: String = "";
+    private lateinit var adapter: TrackAdapter;
+    private var tracks: MutableList<Track> = mutableListOf();
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -30,7 +36,7 @@ class SearchActivity : AppCompatActivity() {
             closeKeyboard()
         })
 
-        editText.addTextChangedListener(object : TextWatcher{
+        editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -41,10 +47,9 @@ class SearchActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {
 
-                editText_delete.visibility = if(editText.text.isEmpty()){
+                editText_delete.visibility = if (editText.text.isEmpty()) {
                     View.GONE
-                }
-                else{
+                } else {
                     View.VISIBLE
                 }
 
@@ -52,7 +57,17 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
+        val tracksList = findViewById<RecyclerView>(R.id.tracksList)
 
+        FakeTracks.setZero()
+
+        for(i in 0..30) {
+            tracks.add(FakeTracks.getTrack());
+        }
+
+        adapter = TrackAdapter(tracks);
+
+        tracksList.adapter = adapter;
     }
 
     private fun closeKeyboard() {
