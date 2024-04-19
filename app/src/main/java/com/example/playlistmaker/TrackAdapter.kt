@@ -25,7 +25,7 @@ class TrackAdapter(var tracks: MutableList<Track>) : RecyclerView.Adapter<TrackH
     override fun onBindViewHolder(holder: TrackHolder, position: Int) {
         holder.bind(tracks[position]);
 
-        //setOnTrackClick(holder);//play music on click
+        setOnTrackClick(holder);//play music on click
     }
 
     private fun setOnTrackClick(holder: TrackHolder){
