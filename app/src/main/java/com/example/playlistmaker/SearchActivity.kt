@@ -120,7 +120,6 @@ class SearchActivity : AppCompatActivity() {
         STATE.info = textToSearch;
 
         MusicPlayer.destroy()
-
     }
 
     private fun setVisible(item: View) {
