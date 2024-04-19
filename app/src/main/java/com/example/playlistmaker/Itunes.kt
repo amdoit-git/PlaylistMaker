@@ -11,6 +11,6 @@ interface Itunes {
         @Query("term") text: String,
         @Query("media") media:String = "music",
         @Query("entity") entity:String = "song",//song or musicTrack
-        @Query("country") country:String = "US"//US || GB || DE || RU
+        @Query("country") country:String = "RU"//US || GB || DE || RU
     ): Call<ItunesTrackList>
 }

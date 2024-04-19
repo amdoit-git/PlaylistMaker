@@ -1,8 +1,10 @@
 package com.example.playlistmaker
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -22,17 +24,16 @@ import java.util.Locale
 
 class SearchActivity : AppCompatActivity() {
 
-    val STATE_KEY_SEARCH_FIELD = "SEARCH_FIELD_STATE_KEY";
-    val STATE_KEY_SEARCH_STATE = "STATE_KEY_SEARCH_STATE";
-    val STATE_KEY_SEARCH_STATE_INFO = "STATE_KEY_SEARCH_STATE_INFO";
+    private val STATE_KEY_SEARCH_FIELD = "SEARCH_FIELD_STATE_KEY";
+    private val STATE_KEY_SEARCH_STATE = "STATE_KEY_SEARCH_STATE";
+    private val STATE_KEY_SEARCH_STATE_INFO = "STATE_KEY_SEARCH_STATE_INFO";
     private var searchText: String = "";
     private lateinit var tracksList: RecyclerView;
     private lateinit var noInternet: View;
     private lateinit var noTracks: View;
-    private var tracks: MutableList<Track> = mutableListOf();
+    private lateinit var adapter: TrackAdapter;
     private val itunesApi: ItunesApi = ItunesApi();
     private val gson = Gson();
-
     private var STATE = SEARCH_STATE.NO_ACTION;
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +46,7 @@ class SearchActivity : AppCompatActivity() {
 
         b_to_main_screen.setOnClickListener {
             this.finish();
+            MusicPlayer.destroy()
         }
 
         editText_delete.setOnClickListener {
@@ -52,9 +54,10 @@ class SearchActivity : AppCompatActivity() {
             closeKeyboard();
 
             setVisible(tracksList);
-            tracks.clear();
-            tracksList.adapter?.notifyDataSetChanged();
+            adapter.tracks.clear();
+            adapter.notifyDataSetChanged();
             STATE = SEARCH_STATE.NO_ACTION;
+            MusicPlayer.destroy()
         }
 
         editText.addTextChangedListener(object : TextWatcher {
@@ -96,10 +99,16 @@ class SearchActivity : AppCompatActivity() {
             search(STATE.info);
         }
 
-        val adapter = TrackAdapter(tracks);
+        adapter = TrackAdapter(mutableListOf());
 
         tracksList.adapter = adapter;
 
+        MusicPlayer.setOnCompleteCallback { adapter.updateTracks() }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        MusicPlayer.setOnCompleteCallback(null)
     }
 
     private fun search(textToSearch: String) {
@@ -109,6 +118,9 @@ class SearchActivity : AppCompatActivity() {
         STATE = SEARCH_STATE.SEARCHING;
 
         STATE.info = textToSearch;
+
+        MusicPlayer.destroy()
+
     }
 
     private fun setVisible(item: View) {
@@ -119,11 +131,25 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun restoreTracks() {
+        try {
+            val type = object : TypeToken<List<Track>>() {}.type;
+            val tracks: List<Track> = gson.fromJson(STATE.info, type);
+            setVisible(tracksList)
+            for (track in tracks) {
+                adapter.tracks.add(track);
+            }
+            adapter.notifyDataSetChanged();
+        } catch (er: JsonSyntaxException) {
+            search(searchText)
+        }
+    }
+
     private fun onSearchSuccess(tracks: List<ItunesTrack>) {
 
         setVisible(tracksList)
 
-        this.tracks.clear()
+        adapter.tracks.clear()
 
         for (item in tracks) {
 
@@ -131,20 +157,20 @@ class SearchActivity : AppCompatActivity() {
                 item.trackName ?: "название трека",
                 item.artistName ?: "имя исполнителя",
                 SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis),
-                item.artworkUrl100 ?: ""
+                item.artworkUrl100 ?: "",
+                item.previewUrl ?: ""
             )
 
-            this.tracks.add(track)
+            adapter.tracks.add(track)
         }
 
-        tracksList.adapter?.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
 
         if (STATE == SEARCH_STATE.SEARCHING) {
             tracksList.smoothScrollToPosition(0)
         }
 
         STATE = SEARCH_STATE.SUCCESS;
-        STATE.info = gson.toJson(tracks);
     }
 
     private fun onSearchEmpty() {
@@ -181,6 +207,9 @@ class SearchActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putString(STATE_KEY_SEARCH_FIELD, searchText)
         outState.putInt(STATE_KEY_SEARCH_STATE, STATE.num)
+        if (STATE == SEARCH_STATE.SUCCESS) {
+            STATE.info = gson.toJson(adapter.tracks);
+        }
         outState.putString(STATE_KEY_SEARCH_STATE_INFO, STATE.info)
     }
 
@@ -195,16 +224,7 @@ class SearchActivity : AppCompatActivity() {
         when (STATE) {
             SEARCH_STATE.NO_ACTION -> {}
             SEARCH_STATE.SEARCHING -> {}
-            SEARCH_STATE.SUCCESS -> {
-                try {
-                    val type = object : TypeToken<List<ItunesTrack>>() {}.type;
-                    val list: List<ItunesTrack> = gson.fromJson(STATE.info, type);
-                    onSearchSuccess(list);
-                } catch (er: JsonSyntaxException) {
-                    search(searchText)
-                }
-            }
-
+            SEARCH_STATE.SUCCESS -> restoreTracks()
             SEARCH_STATE.EMPTY -> onSearchEmpty()
             SEARCH_STATE.FAIL -> onSearchFail(STATE.info)
         }
