@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.testapp.Track
 
-class TrackAdapter(private var tracks: MutableList<Track>) : RecyclerView.Adapter<TrackHolder>() {
+class TrackAdapter(var tracks: MutableList<Track>) : RecyclerView.Adapter<TrackHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackHolder {
         return TrackHolder(parent);
     }
@@ -23,35 +24,39 @@ class TrackAdapter(private var tracks: MutableList<Track>) : RecyclerView.Adapte
 
     override fun onBindViewHolder(holder: TrackHolder, position: Int) {
         holder.bind(tracks[position]);
-    }
-}
 
-class TrackHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-    constructor(parent: ViewGroup) : this(LayoutInflater.from(parent.context).inflate(R.layout.track_in_list, parent, false));
-
-    val trackName: TextView = itemView.findViewById(R.id.trackName);
-    val artistName: TextView = itemView.findViewById(R.id.artistName);
-    val trackTime: TextView = itemView.findViewById(R.id.trackTime);
-    val cover: ImageView = itemView.findViewById(R.id.trackCover);
-
-    fun bind(track: Track) {
-        trackName.text = track.trackName;
-        artistName.text = track.artistName;
-        trackTime.text = track.trackTime;
-        Glide.with(cover)
-            .load(track.artworkUrl100)
-            .centerCrop()
-            .placeholder(R.drawable.track_placeholder)
-            .transform(RoundedCorners(dpToPx(2f, itemView.context)))
-            .into(cover);
+        setOnTrackClick(holder);//play music on click
     }
 
-    private fun dpToPx(dp: Float, context: Context): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp,
-            context.resources.displayMetrics
-        ).toInt()
+    private fun setOnTrackClick(holder: TrackHolder){
+        holder.itemView.setOnClickListener {
+            val track = tracks[holder.adapterPosition];
+
+            if(track.isPlaying){
+                track.isPlaying = false;
+                MusicPlayer.destroy()
+            }
+            else {
+                track.isPlaying = true;
+                MusicPlayer.play(track.previewUrl)
+            }
+
+            updateTracks(holder.adapterPosition);
+        }
+    }
+
+    fun updateTracks(index:Int = -1){
+        for(i in 0 until tracks.size){
+            if(i==index){
+                this.notifyItemChanged(i)
+            }
+            else {
+                val track = tracks.get(i)
+                if (track.isPlaying) {
+                    track.isPlaying = false;
+                    this.notifyItemChanged(i)
+                }
+            }
+        }
     }
 }

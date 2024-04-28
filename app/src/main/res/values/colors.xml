@@ -18,4 +18,6 @@
     <color name="trackTime">#AEAFB4</color>
     <color name="trackRightArrow">#AEAFB4</color>
     <color name="trackTextDot">#AEAFB4</color>
+    <color name="no_tracks_light">#FFFFFF</color>
+    <color name="no_tracks_dark">#1A1B22</color>
 </resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="no_internet_no_tracks_top">10dp</dimen>
+    <dimen name="no_internet_no_tracks_bottom">30dp</dimen>
+</resources>
