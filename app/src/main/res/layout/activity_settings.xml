@@ -43,8 +43,8 @@
                     android:layout_height="26dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="10dp"
-                    android:text="@string/settings"
                     android:fontFamily="@font/ys_display_medium"
+                    android:text="@string/settings"
                     android:textColor="@color/arrow_back_title"
                     android:textSize="@dimen/header_text_size" />
             </FrameLayout>
@@ -66,15 +66,19 @@
             <FrameLayout style="@style/SettingsItemCenter_switch">
 
                 <Switch
-                    android:id="@+id/switch1"
+                    android:id="@+id/themeSwitcher"
+                    style="@style/themeSwitcher"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
             </FrameLayout>
 
 
         </FrameLayout>
 
-        <FrameLayout style="@style/SettingsItemCenter" android:id="@+id/button_share">
+        <FrameLayout
+            android:id="@+id/button_share"
+            style="@style/SettingsItemCenter">
 
             <TextView
                 style="@style/SettingsItemCenter_text"
@@ -86,7 +90,9 @@
 
         </FrameLayout>
 
-        <FrameLayout style="@style/SettingsItemCenter" android:id="@+id/button_support_email">
+        <FrameLayout
+            android:id="@+id/button_support_email"
+            style="@style/SettingsItemCenter">
 
             <TextView
                 style="@style/SettingsItemCenter_text"
@@ -101,7 +107,9 @@
 
         </FrameLayout>
 
-        <FrameLayout style="@style/SettingsItemCenter" android:id="@+id/button_user_agreement">
+        <FrameLayout
+            android:id="@+id/button_user_agreement"
+            style="@style/SettingsItemCenter">
 
             <TextView
                 style="@style/SettingsItemCenter_text"
@@ -128,8 +136,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:visibility="gone"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <LinearLayout style="@style/SettingsItemBottom">
 

@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         logMethodName(object {}.javaClass.enclosingMethod.name);
+        MusicPlayer.destroy();
     }
 
     override fun onStop() {

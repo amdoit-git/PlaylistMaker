@@ -8,6 +8,7 @@ class FakeTracks {
 
         val tracks: List<Track> = listOf(
             Track(
+                1,
                 "Smells Like Teen Spirit",
                 "Nirvana",
                 "5:01",
@@ -16,6 +17,7 @@ class FakeTracks {
             ),
 
             Track(
+                2,
                 "Billie Jean",
                 "Michael Jackson",
                 "4:35",
@@ -24,6 +26,7 @@ class FakeTracks {
             ),
 
             Track(
+                3,
                 "Stayin' Alive",
                 "Bee Gees",
                 "4:10",
@@ -32,6 +35,7 @@ class FakeTracks {
             ),
 
             Track(
+                4,
                 "Whole Lotta Love",
                 "Led Zeppelin",
                 "5:33",
@@ -40,6 +44,7 @@ class FakeTracks {
             ),
 
             Track(
+                5,
                 "Sweet Child O'Mine",
                 "Guns N' Roses",
                 "5:03",
@@ -48,6 +53,7 @@ class FakeTracks {
             ),
 
             Track(
+                6,
                 "Очень длинное название трека, которое не влезет в поле и будет обрезано",
                 "A very long track name that will not fit into the field and will be cut off",
                 "14:33",
@@ -56,6 +62,7 @@ class FakeTracks {
             ),
 
             Track(
+                7,
                 "Эта картинка не загрузится",
                 "Ошибка загрузки",
                 "00:00",
@@ -64,6 +71,7 @@ class FakeTracks {
             ),
 
             Track(
+                8,
                 "Картинка с http://",
                 "Борис Николаевич",
                 "01:19",

@@ -2,14 +2,28 @@ package com.example.playlistmaker
 
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import com.example.testapp.Track
 
 class MusicPlayer {
 
-    companion object{
+    companion object {
         private var mediaPlayer: MediaPlayer? = null;
         private var onComplete: (() -> Unit)? = null;
+        private var track: Track? = null;
 
-        fun play(url:String) {
+        fun startPlayOrStop(track: Track):Boolean{
+
+            return if(track.isPlaying){
+                destroy();
+                false;
+            } else{
+                play(track);
+                true;
+            }
+        }
+        fun play(track: Track) {
+
+
 
             if (mediaPlayer != null) {
                 destroy();
@@ -22,7 +36,7 @@ class MusicPlayer {
                         .setUsage(AudioAttributes.USAGE_MEDIA)
                         .build()
                 )
-                setDataSource(url)
+                setDataSource(track.previewUrl)
                 prepareAsync()
                 //prepare() // might take long! (for buffering, etc)
                 //start()
@@ -36,15 +50,27 @@ class MusicPlayer {
                 onComplete?.let { func -> func() }
                 destroy()
             }
+
+            this.track = track;
         }
 
-        fun setOnCompleteCallback(onComplete: (()->Unit)?){
+        fun setOnCompleteCallback(onComplete: (() -> Unit)?) {
             this.onComplete = onComplete
         }
 
         fun destroy() {
             mediaPlayer?.release()
             mediaPlayer = null
+            track = null;
+        }
+
+        fun isPlayingNow(track: Track): Boolean {
+
+            this.track?.let {
+                return it.trackId == track.trackId;
+            }
+
+            return false;
         }
     }
 }

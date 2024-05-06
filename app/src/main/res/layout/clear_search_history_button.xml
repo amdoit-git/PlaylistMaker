@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/clear_search_histroy_button"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/no_tracks_dark"
+        android:fontFamily="@font/ys_display_medium"
+        android:layout_marginVertical="24dp"
+        android:fontWeight="500"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:text="@string/clear_search_history_button"
+        android:textAllCaps="false"
+        android:textColor="@color/no_tracks_light"
+        android:textSize="14sp"
+        app:cornerRadius="54dp" />
+</FrameLayout>
