@@ -11,15 +11,15 @@ import androidx.appcompat.app.AppCompatActivity
 
 class SearchTextField(
     private val activity: AppCompatActivity,
-    val editText: EditText,
-    val clearButton: View,
-    val onTextChanged: (String, Boolean) -> Unit,
-    val onAction: (String) -> Unit,
-    val onFocusChanged: (String, Boolean) -> Unit
+    private val editText: EditText,
+    private val clearButton: View,
+    private val onTextChanged: (String, Boolean) -> Unit,
+    private val onAction: (String) -> Unit,
+    private val onFocusChanged: (String, Boolean) -> Unit
 ) {
 
-    var textValue: String = "";
-    var inFocus:Boolean = false;
+    var textValue: String = ""
+    var inFocus: Boolean = false
 
     fun activate() {
 
@@ -40,16 +40,16 @@ class SearchTextField(
                     View.VISIBLE
                 }
 
-                textValue = editText.text.toString();
+                textValue = editText.text.toString()
 
-                onTextChanged(textValue, inFocus);
+                onTextChanged(textValue, inFocus)
             }
         })
 
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                onAction(textValue);
-                closeKeyboard();
+                onAction(textValue)
+                closeKeyboard()
                 true
             } else {
                 false
@@ -57,22 +57,22 @@ class SearchTextField(
         }
 
         editText.setOnFocusChangeListener { _, hasFocus ->
-            inFocus = hasFocus;
-            onFocusChanged(textValue, inFocus);
+            inFocus = hasFocus
+            onFocusChanged(textValue, inFocus)
         }
 
         clearButton.setOnClickListener {
             editText.setText("")
-            closeKeyboard();
+            closeKeyboard()
         }
     }
 
     fun requestFocus() {
-        editText.requestFocus();
+        editText.requestFocus()
     }
 
     fun setText(text: String) {
-        this.textValue = text;
+        this.textValue = text
         editText.setText(text)
     }
 
@@ -85,8 +85,7 @@ class SearchTextField(
             val manager = activity.baseContext.getSystemService(
                 INPUT_METHOD_SERVICE
             ) as InputMethodManager
-            manager
-                .hideSoftInputFromWindow(
+            manager.hideSoftInputFromWindow(
                     view.windowToken, 0
                 )
         }

@@ -31,14 +31,18 @@
     </style>
 
     <style name="SettingsItemCenter_text">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center|start</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginStart">16dp</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:textColor">@color/arrow_back_title</item>
         <item name="android:textSize">16sp</item>
         <item name="android:fontWeight">@dimen/normal</item>
+        <item name="android:layout_marginEnd">55dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
     </style>
 
     <style name="SettingsItemCenter_icon">
@@ -123,7 +127,7 @@
 
     <style name="trackCenter">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_marginStart">66dp</item>
         <item name="android:layout_marginEnd">44dp</item>
@@ -131,8 +135,9 @@
 
     <style name="trackName">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">19dp</item>
-        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:layout_height">33dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:gravity">bottom</item>
         <item name="android:ellipsize">end</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:singleLine">true</item>
@@ -142,34 +147,40 @@
 
     <style name="artistName_group">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">13dp</item>
-        <item name="android:layout_marginTop">26dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:minHeight">20dp</item>
+        <item name="android:layout_marginTop">34dp</item>
     </style>
 
     <style name="artistName">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">13dp</item>
         <item name="android:layout_marginEnd">77dp</item>
         <item name="android:ellipsize">end</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/artistName</item>
-        <item name="android:layout_gravity">bottom</item>
+        <item name="android:layout_gravity">top</item>
         <item name="android:gravity">bottom</item>
         <item name="android:textSize">11sp</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
     </style>
 
     <style name="trackTime_group">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_gravity">right|bottom</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_toRightOf">@id/artistName</item>
         <item name="android:orientation">horizontal</item>
+        <item name="android:layout_alignBottom">@id/artistName</item>
+        <item name="android:layout_marginStart">-77dp</item>
     </style>
 
     <style name="trackTime_dot">
         <item name="android:layout_width">13dp</item>
-        <item name="android:layout_height">13dp</item>
-        <item name="android:layout_gravity">bottom</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">top</item>
         <item name="android:src">@drawable/track_text_dot</item>
     </style>
 
@@ -181,6 +192,7 @@
         <item name="android:textColor">@color/trackTime</item>
         <item name="android:gravity">bottom</item>
         <item name="android:textSize">10sp</item>
+        <item name="android:layout_marginLeft">13dp</item>
     </style>
 
     <style name="trackRightArrow">

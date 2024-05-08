@@ -1,6 +1,6 @@
 package com.example.playlistmaker
 
-enum class SEARCH_STATE(val num:Int, var jsonTracks:String = ""){
+enum class SEARCH_STATE(val num: Int, var jsonTracks: String = "") {
     FIRST_VISIT(1),//пустой экран
     HISTORY_TRACKS_VISIBLE(2),//история прослушивания на экране и ее ведно
     HISTORY_GONE(3),//история прослушивания на экране, но она скрыта
@@ -9,9 +9,9 @@ enum class SEARCH_STATE(val num:Int, var jsonTracks:String = ""){
     SEARCH_EMPTY(6),//ошибка поиска "ничего ненайдено"
     SEARCH_FAIL(7);//ошибка поиска "проблемы с сетью, повторите запрос"
 
-    companion object{
-        fun find(num: Int): SEARCH_STATE{
-            return entries.firstOrNull { it.num == num } ?: SEARCH_STATE.FIRST_VISIT
+    companion object {
+        fun find(num: Int): SEARCH_STATE {
+            return entries.firstOrNull { it.num == num } ?: FIRST_VISIT
         }
     }
 }

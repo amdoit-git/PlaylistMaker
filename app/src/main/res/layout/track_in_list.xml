@@ -15,14 +15,14 @@
             style="@style/trackName"
             tools:text="Something About The Way You Look Tonight" />
 
-        <FrameLayout style="@style/artistName_group">
+        <RelativeLayout style="@style/artistName_group">
 
             <TextView
                 android:id="@+id/artistName"
                 style="@style/artistName"
-                tools:text="Sir Elton Hercules John" />
+                tools:text="Sir Elton Hercules" />
 
-            <LinearLayout style="@style/trackTime_group">
+            <FrameLayout style="@style/trackTime_group">
 
                 <ImageView style="@style/trackTime_dot" />
 
@@ -30,8 +30,9 @@
                     android:id="@+id/trackTime"
                     style="@style/trackTime"
                     tools:text="05:13" />
-            </LinearLayout>
-        </FrameLayout>
+            </FrameLayout>
+        </RelativeLayout>
+
     </FrameLayout>
 
     <ImageView style="@style/trackRightArrow" />

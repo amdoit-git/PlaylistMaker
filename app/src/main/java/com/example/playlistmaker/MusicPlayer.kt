@@ -7,43 +7,40 @@ import com.example.testapp.Track
 class MusicPlayer {
 
     companion object {
-        private var mediaPlayer: MediaPlayer? = null;
-        private var onComplete: (() -> Unit)? = null;
-        private var track: Track? = null;
+        private var mediaPlayer: MediaPlayer? = null
+        private var onComplete: (() -> Unit)? = null
+        private var track: Track? = null
 
-        fun startPlayOrStop(track: Track):Boolean{
+        fun startPlayOrStop(track: Track): Boolean {
 
-            return if(track.isPlaying){
-                destroy();
-                false;
-            } else{
-                play(track);
-                true;
+            return if (track.isPlaying) {
+                destroy()
+                false
+            } else {
+                play(track)
+                true
             }
         }
+
         fun play(track: Track) {
 
 
-
             if (mediaPlayer != null) {
-                destroy();
+                destroy()
             }
 
             mediaPlayer = MediaPlayer().apply {
                 setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
+                    AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA).build()
                 )
                 setDataSource(track.previewUrl)
                 prepareAsync()
-                //prepare() // might take long! (for buffering, etc)
-                //start()
+
             }
 
             mediaPlayer?.setOnPreparedListener {
-                mediaPlayer?.start();
+                mediaPlayer?.start()
             }
 
             mediaPlayer?.setOnCompletionListener {
@@ -51,7 +48,7 @@ class MusicPlayer {
                 destroy()
             }
 
-            this.track = track;
+            this.track = track
         }
 
         fun setOnCompleteCallback(onComplete: (() -> Unit)?) {
@@ -61,16 +58,16 @@ class MusicPlayer {
         fun destroy() {
             mediaPlayer?.release()
             mediaPlayer = null
-            track = null;
+            track = null
         }
 
         fun isPlayingNow(track: Track): Boolean {
 
             this.track?.let {
-                return it.trackId == track.trackId;
+                return it.trackId == track.trackId
             }
 
-            return false;
+            return false
         }
     }
 }

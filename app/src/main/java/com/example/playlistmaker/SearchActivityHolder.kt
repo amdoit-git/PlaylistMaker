@@ -2,13 +2,9 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testapp.Track
-import kotlin.reflect.KProperty0
 
 open class SearchActivityHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -18,9 +14,7 @@ open class SearchActivityHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     protected fun dpToPx(dp: Float, context: Context): Int {
         return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp,
-            context.resources.displayMetrics
+            TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics
         ).toInt()
     }
 }

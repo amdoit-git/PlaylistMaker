@@ -8,48 +8,48 @@ class TrackAdapter(
     val tracks: MutableList<Track> = mutableListOf()
 ) : RecyclerView.Adapter<SearchActivityHolder>() {
 
-    public var hasClearButton: Boolean = false;
-    private var onButtonClick: (() -> Unit)? = null;
-    private var scrollMe: ((Int) -> Unit)? = null;
+    var hasClearButton: Boolean = false
+    private var onButtonClick: (() -> Unit)? = null
+    private var scrollMe: ((Int) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchActivityHolder {
         return when (viewType) {
-            TYPE_TRACK -> TrackHolder.create(parent);
-            TYPE_BUTTON -> ButtonHolder.create(parent);
+            TYPE_TRACK -> TrackHolder.create(parent)
+            TYPE_BUTTON -> ButtonHolder.create(parent)
             else -> throw IllegalArgumentException("Неизвестный тип SearchActivityHolder!!!")
         }
     }
 
     override fun getItemCount(): Int {
-        return tracks.size + if (hasClearButton) 1 else 0;
+        return tracks.size + if (hasClearButton) 1 else 0
     }
 
     override fun onBindViewHolder(holder: SearchActivityHolder, position: Int) {
 
         when (getItemViewType(position)) {
-            TYPE_TRACK -> holder.bind(tracks[position], ::updateTracks);
-            TYPE_BUTTON -> holder.onButtonClick(onButtonClick);
+            TYPE_TRACK -> holder.bind(tracks[position], ::updateTracks)
+            TYPE_BUTTON -> holder.onButtonClick(onButtonClick)
             else -> throw IllegalArgumentException("Неизвестный тип SearchActivityHolder!!!")
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position < tracks.size) TYPE_TRACK else TYPE_BUTTON;
+        return if (position < tracks.size) TYPE_TRACK else TYPE_BUTTON
     }
 
     fun showClearButton(onClick: (() -> Unit)?, scrollMe: ((Int) -> Unit)? = null) {
         if (onClick == null) {
-            onButtonClick = null;
-            hasClearButton = false;
+            onButtonClick = null
+            hasClearButton = false
         } else {
-            onButtonClick = onClick;
-            hasClearButton = true;
+            onButtonClick = onClick
+            hasClearButton = true
         }
-        this.scrollMe = scrollMe;
+        this.scrollMe = scrollMe
     }
 
     companion object {
-        private const val TYPE_TRACK = 0;
-        private const val TYPE_BUTTON = 1;
+        private const val TYPE_TRACK = 0
+        private const val TYPE_BUTTON = 1
     }
 
     fun updateTracks(index: Int = -1) {
@@ -60,7 +60,7 @@ class TrackAdapter(
             } else {
                 val track = tracks.get(i)
                 if (track.isPlaying) {
-                    track.isPlaying = false;
+                    track.isPlaying = false
                     this.notifyItemChanged(i)
                 }
             }
@@ -68,13 +68,13 @@ class TrackAdapter(
 
         if (hasClearButton && index > 0) {
 
-            tracks.add(0, tracks.removeAt(index));
+            tracks.add(0, tracks.removeAt(index))
 
             scrollMe?.let {
-                it(0);
+                it(0)
             }
 
-            this.notifyItemMoved(index, 0);
+            this.notifyItemMoved(index, 0)
         }
     }
 }

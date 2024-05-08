@@ -10,7 +10,7 @@ class ButtonHolder(view: View) : SearchActivityHolder(view) {
     override fun onButtonClick(callback: (() -> Unit)?) {
         callback?.let {
             itemView.findViewById<Button>(R.id.clear_search_histroy_button).setOnClickListener {
-                callback();
+                callback()
             }
         }
     }
@@ -21,7 +21,7 @@ class ButtonHolder(view: View) : SearchActivityHolder(view) {
             return ButtonHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.clear_search_history_button, parent, false)
-            );
+            )
         }
     }
 }

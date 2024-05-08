@@ -12,27 +12,27 @@ import java.util.Locale
 
 class SearchActivity : AppCompatActivity() {
 
-    private val KEY_FOR_SEARCH_FIELD = "SEARCH_FIELD_STATE_KEY";
-    private val KEY_FOR_SEARCH_STATE = "STATE_KEY_SEARCH_STATE";
-    private val KEY_FOR_SEARCH_STATE_TRACKS = "STATE_KEY_SEARCH_STATE_INFO";
-    private var searchText: String = "";
-    private val itunesApi: ItunesApi = ItunesApi();
-    private var STATE = SEARCH_STATE.FIRST_VISIT;
-    private lateinit var tracksList: RecyclerView;
-    private lateinit var adapter: TrackAdapter;
-    private lateinit var textField: SearchTextField;
+    private val KEY_FOR_SEARCH_FIELD = "SEARCH_FIELD_STATE_KEY"
+    private val KEY_FOR_SEARCH_STATE = "STATE_KEY_SEARCH_STATE"
+    private val KEY_FOR_SEARCH_STATE_TRACKS = "STATE_KEY_SEARCH_STATE_INFO"
+    private var searchText: String = ""
+    private val itunesApi: ItunesApi = ItunesApi()
+    private var STATE = SEARCH_STATE.FIRST_VISIT
+    private lateinit var tracksList: RecyclerView
+    private lateinit var adapter: TrackAdapter
+    private lateinit var textField: SearchTextField
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        tracksList = findViewById<RecyclerView>(R.id.tracksList);
+        tracksList = findViewById<RecyclerView>(R.id.tracksList)
 
-        adapter = TrackAdapter();
+        adapter = TrackAdapter()
 
-        tracksList.adapter = adapter;
+        tracksList.adapter = adapter
 
-        MusicPlayer.setOnCompleteCallback(adapter::updateTracks);
+        MusicPlayer.setOnCompleteCallback(adapter::updateTracks)
 
         textField = SearchTextField(
             activity = this,
@@ -41,69 +41,69 @@ class SearchActivity : AppCompatActivity() {
             onTextChanged = ::onTextChanged,
             onAction = ::searchOnItunes,
             onFocusChanged = ::onFocusChanged
-        );
+        )
 
         findViewById<View>(R.id.button_to_main_screen).setOnClickListener {
-            this.finish();
+            this.finish()
         }
 
         findViewById<Button>(R.id.no_internet_button).setOnClickListener {
-            searchOnItunes(searchText);
+            searchOnItunes(searchText)
         }
 
-        textField.activate();
+        textField.activate()
     }
 
     private fun setScreenState(state: SEARCH_STATE, jsonTracks: String = "") {
 
-        val noTracks = findViewById<View>(R.id.no_tracks);
-        val noInternet = findViewById<View>(R.id.no_internet);
-        val trackListTitle = findViewById<View>(R.id.tracksListTitle);
+        val noTracks = findViewById<View>(R.id.no_tracks)
+        val noInternet = findViewById<View>(R.id.no_internet)
+        val trackListTitle = findViewById<View>(R.id.tracksListTitle)
         val elements: List<View> = listOf(tracksList, noTracks, noInternet, trackListTitle)
 
-        STATE = state;
-        STATE.jsonTracks = jsonTracks;
+        STATE = state
+        STATE.jsonTracks = jsonTracks
 
-        elements.forEach { it.visibility = View.GONE };
+        elements.forEach { it.visibility = View.GONE }
 
         when (STATE) {
             SEARCH_STATE.FIRST_VISIT -> {}
             SEARCH_STATE.HISTORY_EMPTY -> {}
             SEARCH_STATE.HISTORY_GONE -> {}
             SEARCH_STATE.HISTORY_TRACKS_VISIBLE -> {
-                trackListTitle.visibility = View.VISIBLE;
-                tracksList.visibility = View.VISIBLE;
+                trackListTitle.visibility = View.VISIBLE
+                tracksList.visibility = View.VISIBLE
             }
 
             SEARCH_STATE.SEARCH_TRACKS_VISIBLE -> {
-                tracksList.visibility = View.VISIBLE;
+                tracksList.visibility = View.VISIBLE
             }
 
             SEARCH_STATE.SEARCH_EMPTY -> {
-                noTracks.visibility = View.VISIBLE;
+                noTracks.visibility = View.VISIBLE
             }
 
             SEARCH_STATE.SEARCH_FAIL -> {
-                noInternet.visibility = View.VISIBLE;
+                noInternet.visibility = View.VISIBLE
             }
         }
     }
 
     private fun onFocusChanged(str: String, hasFocus: Boolean) {
 
-        switchHistoryVisibility(str, hasFocus);
+        switchHistoryVisibility(str, hasFocus)
     }
 
     private fun onTextChanged(str: String, hasFocus: Boolean) {
 
-        searchText = str;
+        searchText = str
 
-        switchHistoryVisibility(str, hasFocus);
+        switchHistoryVisibility(str, hasFocus)
     }
 
     private fun switchHistoryVisibility(str: String, hasFocus: Boolean) {
 
-        val isVisible = str.isEmpty() && hasFocus;
+        val isVisible = str.isEmpty() && hasFocus
 
         if (isVisible) {
 
@@ -128,70 +128,71 @@ class SearchActivity : AppCompatActivity() {
         if (adapter.hasClearButton) {
             //История прослущиваний уже на экране. Просто показываем ее
 
-            setScreenState(SEARCH_STATE.HISTORY_TRACKS_VISIBLE);
+            setScreenState(SEARCH_STATE.HISTORY_TRACKS_VISIBLE)
         } else {
             //Загружаем историю прослущиваний и показываем если она есть
 
             SearchHistory.loadTracksList()?.let {
                 if (it.size > 0) {
                     setScreenState(
-                        SEARCH_STATE.HISTORY_TRACKS_VISIBLE,
-                        SearchHistory.toJson(it)
-                    );
-                    showTracks(it, true);
+                        SEARCH_STATE.HISTORY_TRACKS_VISIBLE, SearchHistory.toJson(it)
+                    )
+                    showTracks(it, true)
                     tracksList.smoothScrollToPosition(0)
                 } else {
-                    setScreenState(SEARCH_STATE.HISTORY_EMPTY);
+                    setScreenState(SEARCH_STATE.HISTORY_EMPTY)
                 }
             } ?: run {
 
-                setScreenState(SEARCH_STATE.HISTORY_EMPTY);
+                setScreenState(SEARCH_STATE.HISTORY_EMPTY)
             }
         }
     }
 
     private fun clearHistory() {
-        showTracks(emptyList());
-        setScreenState(SEARCH_STATE.FIRST_VISIT);
-        SearchHistory.clearHistory();
-        MusicPlayer.destroy();
+        showTracks(emptyList())
+        setScreenState(SEARCH_STATE.FIRST_VISIT)
+        SearchHistory.clearHistory()
+        MusicPlayer.destroy()
     }
 
     private fun showTracks(tracks: List<Track>, showClearButton: Boolean = false) {
 
-        adapter.tracks.clear();
+        adapter.tracks.clear()
 
         tracks.forEach {
-            it.isPlaying = MusicPlayer.isPlayingNow(it);
-            adapter.tracks.add(it);
+            it.isPlaying = MusicPlayer.isPlayingNow(it)
+            adapter.tracks.add(it)
         }
 
         if (showClearButton) {
 
             adapter.showClearButton(::clearHistory) {
-                tracksList.scrollToPosition(it);
-            };
+                tracksList.scrollToPosition(it)
+            }
 
         } else {
-            adapter.showClearButton(null);
+            adapter.showClearButton(null)
         }
 
-        adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged()
 
         if (tracks.none { it.isPlaying }) {
-            MusicPlayer.destroy();
+            MusicPlayer.destroy()
         }
     }
 
     private fun searchOnItunes(textToSearch: String) {
-        if(textToSearch.isNotBlank()){
-            itunesApi.search(textToSearch.trim(), ::onSearchSuccess, ::onSearchEmpty, ::onSearchFail)
+        if (textToSearch.isNotBlank()) {
+            itunesApi.search(
+                textToSearch.trim(), ::onSearchSuccess, ::onSearchEmpty, ::onSearchFail
+            )
         }
     }
 
     private fun onSearchSuccess(itunesTracks: List<ItunesTrack>) {
 
-        val tracks: MutableList<Track> = mutableListOf();
+        val tracks: MutableList<Track> = mutableListOf()
 
         for (item in itunesTracks) {
 
@@ -204,12 +205,12 @@ class SearchActivity : AppCompatActivity() {
                 item.previewUrl ?: ""
             )
 
-            tracks.add(track);
+            tracks.add(track)
         }
 
-        setScreenState(SEARCH_STATE.SEARCH_TRACKS_VISIBLE, SearchHistory.toJson(tracks));
+        setScreenState(SEARCH_STATE.SEARCH_TRACKS_VISIBLE, SearchHistory.toJson(tracks))
 
-        showTracks(tracks);
+        showTracks(tracks)
 
         tracksList.smoothScrollToPosition(0)
     }
@@ -231,7 +232,7 @@ class SearchActivity : AppCompatActivity() {
 
         savedInstanceState.let {
 
-            searchText = it.getString(KEY_FOR_SEARCH_FIELD, "");
+            searchText = it.getString(KEY_FOR_SEARCH_FIELD, "")
 
             textField.setText(searchText)
 
@@ -262,7 +263,7 @@ class SearchActivity : AppCompatActivity() {
     private fun restoreTracksOnStart(json: String, showClearButton: Boolean = false) {
 
         SearchHistory.jsonToTracks(json)?.let {
-            showTracks(it, showClearButton);
+            showTracks(it, showClearButton)
         } ?: run {
             setScreenState(SEARCH_STATE.FIRST_VISIT)
         }

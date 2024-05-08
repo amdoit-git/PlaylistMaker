@@ -2,21 +2,20 @@ package com.example.playlistmaker
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 
-const val APP_SETTINGS_PREFERENCES = "APP_SETTINGS_PREFERENCES";
-const val DARK_THEME_KEY = "DARK_THEME";
+const val APP_SETTINGS_PREFERENCES = "APP_SETTINGS_PREFERENCES"
+const val DARK_THEME_KEY = "DARK_THEME"
 
 class App : Application() {
 
-    var darkTheme: Boolean? = null;
-    private lateinit var sharedPrefs: SharedPreferences;
+    private var darkTheme: Boolean? = null
+    private lateinit var sharedPrefs: SharedPreferences
     override fun onCreate() {
-        super.onCreate();
-        sharedPrefs = getSharedPreferences(APP_SETTINGS_PREFERENCES, MODE_PRIVATE);
-        restoreTheme();
-        SearchHistory.setSharedPreferences(sharedPrefs);
+        super.onCreate()
+        sharedPrefs = getSharedPreferences(APP_SETTINGS_PREFERENCES, MODE_PRIVATE)
+        restoreTheme()
+        SearchHistory.setSharedPreferences(sharedPrefs)
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
@@ -38,6 +37,6 @@ class App : Application() {
     }
 
     fun saveTheme(darkThemeEnabled: Boolean) {
-        sharedPrefs.edit().putBoolean(DARK_THEME_KEY, darkThemeEnabled).apply();
+        sharedPrefs.edit().putBoolean(DARK_THEME_KEY, darkThemeEnabled).apply()
     }
 }

@@ -11,30 +11,30 @@ class SearchHistory {
 
     companion object {
 
-        private const val LAST_VIEWED_TRACKS = "LAST_VIEWED_TRACKS";
-        private const val MAX_TRACKS_IN_LIST: Int = 10;
-        private var sharedPrefs: SharedPreferences? = null;
-        private val gson = Gson();
+        private const val LAST_VIEWED_TRACKS = "LAST_VIEWED_TRACKS"
+        private const val MAX_TRACKS_IN_LIST: Int = 10
+        private var sharedPrefs: SharedPreferences? = null
+        private val gson = Gson()
 
         fun setSharedPreferences(sharedPrefs: SharedPreferences) {
-            this.sharedPrefs = sharedPrefs;
+            this.sharedPrefs = sharedPrefs
         }
 
         fun jsonToTracks(json: String): List<Track>? {
 
             try {
-                val type = object : TypeToken<MutableList<Track>>() {}.type;
-                val tracks: MutableList<Track> = gson.fromJson(json, type);
-                return tracks;
+                val type = object : TypeToken<MutableList<Track>>() {}.type
+                val tracks: MutableList<Track> = gson.fromJson(json, type)
+                return tracks
             } catch (er: JsonSyntaxException) {
                 er.message?.let {
-                    Log.d("PM_ERROR", it);
+                    Log.d("PM_ERROR", it)
                 } ?: run {
                     Log.d("PM_ERROR", "jsonToTracks")
                 }
             }
 
-            return null;
+            return null
         }
 
         fun loadTracksList(): List<Track>? {
@@ -44,35 +44,35 @@ class SearchHistory {
                 it.getString(LAST_VIEWED_TRACKS, null)?.let { json -> return jsonToTracks(json) }
             }
 
-            return null;
+            return null
         }
 
         fun saveTrackInList(track: Track) {
 
-            val tracks: MutableList<Track> = mutableListOf(track.copy(isPlaying = false));
+            val tracks: MutableList<Track> = mutableListOf(track.copy(isPlaying = false))
 
             loadTracksList()?.let {
-                val loadedTracks = it.filter { t -> t.trackId != track.trackId };
+                val loadedTracks = it.filter { t -> t.trackId != track.trackId }
 
                 for (i in 0 until minOf(MAX_TRACKS_IN_LIST - 1, loadedTracks.size)) {
 
-                    tracks.add(loadedTracks[i]);
+                    tracks.add(loadedTracks[i])
                 }
             }
 
             sharedPrefs?.let {
-                it.edit().putString(LAST_VIEWED_TRACKS, toJson(tracks)).apply();
+                it.edit().putString(LAST_VIEWED_TRACKS, toJson(tracks)).apply()
             }
         }
 
         fun clearHistory() {
             sharedPrefs?.let {
-                it.edit().remove(LAST_VIEWED_TRACKS).apply();
+                it.edit().remove(LAST_VIEWED_TRACKS).apply()
             }
         }
 
         fun toJson(tracks: List<Track>): String {
-            return gson.toJson(tracks);
+            return gson.toJson(tracks)
         }
     }
 }
