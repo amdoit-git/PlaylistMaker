@@ -28,37 +28,11 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
-
-        logMethodName(object {}.javaClass.enclosingMethod.name)
     }
 
-    override fun onResume() {
-        super.onResume()
-        logMethodName(object {}.javaClass.enclosingMethod.name)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        logMethodName(object {}.javaClass.enclosingMethod.name)
-    }
 
     override fun onStart() {
         super.onStart()
-        logMethodName(object {}.javaClass.enclosingMethod.name)
         MusicPlayer.destroy()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        logMethodName(object {}.javaClass.enclosingMethod.name)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        logMethodName(object {}.javaClass.enclosingMethod.name)
-    }
-
-    private fun logMethodName(name: String) {
-        //Log.d("TEST_TAG", "Мы в методе !!! " + name);
     }
 }
