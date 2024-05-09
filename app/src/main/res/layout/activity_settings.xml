@@ -66,12 +66,10 @@
 
             <FrameLayout style="@style/SettingsItemCenter_switch">
 
-                <Switch
+                <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/themeSwitcher"
-                    style="@style/themeSwitcher"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    style="@style/themeSwitcher" />
+
             </FrameLayout>
 
 

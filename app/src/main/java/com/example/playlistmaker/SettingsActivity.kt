@@ -4,8 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     private var closing: Boolean = false
@@ -51,7 +51,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val themeSwitcher = findViewById<Switch>(R.id.themeSwitcher)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             val app = this.applicationContext as App
