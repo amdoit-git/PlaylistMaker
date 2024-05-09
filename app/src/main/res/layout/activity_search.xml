@@ -62,6 +62,7 @@
                 android:id="@+id/editText"
                 style="@style/Search_edittext"
                 android:hint="@string/search_edittext_hint"
+                android:colorControlActivated = "@color/cursor_color"
                 android:imeOptions="actionDone"
                 android:singleLine="true" />
 
