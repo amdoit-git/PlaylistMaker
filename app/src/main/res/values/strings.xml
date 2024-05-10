@@ -19,4 +19,6 @@
     <string name="no_tracks_found">Ничего не нашлось</string>
     <string name="no_tracks_internet_error">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="no_tracks_internet_error_button">Обновить</string>
+    <string name="search_history_title">Вы искали</string>
+    <string name="clear_search_history_button">Очистить историю</string>
 </resources>

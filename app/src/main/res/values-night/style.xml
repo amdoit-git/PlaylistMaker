@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+
+    <style name="themeSwitcher">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:checked">true</item>
+        <item name="trackTint">#9FBBF3</item>
+        <item name="thumbTint">#3772E7</item>
+    </style>
+</resources>
