@@ -15,7 +15,7 @@
 
         <FrameLayout
             android:id="@+id/button_to_main_screen"
-            android:layout_width="@dimen/header_active_width"
+            android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp">
@@ -34,7 +34,7 @@
             </FrameLayout>
 
             <FrameLayout
-                android:layout_width="208dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="48dp">
 
