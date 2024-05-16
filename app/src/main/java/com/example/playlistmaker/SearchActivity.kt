@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -8,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testapp.Track
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.Locale
 
 class SearchActivity : AppCompatActivity() {
@@ -190,6 +194,33 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun getStringResourceByName(aString: String?): String? {
+
+        if (aString != null) {
+            try {
+                val resId: Int = resources.getIdentifier(aString, "string", packageName);
+                return getString(resId);
+            } catch (_: Resources.NotFoundException) {
+            }
+        }
+
+        return null;
+    }
+
+    private fun getReleaseYear(releaseDate: String?): String? {
+        val format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+
+        releaseDate?.let {
+            try {
+                val date = LocalDate.parse(it, format)
+                return date.year.toString()
+            } catch (_: DateTimeParseException) {
+            }
+        }
+
+        return null
+    }
+
     private fun onSearchSuccess(itunesTracks: List<ItunesTrack>) {
 
         val tracks: MutableList<Track> = mutableListOf()
@@ -197,12 +228,19 @@ class SearchActivity : AppCompatActivity() {
         for (item in itunesTracks) {
 
             val track = Track(
-                item.trackId,
-                item.trackName ?: "название трека",
-                item.artistName ?: "имя исполнителя",
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(item.trackTimeMillis),
-                item.artworkUrl100 ?: "",
-                item.previewUrl ?: ""
+                trackId = item.trackId,
+                trackName = item.trackName ?: "название трека",
+                artistName = item.artistName ?: "имя исполнителя",
+                trackTime = SimpleDateFormat(
+                    "mm:ss",
+                    Locale.getDefault()
+                ).format(item.trackTimeMillis),
+                trackCover = item.artworkUrl100 ?: "",
+                previewUrl = item.previewUrl ?: "",
+                albumName = item.collectionName ?: "",
+                country = getStringResourceByName(item.country) ?: "",
+                genre = item.primaryGenreName ?: "",
+                albumYear = getReleaseYear(item.releaseDate) ?: "0000"
             )
 
             tracks.add(track)

@@ -11,7 +11,7 @@ class SearchHistory {
 
     companion object {
 
-        private const val LAST_VIEWED_TRACKS = "LAST_VIEWED_TRACKS"
+        const val LAST_VIEWED_TRACKS = "LAST_VIEWED_TRACKS"
         private const val MAX_TRACKS_IN_LIST: Int = 10
         private var sharedPrefs: SharedPreferences? = null
         private val gson = Gson()
@@ -25,6 +25,9 @@ class SearchHistory {
             try {
                 val type = object : TypeToken<MutableList<Track>>() {}.type
                 val tracks: MutableList<Track> = gson.fromJson(json, type)
+                tracks.forEachIndexed { index, track ->
+                    tracks[index] = track.getTrack()
+                }
                 return tracks
             } catch (er: JsonSyntaxException) {
                 er.message?.let {

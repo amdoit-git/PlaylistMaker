@@ -1,24 +1,24 @@
 <resources>
-    <string name="app_name" translatable="false">Dark-Light-Theme</string>
+    <string name="app_name" translatable="false">Playlist maker</string>
     <string name="main_screen_title" translatable="false">Playlist maker</string>
-    <string name="search">Поиск</string>
-    <string name="media_list">Медиатека</string>
-    <string name="settings">Настройки</string>
-    <string name="dark_theme">Темная тема</string>
-    <string name="share_info">Поделиться приложением</string>
-    <string name="support">Написать в поддержку</string>
-    <string name="user_agreement">Пользовательское соглашение</string>
-    <string name="search_plug">Тут будет экран поиска по трекам</string>
-    <string name="play_list_plug">Тут будет плейлист и медиатека</string>
-    <string name="settings_share_text">Крутой курс по Андроид разработке https://practicum.yandex.ru/android-developer/</string>
-    <string name="">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
-    <string name="settings_email_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
-    <string name="settings_email_address">amdoit@ya.ru</string>
-    <string name="settings_user_agreement_url">https://yandex.ru/legal/practicum_offer/</string>
-    <string name="search_edittext_hint">Поиск</string>
-    <string name="no_tracks_found">Ничего не нашлось</string>
-    <string name="no_tracks_internet_error">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
-    <string name="no_tracks_internet_error_button">Обновить</string>
-    <string name="search_history_title">Вы искали</string>
+    <string name="search" translatable="false">Поиск</string>
+    <string name="media_list" translatable="false">Медиатека</string>
+    <string name="settings" translatable="false">Настройки</string>
+    <string name="dark_theme" translatable="false">Темная тема</string>
+    <string name="share_info" translatable="false">Поделиться приложением</string>
+    <string name="support" translatable="false">Написать в поддержку</string>
+    <string name="user_agreement" translatable="false">Пользовательское соглашение</string>
+    <string name="search_plug" translatable="false">Тут будет экран поиска по трекам</string>
+    <string name="play_list_plug" translatable="false">Тут будет плейлист и медиатека</string>
+    <string name="settings_share_text" translatable="false">Крутой курс по Андроид разработке https://practicum.yandex.ru/android-developer/</string>
+    <string name="settings_email_subject" translatable="false">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="settings_email_text" translatable="false">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="settings_email_address" translatable="false">amdoit@ya.ru</string>
+    <string name="settings_user_agreement_url" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="search_edittext_hint" translatable="false">Поиск</string>
+    <string name="no_tracks_found" translatable="false">Ничего не нашлось</string>
+    <string name="no_tracks_internet_error" translatable="false">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="no_tracks_internet_error_button" translatable="false">Обновить</string>
+    <string name="search_history_title" translatable="false">Вы искали</string>
     <string name="clear_search_history_button">Очистить историю</string>
 </resources>

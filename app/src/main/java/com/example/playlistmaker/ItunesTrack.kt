@@ -1,18 +1,18 @@
 package com.example.playlistmaker
 
 data class ItunesTrack(
-    val trackId:Int,
-    val artistId:Int,
-    val kind:String?,
+    val trackId: Int,
+    val artistId: Int,
+    val kind: String?,
     val trackName: String?,//название трека
     val artistName: String?,//имя исполнителя
     val trackTimeMillis: Int,//293000
     val artworkUrl100: String?,//ссылка на обложку
-    val previewUrl:String?,//ссылка на трек
-    val collectionName:String?,
-    val releaseDate:String?,
-    val primaryGenreName:String?,
-    val country:String?
+    val previewUrl: String?,//ссылка на трек
+    val collectionName: String?,//название альбома
+    val releaseDate: String?,//Дата выхода альбома "2014-03-15T12:00:00Z"
+    val primaryGenreName: String?,//Музыкальный жанр
+    val country: String?//country code RUS
 )
 
 /*
