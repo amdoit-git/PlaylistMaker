@@ -41,6 +41,8 @@ class TrackHolder(view: View) : SearchActivityHolder(view) {
 
         val intent = Intent(itemView.context, PlayerScreenActivity::class.java)
 
+        intent.putExtra("track", SearchHistory.toJson(track));
+
         itemView.context.startActivity(intent)
     }
 

@@ -7,6 +7,7 @@
     tools:context=".PlayerScreenActivity">
 
     <FrameLayout
+        android:id="@+id/backButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="4dp">
@@ -33,6 +34,7 @@
                 android:id="@+id/albumCover"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginTop="26dp"
                 android:src="@drawable/track_placeholder"
                 android:visibility="visible"
                 app:layout_constraintDimensionRatio="h,1:1"
@@ -50,6 +52,7 @@
                 android:maxLines="1"
                 android:minHeight="26dp"
                 android:text="Единственная моя."
+                android:textColor="@color/player_screen_text_value"
                 android:textFontWeight="400"
                 android:textSize="22sp"
                 app:layout_constraintEnd_toEndOf="@id/rightBorder"
@@ -66,36 +69,46 @@
                 android:maxLines="1"
                 android:minHeight="16dp"
                 android:text="Филип Киркоров"
+                android:textColor="@color/player_screen_text_value"
                 android:textFontWeight="400"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@id/rightBorder"
                 app:layout_constraintStart_toStartOf="@id/leftBorder"
                 app:layout_constraintTop_toBottomOf="@id/trackName" />
 
-            <ImageView
+            <ToggleButton
                 android:id="@+id/favoriteBt"
                 android:layout_width="51dp"
                 android:layout_height="51dp"
                 android:layout_marginTop="54dp"
+                android:background="@drawable/add_to_favorite_bt_background"
                 android:src="@drawable/add_to_favorite_bt"
+                android:textOff=""
+                android:textOn=""
                 app:layout_constraintStart_toStartOf="@id/leftBorder"
                 app:layout_constraintTop_toBottomOf="@id/artistName" />
 
-            <ImageView
+            <ToggleButton
                 android:id="@+id/likeBt"
                 android:layout_width="51dp"
                 android:layout_height="51dp"
                 android:layout_marginTop="54dp"
+                android:background="@drawable/like_bt_background"
                 android:src="@drawable/like_bt"
+                android:textOff=""
+                android:textOn=""
                 app:layout_constraintEnd_toStartOf="@id/rightBorder"
                 app:layout_constraintTop_toBottomOf="@id/artistName" />
 
-            <ImageView
+            <ToggleButton
                 android:id="@+id/playPauseBt"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="30dp"
+                android:background="@drawable/play_bt_background"
                 android:src="@drawable/play_bt"
+                android:textOff=""
+                android:textOn=""
                 app:layout_constraintEnd_toStartOf="@id/rightBorder"
                 app:layout_constraintStart_toEndOf="@id/leftBorder"
                 app:layout_constraintTop_toBottomOf="@id/artistName" />
@@ -109,6 +122,7 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="05:18"
+                android:textColor="@color/player_screen_text_value"
                 android:textFontWeight="500"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@id/rightBorder"
@@ -120,6 +134,7 @@
                 style="@style/playerBottomList_name"
                 android:layout_marginTop="30dp"
                 android:text="Длительность"
+                android:textColor="@color/player_screen_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/playTime" />
 
@@ -127,6 +142,7 @@
                 android:id="@+id/durationValue"
                 style="@style/playerBottomList_value"
                 android:text="05:17"
+                android:textColor="@color/player_screen_text_value"
                 app:layout_constraintBaseline_toBaselineOf="@id/duration"
                 app:layout_constraintStart_toEndOf="@id/duration" />
 
@@ -134,6 +150,7 @@
                 android:id="@+id/album"
                 style="@style/playerBottomList_name"
                 android:text="Альбом"
+                android:textColor="@color/player_screen_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/duration" />
 
@@ -141,6 +158,7 @@
                 android:id="@+id/albumValue"
                 style="@style/playerBottomList_value"
                 android:text="Yesterday (Remastered 2009"
+                android:textColor="@color/player_screen_text_value"
                 app:layout_constraintBaseline_toBaselineOf="@id/album"
                 app:layout_constraintStart_toEndOf="@id/album" />
 
@@ -148,6 +166,7 @@
                 android:id="@+id/year"
                 style="@style/playerBottomList_name"
                 android:text="Год"
+                android:textColor="@color/player_screen_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/album" />
 
@@ -155,6 +174,7 @@
                 android:id="@+id/yearValue"
                 style="@style/playerBottomList_value"
                 android:text="2020"
+                android:textColor="@color/player_screen_text_value"
                 app:layout_constraintBaseline_toBaselineOf="@id/year"
                 app:layout_constraintStart_toEndOf="@id/year" />
 
@@ -162,6 +182,7 @@
                 android:id="@+id/genre"
                 style="@style/playerBottomList_name"
                 android:text="Жанр"
+                android:textColor="@color/player_screen_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/year" />
 
@@ -169,6 +190,7 @@
                 android:id="@+id/genreValue"
                 style="@style/playerBottomList_value"
                 android:text="Pop"
+                android:textColor="@color/player_screen_text_value"
                 app:layout_constraintBaseline_toBaselineOf="@id/genre"
                 app:layout_constraintStart_toEndOf="@id/genre" />
 
@@ -176,6 +198,7 @@
                 android:id="@+id/country"
                 style="@style/playerBottomList_name"
                 android:text="Страна"
+                android:textColor="@color/player_screen_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/genre" />
 
@@ -183,14 +206,15 @@
                 android:id="@+id/countryValue"
                 style="@style/playerBottomList_value"
                 android:text="Австралия"
+                android:textColor="@color/player_screen_text_value"
                 app:layout_constraintBaseline_toBaselineOf="@id/country"
                 app:layout_constraintStart_toEndOf="@id/country" />
 
             <View
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/country"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"/>
+                android:layout_height="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/country" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/leftBorder"

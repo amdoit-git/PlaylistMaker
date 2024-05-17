@@ -11,7 +11,9 @@ data class Track(
     val albumYear: String,//Дата выхода альбома "2014"
     val genre: String,//Музыкальный жанр
     val country: String,//Страна выпустившая альбом
-    var isPlaying: Boolean = false //играет ли трек в данный момент
+    var isPlaying: Boolean = false, //играет ли трек в данный момент
+    var isLiked: Boolean = false,//трек добавлен в понравившиеся
+    var inFavorite: Boolean = false//трек добавлен в избранное
 ) {
     fun getTrack(): Track {
         return Track(
@@ -25,7 +27,9 @@ data class Track(
             albumYear = albumYear ?: "unknown",
             genre = genre ?: "unknown",
             country = country ?: "unknown",
-            isPlaying = isPlaying
+            isPlaying = isPlaying,
+            isLiked = isLiked,
+            inFavorite = inFavorite
         )
     }
 }

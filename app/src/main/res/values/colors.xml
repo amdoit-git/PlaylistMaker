@@ -21,4 +21,7 @@
     <color name="no_tracks_light">#FFFFFF</color>
     <color name="no_tracks_dark">#1A1B22</color>
     <color name="cursor_color">#3772E7</color>
+    <color name="player_screen_text">#AEAFB4</color>
+    <color name="player_screen_text_value">#1A1B22</color>
+    <color name="player_screen_buttons">#1A1B22</color>
 </resources>

@@ -40,6 +40,16 @@ class SearchHistory {
             return null
         }
 
+        fun jsonToTrack(json: String):Track?{
+            try {
+                val track: Track = gson.fromJson(json, Track::class.java)
+                return track.getTrack()
+            } catch (_: JsonSyntaxException) {
+
+            }
+            return null;
+        }
+
         fun loadTracksList(): List<Track>? {
 
             sharedPrefs?.let { it ->
@@ -52,7 +62,7 @@ class SearchHistory {
 
         fun saveTrackInList(track: Track) {
 
-            val tracks: MutableList<Track> = mutableListOf(track.copy(isPlaying = false))
+            val tracks: MutableList<Track> = mutableListOf(track.copy(isPlaying = false, inFavorite = false, isLiked = false))
 
             loadTracksList()?.let {
                 val loadedTracks = it.filter { t -> t.trackId != track.trackId }
@@ -76,6 +86,10 @@ class SearchHistory {
 
         fun toJson(tracks: List<Track>): String {
             return gson.toJson(tracks)
+        }
+
+        fun toJson(track: Track): String {
+            return gson.toJson(track)
         }
     }
 }

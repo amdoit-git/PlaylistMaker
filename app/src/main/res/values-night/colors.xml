@@ -13,4 +13,6 @@
     <color name="trackTextDot">#FFF</color>
     <color name="no_tracks_light">#1A1B22</color>
     <color name="no_tracks_dark">#FFFFFF</color>
+    <color name="player_screen_text_value">#FFFFFF</color>
+    <color name="player_screen_buttons">#FFFFFF</color>
 </resources>
