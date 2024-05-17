@@ -229,18 +229,18 @@ class SearchActivity : AppCompatActivity() {
 
             val track = Track(
                 trackId = item.trackId,
-                trackName = item.trackName ?: "название трека",
-                artistName = item.artistName ?: "имя исполнителя",
+                trackName = item.trackName ?: "-",
+                artistName = item.artistName ?: "-",
                 trackTime = SimpleDateFormat(
                     "mm:ss",
                     Locale.getDefault()
                 ).format(item.trackTimeMillis),
                 trackCover = item.artworkUrl100 ?: "",
                 previewUrl = item.previewUrl ?: "",
-                albumName = item.collectionName ?: "",
-                country = getStringResourceByName(item.country) ?: "",
-                genre = item.primaryGenreName ?: "",
-                albumYear = getReleaseYear(item.releaseDate) ?: "0000"
+                albumName = item.collectionName ?: "-",
+                country = getStringResourceByName("country_code_" + item.country) ?: "-",
+                genre = item.primaryGenreName ?: "-",
+                albumYear = getReleaseYear(item.releaseDate) ?: "-"
             )
 
             tracks.add(track)

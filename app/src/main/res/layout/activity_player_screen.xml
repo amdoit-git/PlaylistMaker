@@ -35,6 +35,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="26dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/track_placeholder"
                 android:visibility="visible"
                 app:layout_constraintDimensionRatio="h,1:1"
@@ -51,13 +52,13 @@
                 android:fontFamily="@font/ys_display_medium"
                 android:maxLines="1"
                 android:minHeight="26dp"
-                android:text="Единственная моя."
                 android:textColor="@color/player_screen_text_value"
                 android:textFontWeight="400"
                 android:textSize="22sp"
                 app:layout_constraintEnd_toEndOf="@id/rightBorder"
                 app:layout_constraintStart_toStartOf="@id/leftBorder"
-                app:layout_constraintTop_toBottomOf="@id/albumCover" />
+                app:layout_constraintTop_toBottomOf="@id/albumCover"
+                tools:text="Единственная моя" />
 
             <TextView
                 android:id="@+id/artistName"
@@ -68,13 +69,13 @@
                 android:fontFamily="@font/ys_display_medium"
                 android:maxLines="1"
                 android:minHeight="16dp"
-                android:text="Филип Киркоров"
                 android:textColor="@color/player_screen_text_value"
                 android:textFontWeight="400"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@id/rightBorder"
                 app:layout_constraintStart_toStartOf="@id/leftBorder"
-                app:layout_constraintTop_toBottomOf="@id/trackName" />
+                app:layout_constraintTop_toBottomOf="@id/trackName"
+                tools:text="Филип Киркоров" />
 
             <ToggleButton
                 android:id="@+id/favoriteBt"
@@ -121,19 +122,19 @@
                 android:fontFamily="@font/ys_display_medium"
                 android:gravity="center"
                 android:maxLines="1"
-                android:text="05:18"
                 android:textColor="@color/player_screen_text_value"
                 android:textFontWeight="500"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@id/rightBorder"
                 app:layout_constraintStart_toStartOf="@id/leftBorder"
-                app:layout_constraintTop_toBottomOf="@id/playPauseBt" />
+                app:layout_constraintTop_toBottomOf="@id/playPauseBt"
+                tools:text="05:18" />
 
             <TextView
                 android:id="@+id/duration"
                 style="@style/playerBottomList_name"
                 android:layout_marginTop="30dp"
-                android:text="Длительность"
+                android:text="@string/player_screen_duration"
                 android:textColor="@color/player_screen_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/playTime" />
@@ -141,15 +142,15 @@
             <TextView
                 android:id="@+id/durationValue"
                 style="@style/playerBottomList_value"
-                android:text="05:17"
                 android:textColor="@color/player_screen_text_value"
                 app:layout_constraintBaseline_toBaselineOf="@id/duration"
-                app:layout_constraintStart_toEndOf="@id/duration" />
+                app:layout_constraintStart_toEndOf="@id/duration"
+                tools:text="05:17" />
 
             <TextView
                 android:id="@+id/album"
                 style="@style/playerBottomList_name"
-                android:text="Альбом"
+                android:text="@string/player_screen_album"
                 android:textColor="@color/player_screen_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/duration" />
@@ -157,15 +158,15 @@
             <TextView
                 android:id="@+id/albumValue"
                 style="@style/playerBottomList_value"
-                android:text="Yesterday (Remastered 2009"
                 android:textColor="@color/player_screen_text_value"
                 app:layout_constraintBaseline_toBaselineOf="@id/album"
-                app:layout_constraintStart_toEndOf="@id/album" />
+                app:layout_constraintStart_toEndOf="@id/album"
+                tools:text="Yesterday (Remastered 2009)" />
 
             <TextView
                 android:id="@+id/year"
                 style="@style/playerBottomList_name"
-                android:text="Год"
+                android:text="@string/player_screen_year"
                 android:textColor="@color/player_screen_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/album" />
@@ -173,15 +174,15 @@
             <TextView
                 android:id="@+id/yearValue"
                 style="@style/playerBottomList_value"
-                android:text="2020"
                 android:textColor="@color/player_screen_text_value"
                 app:layout_constraintBaseline_toBaselineOf="@id/year"
-                app:layout_constraintStart_toEndOf="@id/year" />
+                app:layout_constraintStart_toEndOf="@id/year"
+                tools:text="2020" />
 
             <TextView
                 android:id="@+id/genre"
                 style="@style/playerBottomList_name"
-                android:text="Жанр"
+                android:text="@string/player_screen_genre"
                 android:textColor="@color/player_screen_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/year" />
@@ -189,15 +190,15 @@
             <TextView
                 android:id="@+id/genreValue"
                 style="@style/playerBottomList_value"
-                android:text="Pop"
                 android:textColor="@color/player_screen_text_value"
                 app:layout_constraintBaseline_toBaselineOf="@id/genre"
-                app:layout_constraintStart_toEndOf="@id/genre" />
+                app:layout_constraintStart_toEndOf="@id/genre"
+                tools:text="Pop" />
 
             <TextView
                 android:id="@+id/country"
                 style="@style/playerBottomList_name"
-                android:text="Страна"
+                android:text="@string/player_screen_country"
                 android:textColor="@color/player_screen_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/genre" />
@@ -205,10 +206,10 @@
             <TextView
                 android:id="@+id/countryValue"
                 style="@style/playerBottomList_value"
-                android:text="Австралия"
                 android:textColor="@color/player_screen_text_value"
                 app:layout_constraintBaseline_toBaselineOf="@id/country"
-                app:layout_constraintStart_toEndOf="@id/country" />
+                app:layout_constraintStart_toEndOf="@id/country"
+                tools:text="Австралия" />
 
             <View
                 android:layout_width="match_parent"
@@ -233,5 +234,29 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/info"
+        android:background="@color/player_screen_info_bg"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="28dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="16dp"
+            android:textSize="14sp"
+            android:layout_marginVertical="16dp"
+            android:fontFamily="@font/ys_display_regular"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/player_screen_info_text"
+            android:gravity="center"
+            android:text="Плейлист «BeSt SoNg EvEr!» создан"/>
+    </FrameLayout>
 
 </FrameLayout>

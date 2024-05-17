@@ -18,15 +18,15 @@ data class Track(
     fun getTrack(): Track {
         return Track(
             trackId = trackId,
-            trackName = trackName ?: "unknown",
-            artistName = artistName ?: "unknown",
+            trackName = trackName ?: "-",
+            artistName = artistName ?: "-",
             trackTime = trackTime ?: "00:00",
             trackCover = trackCover ?: "",
             previewUrl = previewUrl ?: "",
-            albumName = albumName ?: "unknown",
-            albumYear = albumYear ?: "unknown",
-            genre = genre ?: "unknown",
-            country = country ?: "unknown",
+            albumName = albumName ?: "-",
+            albumYear = albumYear ?: "-",
+            genre = genre ?: "-",
+            country = country ?: "-",
             isPlaying = isPlaying,
             isLiked = isLiked,
             inFavorite = inFavorite
