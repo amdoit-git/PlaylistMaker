@@ -27,6 +27,7 @@
         android:layout_marginTop="56dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/scrollBody"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -130,14 +131,20 @@
                 app:layout_constraintTop_toBottomOf="@id/playPauseBt"
                 tools:text="05:18" />
 
+            <View
+                android:id="@+id/trackDataStart"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/playTime" />
+
             <TextView
                 android:id="@+id/duration"
                 style="@style/playerBottomList_name"
-                android:layout_marginTop="30dp"
                 android:text="@string/player_screen_duration"
                 android:textColor="@color/player_screen_text"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/playTime" />
+                app:layout_constraintTop_toBottomOf="@id/trackDataStart" />
 
             <TextView
                 android:id="@+id/durationValue"
@@ -212,6 +219,7 @@
                 tools:text="Австралия" />
 
             <View
+                android:id="@+id/scrollBottom"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -236,27 +244,28 @@
     </ScrollView>
 
     <FrameLayout
-        android:layout_width="match_parent"
         android:id="@+id/info"
-        android:background="@color/player_screen_info_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="28dp"
         android:layout_marginStart="7dp"
         android:layout_marginEnd="8dp"
-        android:visibility="gone"
-        android:layout_height="wrap_content">
+        android:layout_marginBottom="28dp"
+        android:background="@color/player_screen_info_bg"
+        android:visibility="gone">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="16dp"
-            android:textSize="14sp"
             android:layout_marginVertical="16dp"
-            android:fontFamily="@font/ys_display_regular"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            android:textColor="@color/player_screen_info_text"
+            android:fontFamily="@font/ys_display_regular"
             android:gravity="center"
-            android:text="Плейлист «BeSt SoNg EvEr!» создан"/>
+            android:minHeight="16dp"
+            android:text="Плейлист «BeSt SoNg EvEr!» создан"
+            android:textColor="@color/player_screen_info_text"
+            android:textSize="14sp" />
     </FrameLayout>
 
 </FrameLayout>
