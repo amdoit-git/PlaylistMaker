@@ -11,7 +11,7 @@ class SearchHistory {
 
     companion object {
 
-        private const val LAST_VIEWED_TRACKS = "LAST_VIEWED_TRACKS"
+        const val LAST_VIEWED_TRACKS = "LAST_VIEWED_TRACKS"
         private const val MAX_TRACKS_IN_LIST: Int = 10
         private var sharedPrefs: SharedPreferences? = null
         private val gson = Gson()
@@ -25,6 +25,9 @@ class SearchHistory {
             try {
                 val type = object : TypeToken<MutableList<Track>>() {}.type
                 val tracks: MutableList<Track> = gson.fromJson(json, type)
+                tracks.forEachIndexed { index, track ->
+                    tracks[index] = track.getTrack()
+                }
                 return tracks
             } catch (er: JsonSyntaxException) {
                 er.message?.let {
@@ -35,6 +38,16 @@ class SearchHistory {
             }
 
             return null
+        }
+
+        fun jsonToTrack(json: String):Track?{
+            try {
+                val track: Track = gson.fromJson(json, Track::class.java)
+                return track.getTrack()
+            } catch (_: JsonSyntaxException) {
+
+            }
+            return null;
         }
 
         fun loadTracksList(): List<Track>? {
@@ -49,7 +62,7 @@ class SearchHistory {
 
         fun saveTrackInList(track: Track) {
 
-            val tracks: MutableList<Track> = mutableListOf(track.copy(isPlaying = false))
+            val tracks: MutableList<Track> = mutableListOf(track.copy(isPlaying = false, inFavorite = false, isLiked = false))
 
             loadTracksList()?.let {
                 val loadedTracks = it.filter { t -> t.trackId != track.trackId }
@@ -73,6 +86,10 @@ class SearchHistory {
 
         fun toJson(tracks: List<Track>): String {
             return gson.toJson(tracks)
+        }
+
+        fun toJson(track: Track): String {
+            return gson.toJson(track)
         }
     }
 }

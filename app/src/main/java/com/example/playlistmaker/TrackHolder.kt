@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +18,7 @@ class TrackHolder(view: View) : SearchActivityHolder(view) {
     val cover: ImageView = itemView.findViewById(R.id.trackCover)
 
     override fun bind(track: Track, updateTracks: (Int) -> Unit) {
-        val url = if (track.isPlaying) R.drawable.playing else track.artworkUrl100
+        val url = if (track.isPlaying) R.drawable.playing else track.trackCover
         trackName.text = track.trackName
         artistName.text = track.artistName
         trackTime.text = track.trackTime
@@ -31,12 +32,18 @@ class TrackHolder(view: View) : SearchActivityHolder(view) {
 
     private fun onTrackClick(track: Track, updateTracks: (Int) -> Unit) {
 
-        track.isPlaying = MusicPlayer.startPlayOrStop(track)
+        //track.isPlaying = MusicPlayer.startPlayOrStop(track)
         //раскомментировать для проигрывания музыки
 
         SearchHistory.saveTrackInList(track)
 
         updateTracks(this.adapterPosition)
+
+        val intent = Intent(itemView.context, PlayerScreenActivity::class.java)
+
+        intent.putExtra("track", SearchHistory.toJson(track));
+
+        itemView.context.startActivity(intent)
     }
 
     companion object {

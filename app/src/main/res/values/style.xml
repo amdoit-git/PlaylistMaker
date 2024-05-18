@@ -210,4 +210,31 @@
         <item name="trackTint">#E6E8EB</item>
         <item name="thumbTint">#AEAFB4</item>
     </style>
+
+    <style name="playerBottomList_name">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:gravity">center|start</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:minHeight">32dp</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="playerBottomList_value">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:gravity">center|end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">13sp</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+    </style>
+
 </resources>

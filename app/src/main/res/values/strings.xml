@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">Dark-Light-Theme</string>
-    <string name="main_screen_title">Playlist maker</string>
+    <string name="app_name" translatable="false">Playlist maker</string>
+    <string name="main_screen_title" translatable="false">Playlist maker</string>
+    <string name="settings_email_address" translatable="false">amdoit@ya.ru</string>
+    <string name="settings_user_agreement_url" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
     <string name="search">Поиск</string>
     <string name="media_list">Медиатека</string>
     <string name="settings">Настройки</string>
@@ -8,17 +10,19 @@
     <string name="share_info">Поделиться приложением</string>
     <string name="support">Написать в поддержку</string>
     <string name="user_agreement">Пользовательское соглашение</string>
-    <string name="search_plug">Тут будет экран поиска по трекам</string>
-    <string name="play_list_plug">Тут будет плейлист и медиатека</string>
+     <string name="play_list_plug">Тут будет плейлист и медиатека</string>
     <string name="settings_share_text">Крутой курс по Андроид разработке https://practicum.yandex.ru/android-developer/</string>
     <string name="settings_email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="settings_email_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
-    <string name="settings_email_address">amdoit@ya.ru</string>
-    <string name="settings_user_agreement_url">https://yandex.ru/legal/practicum_offer/</string>
     <string name="search_edittext_hint">Поиск</string>
     <string name="no_tracks_found">Ничего не нашлось</string>
     <string name="no_tracks_internet_error">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="no_tracks_internet_error_button">Обновить</string>
     <string name="search_history_title">Вы искали</string>
     <string name="clear_search_history_button">Очистить историю</string>
+    <string name="player_screen_duration">Длительность</string>
+    <string name="player_screen_album">Альбом</string>
+    <string name="player_screen_year">Год</string>
+    <string name="player_screen_genre">Жанр</string>
+    <string name="player_screen_country">Страна</string>
 </resources>
