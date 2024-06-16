@@ -263,8 +263,9 @@
             android:fontFamily="@font/ys_display_regular"
             android:gravity="center"
             android:minHeight="16dp"
+            android:id="@+id/infoText"
             android:text="Плейлист «BeSt SoNg EvEr!» создан"
-            android:textColor="@color/player_screen_info_text"
+            android:textColor="@color/info_text"
             android:textSize="14sp" />
     </FrameLayout>
 

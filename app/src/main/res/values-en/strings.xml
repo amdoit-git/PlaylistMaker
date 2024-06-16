@@ -22,4 +22,7 @@
     <string name="player_screen_year">Year</string>
     <string name="player_screen_genre">Genre</string>
     <string name="player_screen_country">Country</string>
+    <string name="player_screen_track_error">An error occurred while playing the track</string>
+    <string name="player_screen_add_to_favorite">Track \"%s\" was saved in favorites</string>
+    <string name="player_screen_remove_from_favorite">Track \"%s\" has been removed from favorites</string>
 </resources>

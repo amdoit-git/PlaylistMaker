@@ -25,5 +25,5 @@
     <color name="player_screen_text_value">#1A1B22</color>
     <color name="player_screen_buttons">#1A1B22</color>
     <color name="player_screen_info_bg">#1A1B22</color>
-    <color name="player_screen_info_text">#FFF</color>
+    <color name="info_text">#FFF</color>
 </resources>

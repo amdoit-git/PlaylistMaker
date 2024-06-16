@@ -1,5 +1,7 @@
 package com.example.playlistmaker
 
+import android.os.Handler
+import android.os.Looper
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testapp.Track
@@ -11,6 +13,8 @@ class TrackAdapter(
     var hasClearButton: Boolean = false
     private var onButtonClick: (() -> Unit)? = null
     private var scrollMe: ((Int) -> Unit)? = null
+    private var clickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchActivityHolder {
         return when (viewType) {
             TYPE_TRACK -> TrackHolder.create(parent)
@@ -26,7 +30,7 @@ class TrackAdapter(
     override fun onBindViewHolder(holder: SearchActivityHolder, position: Int) {
 
         when (getItemViewType(position)) {
-            TYPE_TRACK -> holder.bind(tracks[position], ::updateTracks)
+            TYPE_TRACK -> holder.bind(tracks[position], ::updateTracks, ::isClickAllowed)
             TYPE_BUTTON -> holder.onButtonClick(onButtonClick)
             else -> throw IllegalArgumentException("Неизвестный тип SearchActivityHolder!!!")
         }
@@ -50,6 +54,17 @@ class TrackAdapter(
     companion object {
         private const val TYPE_TRACK = 0
         private const val TYPE_BUTTON = 1
+    }
+
+    private fun isClickAllowed(): Boolean {
+        if (clickAllowed) {
+            clickAllowed = false
+            handler.postDelayed({
+                clickAllowed = true
+            }, 1000)
+            return true
+        }
+        return false
     }
 
     fun updateTracks(index: Int = -1) {

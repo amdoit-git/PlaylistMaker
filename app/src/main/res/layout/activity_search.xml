@@ -62,9 +62,9 @@
                 android:id="@+id/editText"
                 style="@style/Search_edittext"
                 android:hint="@string/search_edittext_hint"
-                android:textCursorDrawable="@drawable/custom_cursor"
                 android:imeOptions="actionDone"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textCursorDrawable="@drawable/custom_cursor" />
 
             <FrameLayout
                 android:id="@+id/editText_delete"
@@ -190,5 +190,8 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
+
 
 </LinearLayout>

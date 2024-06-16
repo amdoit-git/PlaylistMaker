@@ -6,7 +6,7 @@ import com.example.testapp.Track
 
 open class SearchActivityHolder(view: View) : RecyclerView.ViewHolder(view), DpToPx {
 
-    open fun bind(track: Track, updateTracks: (Int) -> Unit) {}
+    open fun bind(track: Track, updateTracks: (Int) -> Unit, isClickAllowed:()->Boolean) {}
 
     open fun onButtonClick(callback: (() -> Unit)?) {}
 
