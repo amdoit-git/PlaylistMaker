@@ -59,12 +59,4 @@ class SettingsActivity : AppCompatActivity() {
             app.saveTheme(checked)
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-    }
 }
