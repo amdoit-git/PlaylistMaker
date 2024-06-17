@@ -191,7 +191,17 @@ class SearchActivity : AppCompatActivity() {
             itunesApi.search(
                 textToSearch.trim(), ::onSearchSuccess, ::onSearchEmpty, ::onSearchFail
             )
+
+            showProgressBar()
         }
+    }
+
+    private fun showProgressBar(){
+        findViewById<View>(R.id.progressBar).visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar(){
+        findViewById<View>(R.id.progressBar).visibility = View.GONE
     }
 
     private fun getStringResourceByName(aString: String?): String? {
@@ -251,16 +261,22 @@ class SearchActivity : AppCompatActivity() {
         showTracks(tracks)
 
         tracksList.smoothScrollToPosition(0)
+
+        hideProgressBar()
     }
 
     private fun onSearchEmpty() {
 
         setScreenState(SEARCH_STATE.SEARCH_EMPTY)
+
+        hideProgressBar()
     }
 
     private fun onSearchFail(textToSearch: String, error: ItunesError? = null) {
 
         setScreenState(SEARCH_STATE.SEARCH_FAIL, textToSearch)
+
+        hideProgressBar()
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {

@@ -62,9 +62,9 @@
                 android:id="@+id/editText"
                 style="@style/Search_edittext"
                 android:hint="@string/search_edittext_hint"
-                android:textCursorDrawable="@drawable/custom_cursor"
                 android:imeOptions="actionDone"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textCursorDrawable="@drawable/custom_cursor" />
 
             <FrameLayout
                 android:id="@+id/editText_delete"
@@ -190,5 +190,19 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
+    <FrameLayout
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/search_progress_bar" />
+    </FrameLayout>
 
 </LinearLayout>

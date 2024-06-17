@@ -25,4 +25,7 @@
     <string name="player_screen_year">Год</string>
     <string name="player_screen_genre">Жанр</string>
     <string name="player_screen_country">Страна</string>
+    <string name="player_screen_track_error">При воспроизведении трека произошла ошибка</string>
+    <string name="player_screen_add_to_favorite">Трек \"%s\" добавлен в избранное</string>
+    <string name="player_screen_remove_from_favorite">Трек \"%s\" удален из избранного</string>
 </resources>
