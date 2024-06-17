@@ -1,6 +1,8 @@
 package com.example.playlistmaker
 
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -20,6 +22,7 @@ class SearchTextField(
 
     var textValue: String = ""
     var inFocus: Boolean = false
+    private val handler = Handler(Looper.getMainLooper())
 
     fun activate() {
 
@@ -43,6 +46,14 @@ class SearchTextField(
                 textValue = editText.text.toString()
 
                 onTextChanged(textValue, inFocus)
+
+                handler.removeCallbacksAndMessages(null)
+
+                if(textValue.isNotBlank()){
+                    handler.postDelayed({
+                        onAction(textValue)
+                    }, 2000)
+                }
             }
         })
 
@@ -50,6 +61,7 @@ class SearchTextField(
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 onAction(textValue)
                 closeKeyboard()
+                handler.removeCallbacksAndMessages(null)
                 true
             } else {
                 false

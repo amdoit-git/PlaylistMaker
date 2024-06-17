@@ -4,8 +4,6 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import java.io.IOException
 
 enum class PLAYER_BUTTON(val num: Int) {
 
@@ -18,8 +16,10 @@ enum class PLAYER_BUTTON(val num: Int) {
     }
 }
 
-class AudioPlayer(val onProgress: (Int, Int) -> Unit, val onStopped: () -> Unit, val onError:()->Unit) {
-
+class AudioPlayer(
+    val onProgress: (Int, Int) -> Unit, val onStopped: () -> Unit, val onError: () -> Unit
+) {
+    private var isError = false
     private val mediaPlayer = MediaPlayer()
     private val handler = Handler(Looper.getMainLooper())
     private var isPrepared = false
@@ -52,18 +52,26 @@ class AudioPlayer(val onProgress: (Int, Int) -> Unit, val onStopped: () -> Unit,
             stop()
         }
         mediaPlayer.setOnErrorListener { mp, what, extra ->
-            onError();
-            return@setOnErrorListener false;
+            isError = true
+            if (STATE == PLAYER_BUTTON.PLAYING) {
+                onError()
+            }
+            return@setOnErrorListener false
         }
         mediaPlayer.prepareAsync()
     }
 
-    fun play() {
+    fun play() :Boolean{
+        if(isError){
+            onError();
+            return false;
+        }
         if (isPrepared) {
             mediaPlayer.start()
             showProgressDelayed()
         }
         STATE = PLAYER_BUTTON.PLAYING
+        return true;
     }
 
     fun pause() {
@@ -77,7 +85,7 @@ class AudioPlayer(val onProgress: (Int, Int) -> Unit, val onStopped: () -> Unit,
     }
 
     fun stop() {
-        if(isPrepared) {
+        if (isPrepared) {
             if (mediaPlayer.isPlaying) {
                 mediaPlayer.stop()
             }

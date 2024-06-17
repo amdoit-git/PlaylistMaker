@@ -85,7 +85,7 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
             }
         }
 
-        player.setDataSource(track.previewUrl + "kdkdk")
+        player.setDataSource(track.previewUrl)
     }
 
     private fun showPlayProgress(currentTime: Int, duration: Int) {
@@ -99,11 +99,12 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
     private fun onPlayerError() {
         showPlayProgress(0, 0);
-        showToast(getString(R.string.player_screen_track_error), 10)
+        showToast(getString(R.string.player_screen_track_error))
+        playPauseBt.isChecked = false
     }
 
     private fun showToast(message: String, seconds: Int = 2) {
-
+        handlerToast.removeCallbacksAndMessages(null)
         val info = findViewById<View>(R.id.info)
         val infoText = findViewById<TextView>(R.id.infoText);
         infoText.text = message
