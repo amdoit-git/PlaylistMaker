@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui
 
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Handler

@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui
 
 import android.content.res.Resources
 import android.os.Bundle
@@ -7,7 +7,13 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.testapp.Track
+import com.example.playlistmaker.data.network.ItunesApi
+import com.example.playlistmaker.data.dto.ItunesError
+import com.example.playlistmaker.MusicPlayer
+import com.example.playlistmaker.R
+import com.example.playlistmaker.SEARCH_STATE
+import com.example.playlistmaker.data.dto.ItunesTrack
+import com.example.playlistmaker.domain.models.Track
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

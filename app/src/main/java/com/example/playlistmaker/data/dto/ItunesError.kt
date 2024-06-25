@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.dto
 
 data class ItunesError(
     val errorMessage:String,

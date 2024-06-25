@@ -1,10 +1,11 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.network
 
+import com.example.playlistmaker.data.dto.ItunesTrackList
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface Itunes {
+interface ItunesApiService {
 
     @GET("search")
     fun search(

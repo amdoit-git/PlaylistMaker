@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/settings_screen_bg"
     android:orientation="vertical"
-    tools:context=".SettingsActivity">
+    tools:context=".ui.SettingsActivity">
 
     <FrameLayout
         android:layout_width="match_parent"

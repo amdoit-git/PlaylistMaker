@@ -1,8 +1,8 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui
 
 import android.content.SharedPreferences
 import android.util.Log
-import com.example.testapp.Track
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -17,7 +17,7 @@ class SearchHistory {
         private val gson = Gson()
 
         fun setSharedPreferences(sharedPrefs: SharedPreferences) {
-            this.sharedPrefs = sharedPrefs
+            Companion.sharedPrefs = sharedPrefs
         }
 
         fun jsonToTracks(json: String): List<Track>? {
@@ -40,7 +40,7 @@ class SearchHistory {
             return null
         }
 
-        fun jsonToTrack(json: String):Track?{
+        fun jsonToTrack(json: String): Track?{
             try {
                 val track: Track = gson.fromJson(json, Track::class.java)
                 return track.getTrack()

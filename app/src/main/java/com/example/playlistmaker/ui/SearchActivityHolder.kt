@@ -1,8 +1,8 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.example.testapp.Track
+import com.example.playlistmaker.domain.models.Track
 
 open class SearchActivityHolder(view: View) : RecyclerView.ViewHolder(view), DpToPx {
 

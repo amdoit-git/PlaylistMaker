@@ -1,9 +1,10 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import com.example.playlistmaker.R
 
 class ButtonHolder(view: View) : SearchActivityHolder(view) {
 
