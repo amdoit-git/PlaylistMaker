@@ -7,13 +7,15 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.data.network.ItunesApi
-import com.example.playlistmaker.data.dto.ItunesError
-import com.example.playlistmaker.MusicPlayer
 import com.example.playlistmaker.R
-import com.example.playlistmaker.SEARCH_STATE
+import com.example.playlistmaker.domain.models.SEARCH_STATE
+import com.example.playlistmaker.data.SearchHistory
+import com.example.playlistmaker.data.dto.ItunesError
 import com.example.playlistmaker.data.dto.ItunesTrack
+import com.example.playlistmaker.data.network.ItunesApi
+import com.example.playlistmaker.data.repository.TracksHistoryRepositoryImpl
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.usecase.TracksHistoryInteractorImpl
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -32,6 +34,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var adapter: TrackAdapter
     private lateinit var textField: SearchTextField
 
+    private val repository by lazy { TracksHistoryRepositoryImpl(this) }
+    private val tracksHistory by lazy{TracksHistoryInteractorImpl(repository=repository)}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -42,7 +47,7 @@ class SearchActivity : AppCompatActivity() {
 
         tracksList.adapter = adapter
 
-        MusicPlayer.setOnCompleteCallback(adapter::updateTracks)
+        //MusicPlayer.setOnCompleteCallback(adapter::updateTracks)
 
         textField = SearchTextField(
             activity = this,
@@ -142,8 +147,8 @@ class SearchActivity : AppCompatActivity() {
         } else {
             //Загружаем историю прослущиваний и показываем если она есть
 
-            SearchHistory.loadTracksList()?.let {
-                if (it.size > 0) {
+            tracksHistory.getList().let {
+                if (it.isNotEmpty()) {
                     setScreenState(
                         SEARCH_STATE.HISTORY_TRACKS_VISIBLE, SearchHistory.toJson(it)
                     )
@@ -152,9 +157,6 @@ class SearchActivity : AppCompatActivity() {
                 } else {
                     setScreenState(SEARCH_STATE.HISTORY_EMPTY)
                 }
-            } ?: run {
-
-                setScreenState(SEARCH_STATE.HISTORY_EMPTY)
             }
         }
     }
@@ -162,8 +164,8 @@ class SearchActivity : AppCompatActivity() {
     private fun clearHistory() {
         showTracks(emptyList())
         setScreenState(SEARCH_STATE.FIRST_VISIT)
-        SearchHistory.clearHistory()
-        MusicPlayer.destroy()
+        tracksHistory.clear()
+        //MusicPlayer.destroy()
     }
 
     private fun showTracks(tracks: List<Track>, showClearButton: Boolean = false) {
@@ -171,7 +173,7 @@ class SearchActivity : AppCompatActivity() {
         adapter.tracks.clear()
 
         tracks.forEach {
-            it.isPlaying = MusicPlayer.isPlayingNow(it)
+            //it.isPlaying = MusicPlayer.isPlayingNow(it)
             adapter.tracks.add(it)
         }
 
@@ -188,7 +190,7 @@ class SearchActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
 
         if (tracks.none { it.isPlaying }) {
-            MusicPlayer.destroy()
+            //MusicPlayer.destroy()
         }
     }
 
@@ -202,11 +204,11 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         findViewById<View>(R.id.progressBar).visibility = View.VISIBLE
     }
 
-    private fun hideProgressBar(){
+    private fun hideProgressBar() {
         findViewById<View>(R.id.progressBar).visibility = View.GONE
     }
 
@@ -214,13 +216,13 @@ class SearchActivity : AppCompatActivity() {
 
         if (aString != null) {
             try {
-                val resId: Int = resources.getIdentifier(aString, "string", packageName);
-                return getString(resId);
+                val resId: Int = resources.getIdentifier(aString, "string", packageName)
+                return getString(resId)
             } catch (_: Resources.NotFoundException) {
             }
         }
 
-        return null;
+        return null
     }
 
     private fun getReleaseYear(releaseDate: String?): String? {
@@ -248,8 +250,7 @@ class SearchActivity : AppCompatActivity() {
                 trackName = item.trackName ?: "-",
                 artistName = item.artistName ?: "-",
                 trackTime = SimpleDateFormat(
-                    "mm:ss",
-                    Locale.getDefault()
+                    "mm:ss", Locale.getDefault()
                 ).format(item.trackTimeMillis),
                 trackCover = item.artworkUrl100 ?: "",
                 previewUrl = item.previewUrl ?: "",

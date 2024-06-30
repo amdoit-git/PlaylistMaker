@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data
 
 import android.media.AudioAttributes
 import android.media.MediaPlayer
@@ -48,11 +48,11 @@ class MusicPlayer {
                 destroy()
             }
 
-            this.track = track
+            Companion.track = track
         }
 
         fun setOnCompleteCallback(onComplete: (() -> Unit)?) {
-            this.onComplete = onComplete
+            Companion.onComplete = onComplete
         }
 
         fun destroy() {
@@ -63,7 +63,7 @@ class MusicPlayer {
 
         fun isPlayingNow(track: Track): Boolean {
 
-            this.track?.let {
+            Companion.track?.let {
                 return it.trackId == track.trackId
             }
 

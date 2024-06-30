@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.MusicPlayer
 import com.example.playlistmaker.R
 
 class MainActivity : AppCompatActivity() {
@@ -30,11 +29,5 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        MusicPlayer.destroy()
     }
 }

@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.domain.models
 
 enum class SEARCH_STATE(val num: Int, var jsonTracks: String = "") {
     FIRST_VISIT(1),//пустой экран

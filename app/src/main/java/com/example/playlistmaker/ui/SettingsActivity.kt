@@ -6,10 +6,18 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
+import com.example.playlistmaker.data.repository.AppSettingsRepositoryImpl
+import com.example.playlistmaker.domain.models.APP_THEME
+import com.example.playlistmaker.domain.usecase.AppThemeSaverInteractorImpl
+import com.example.playlistmaker.domain.usecase.SetAppThemeUseCase
+import com.example.playlistmaker.ui.repository.SetAppThemeRepositoryImpl
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
-    private var closing: Boolean = false
+    private val repository by lazy { AppSettingsRepositoryImpl(context = this) }
+    private val appThemeSaver by lazy { AppThemeSaverInteractorImpl(repository = repository) }
+    private val setTheme by lazy {SetAppThemeUseCase(SetAppThemeRepositoryImpl())}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -55,9 +63,9 @@ class SettingsActivity : AppCompatActivity() {
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            val app = this.applicationContext as App
-            app.switchTheme(checked)
-            app.saveTheme(checked)
+            val theme = APP_THEME.find(checked)
+            setTheme.execute(theme)
+            appThemeSaver.saveTheme(theme)
         }
     }
 }

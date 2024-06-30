@@ -1,42 +1,33 @@
 package com.example.playlistmaker.ui
 
 import android.app.Application
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.data.repository.AppSettingsRepositoryImpl
+import com.example.playlistmaker.domain.models.APP_THEME
+import com.example.playlistmaker.domain.usecase.AppThemeSaverInteractorImpl
+import com.example.playlistmaker.domain.usecase.SetAppThemeUseCase
+import com.example.playlistmaker.ui.repository.SetAppThemeRepositoryImpl
 
 const val APP_SETTINGS_PREFERENCES = "APP_SETTINGS_PREFERENCES"
 const val DARK_THEME_KEY = "DARK_THEME"
 
 class App : Application() {
 
-    private var darkTheme: Boolean? = null
-    private lateinit var sharedPrefs: SharedPreferences
+    private val repository by lazy { AppSettingsRepositoryImpl(this) }
+    private val appThemeSaver by lazy { AppThemeSaverInteractorImpl(repository = repository) }
+    private val setTheme by lazy { SetAppThemeUseCase(repository = SetAppThemeRepositoryImpl()) }
+
+
     override fun onCreate() {
         super.onCreate()
-        sharedPrefs = getSharedPreferences(APP_SETTINGS_PREFERENCES, MODE_PRIVATE)
         restoreTheme()
-        SearchHistory.setSharedPreferences(sharedPrefs)
-    }
-
-    fun switchTheme(darkThemeEnabled: Boolean) {
-        darkTheme = darkThemeEnabled
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkThemeEnabled) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-        )
     }
 
     private fun restoreTheme() {
 
-        if (sharedPrefs.contains(DARK_THEME_KEY)) {
-            switchTheme(sharedPrefs.getBoolean(DARK_THEME_KEY, false))
-        }
-    }
+        val theme = appThemeSaver.getTheme()
 
-    fun saveTheme(darkThemeEnabled: Boolean) {
-        sharedPrefs.edit().putBoolean(DARK_THEME_KEY, darkThemeEnabled).apply()
+        if (theme != APP_THEME.DEFAULT) {
+            setTheme.execute(theme)
+        }
     }
 }

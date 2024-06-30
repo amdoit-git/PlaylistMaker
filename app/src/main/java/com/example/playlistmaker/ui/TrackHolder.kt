@@ -9,7 +9,11 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.data.MediaPlayerService
+import com.example.playlistmaker.data.SearchHistory
+import com.example.playlistmaker.data.repository.TracksHistoryRepositoryImpl
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.usecase.TracksHistoryInteractorImpl
 
 class TrackHolder(view: View) : SearchActivityHolder(view) {
 
@@ -17,6 +21,8 @@ class TrackHolder(view: View) : SearchActivityHolder(view) {
     val artistName: TextView = itemView.findViewById(R.id.artistName)
     val trackTime: TextView = itemView.findViewById(R.id.trackTime)
     val cover: ImageView = itemView.findViewById(R.id.trackCover)
+    private val repository by lazy { TracksHistoryRepositoryImpl(view.context) }
+    private val tracksHistory by lazy{ TracksHistoryInteractorImpl(repository=repository) }
 
     override fun bind(track: Track, updateTracks: (Int) -> Unit, isClickAllowed:()->Boolean) {
         val url = if (track.isPlaying) R.drawable.playing else track.trackCover
@@ -38,7 +44,7 @@ class TrackHolder(view: View) : SearchActivityHolder(view) {
         //track.isPlaying = MusicPlayer.startPlayOrStop(track)
         //раскомментировать для проигрывания музыки
 
-        SearchHistory.saveTrackInList(track)
+        tracksHistory.save(track)
 
         updateTracks(this.adapterPosition)
 
@@ -47,6 +53,8 @@ class TrackHolder(view: View) : SearchActivityHolder(view) {
         intent.putExtra("track", SearchHistory.toJson(track));
 
         itemView.context.startActivity(intent)
+
+        MediaPlayerService.setDataSource(track.previewUrl)
     }
 
     companion object {
