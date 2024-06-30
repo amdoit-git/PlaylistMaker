@@ -21,16 +21,13 @@ import com.example.playlistmaker.domain.usecase.TracksHistoryInteractorImpl
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-data class TrackData(val keyId: Int, val valueId: Int, val value: String)
-
 class PlayerScreenActivity : AppCompatActivity(), DpToPx {
+
+    data class SetData(val keyId: Int, val valueId: Int, val value: String)
 
     private val mediaPlayerRep = MediaPlayerRepositoryImpl()
     private val player: MediaPlayerInteractorImpl =
         MediaPlayerInteractorImpl(repository = mediaPlayerRep)
-
-    private val trackHistoryRep by lazy { TracksHistoryRepositoryImpl(context = this) }
-    private val history by lazy { TracksHistoryInteractorImpl(repository = trackHistoryRep) }
 
     private lateinit var playPauseBt: ToggleButton
     private lateinit var playTime: TextView
@@ -44,16 +41,15 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
         player.setDisplayPorts(::showPlayProgress, null, ::showPlayingStop, ::showPlayerError)
 
-        intent.getStringExtra("track")?.let { json ->
+        val app = this.applicationContext as App
 
-            history.jsonToTrack(json)?.let {
+        app.selectedTrack?.let {
 
-                track = it
+            track = it
 
-                fillTrackInfo(it)
+            fillTrackInfo()
 
-                initPlayer()
-            }
+            initPlayer()
         }
 
         findViewById<View>(R.id.backButton).setOnClickListener {
@@ -75,7 +71,7 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
         }
     }
 
-    private fun fillTrackInfo(track: Track) {
+    private fun fillTrackInfo() {
 
         findViewById<TextView>(R.id.trackName).text = track.trackName
         findViewById<TextView>(R.id.artistName).text = track.artistName
@@ -95,11 +91,11 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
         constraintSet.clone(constraintLayout)
 
         val list = listOf(
-            TrackData(R.id.duration, R.id.durationValue, track.trackTime),
-            TrackData(R.id.album, R.id.albumValue, track.albumName),
-            TrackData(R.id.year, R.id.yearValue, track.albumYear),
-            TrackData(R.id.genre, R.id.genreValue, track.genre),
-            TrackData(R.id.country, R.id.countryValue, track.country)
+            SetData(R.id.duration, R.id.durationValue, track.trackTime),
+            SetData(R.id.album, R.id.albumValue, track.albumName),
+            SetData(R.id.year, R.id.yearValue, track.albumYear),
+            SetData(R.id.genre, R.id.genreValue, track.genre),
+            SetData(R.id.country, R.id.countryValue, track.country)
         )
 
         var topId: Int = R.id.trackDataStart

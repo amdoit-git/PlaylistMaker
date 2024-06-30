@@ -22,5 +22,4 @@ interface MediaPlayerRepository {
     fun getPosition(): Int
 
     fun setPosition(currentPosition: Int)
-
 }

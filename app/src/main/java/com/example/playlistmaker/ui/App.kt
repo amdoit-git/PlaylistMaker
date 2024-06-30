@@ -3,6 +3,7 @@ package com.example.playlistmaker.ui
 import android.app.Application
 import com.example.playlistmaker.data.repository.AppSettingsRepositoryImpl
 import com.example.playlistmaker.domain.models.APP_THEME
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.usecase.AppThemeSaverInteractorImpl
 import com.example.playlistmaker.domain.usecase.SetAppThemeUseCase
 import com.example.playlistmaker.ui.repository.SetAppThemeRepositoryImpl
@@ -16,6 +17,7 @@ class App : Application() {
     private val appThemeSaver by lazy { AppThemeSaverInteractorImpl(repository = repository) }
     private val setTheme by lazy { SetAppThemeUseCase(repository = SetAppThemeRepositoryImpl()) }
 
+    var selectedTrack: Track? = null
 
     override fun onCreate() {
         super.onCreate()
