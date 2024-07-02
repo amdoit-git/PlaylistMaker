@@ -2,7 +2,7 @@ package com.example.playlistmaker
 
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import com.example.testapp.Track
+import com.example.playlistmaker.domain.models.Track
 
 class MusicPlayer {
 
