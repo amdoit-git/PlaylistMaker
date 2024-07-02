@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui
 
 import android.os.Bundle
 import android.os.Handler
@@ -12,40 +12,37 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.testapp.Track
+import com.example.playlistmaker.DpToPx
+import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-data class TrackData(val keyId: Int, val valueId: Int, val value: String)
-
 class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
-    private lateinit var player: AudioPlayer
+    data class TrackData(val keyId: Int, val valueId: Int, val value: String)
+
+    private val player = Creator.provideMediaPlayerInteractor()
+    private val history = Creator.provideTrackHistoryInteractor()
     private lateinit var playPauseBt: ToggleButton
     private lateinit var playTime: TextView
     private lateinit var track: Track
-    private val TRACK_PROGRESS_TIME = "TRACK_PROGRESS_TIME"
     private val handlerToast = Handler(Looper.getMainLooper())
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_screen)
 
-        player = AudioPlayer(::showPlayProgress, ::onPlayingStopped, ::onPlayerError)
-
-        savedInstanceState?.let {
-            player.setPosition(it.getInt(TRACK_PROGRESS_TIME, 0))
-        }
-
         intent.getStringExtra("track")?.let { json ->
 
-            SearchHistory.jsonToTrack(json)?.let {
+            history.jsonToTrack(json)?.let {
 
                 track = it
 
                 fillTrackInfo()
 
-                initPlayer()
+                initPlayer(savedInstanceState)
             }
         }
 
@@ -57,20 +54,18 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
             showToast(
                 if (isChecked) {
                     String.format(
-                        getString(R.string.player_screen_add_to_favorite),
-                        track.trackName
+                        getString(R.string.player_screen_add_to_favorite), track.trackName
                     )
                 } else {
                     String.format(
-                        getString(R.string.player_screen_remove_from_favorite),
-                        track.trackName
+                        getString(R.string.player_screen_remove_from_favorite), track.trackName
                     )
                 }
             )
         }
     }
 
-    private fun initPlayer() {
+    private fun initPlayer(savedInstanceState: Bundle?) {
 
         playTime = findViewById(R.id.playTime)
 
@@ -85,10 +80,14 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
             }
         }
 
-        player.setDataSource(track.previewUrl)
+        player.setDisplayPorts(::showPlayProgress, null, ::onPlayingStopped, ::onPlayerError)
+
+        if (savedInstanceState == null) {
+            player.setDataSource(track.previewUrl)
+        }
     }
 
-    private fun showPlayProgress(currentTime: Int, duration: Int) {
+    private fun showPlayProgress(currentTime: Int) {
 
         playTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentTime)
     }
@@ -98,7 +97,6 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
     }
 
     private fun onPlayerError() {
-        showPlayProgress(0, 0);
         showToast(getString(R.string.player_screen_track_error))
         playPauseBt.isChecked = false
     }
@@ -106,7 +104,7 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
     private fun showToast(message: String, seconds: Int = 2) {
         handlerToast.removeCallbacksAndMessages(null)
         val info = findViewById<View>(R.id.info)
-        val infoText = findViewById<TextView>(R.id.infoText);
+        val infoText = findViewById<TextView>(R.id.infoText)
         infoText.text = message
         info.visibility = View.VISIBLE
         handlerToast.postDelayed({
@@ -121,13 +119,13 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(TRACK_PROGRESS_TIME, player.getPosition())
+        outState.putBoolean("IS_ACTIVITY_RECREATED", true)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        player.destroy()
         handlerToast.removeCallbacksAndMessages(null)
+        player.resetDisplayPorts()
     }
 
     private fun fillTrackInfo() {

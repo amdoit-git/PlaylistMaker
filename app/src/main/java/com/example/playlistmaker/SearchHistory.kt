@@ -2,7 +2,7 @@ package com.example.playlistmaker
 
 import android.content.SharedPreferences
 import android.util.Log
-import com.example.testapp.Track
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -40,7 +40,7 @@ class SearchHistory {
             return null
         }
 
-        fun jsonToTrack(json: String):Track?{
+        fun jsonToTrack(json: String): Track?{
             try {
                 val track: Track = gson.fromJson(json, Track::class.java)
                 return track.getTrack()
