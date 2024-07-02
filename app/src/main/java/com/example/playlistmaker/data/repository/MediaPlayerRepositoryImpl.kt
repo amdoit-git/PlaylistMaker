@@ -9,9 +9,13 @@ class MediaPlayerRepositoryImpl : MediaPlayerRepository {
         forTime: ((Int) -> Unit)?,
         forDuration: ((Int) -> Unit)?,
         forStop: (() -> Unit)?,
-        forError: (() -> Unit)
+        forError: (() -> Unit)?
     ) {
         MediaPlayerService.setDisplayPorts(forTime, forDuration, forStop, forError)
+    }
+
+    override fun resetDisplayPorts() {
+        MediaPlayerService.resetDisplayPorts()
     }
 
     override fun setDataSource(url: String) {

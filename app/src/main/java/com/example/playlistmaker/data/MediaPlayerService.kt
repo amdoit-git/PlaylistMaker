@@ -37,7 +37,7 @@ class MediaPlayerService {
             forTime: ((Int) -> Unit)?,
             forDuration: ((Int) -> Unit)?,
             forStop: (() -> Unit)?,
-            forError: (() -> Unit)
+            forError: (() -> Unit)?
         ) {
 
             onPLay = forTime
@@ -49,6 +49,10 @@ class MediaPlayerService {
             if (isPrepared) {
                 displayPlayProgress()
             }
+        }
+
+        fun resetDisplayPorts(){
+            setDisplayPorts(null,null,null,null)
         }
 
         fun setDataSource(url: String) {

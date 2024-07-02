@@ -6,8 +6,10 @@ interface MediaPlayerInteractor {
         forTime: ((Int) -> Unit)?,
         forDuration: ((Int) -> Unit)?,
         forStop: (() -> Unit)?,
-        forError: (() -> Unit)
+        forError: (() -> Unit)?
     )
+
+    fun resetDisplayPorts()
 
     fun setDataSource(url: String)
 

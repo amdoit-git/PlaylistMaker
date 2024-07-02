@@ -1,5 +1,7 @@
 package com.example.playlistmaker.domain.usecase
 
+import com.example.playlistmaker.data.MediaPlayerService
+import com.example.playlistmaker.data.MediaPlayerService.Companion
 import com.example.playlistmaker.domain.repository.MediaPlayerInteractor
 import com.example.playlistmaker.domain.repository.MediaPlayerRepository
 
@@ -9,11 +11,14 @@ class MediaPlayerInteractorImpl(val repository: MediaPlayerRepository) : MediaPl
         forTime: ((Int) -> Unit)?,
         forDuration: ((Int) -> Unit)?,
         forStop: (() -> Unit)?,
-        forError: () -> Unit
+        forError: (() -> Unit)?
     ) {
         repository.setDisplayPorts(forTime, forDuration, forStop, forError)
     }
 
+    override fun resetDisplayPorts(){
+        repository.resetDisplayPorts()
+    }
 
     override fun setDataSource(url: String) {
         repository.setDataSource(url)

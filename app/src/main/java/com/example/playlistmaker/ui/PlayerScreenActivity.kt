@@ -125,6 +125,7 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
     override fun onDestroy() {
         super.onDestroy()
         handlerToast.removeCallbacksAndMessages(null)
+        player.resetDisplayPorts()
     }
 
     private fun fillTrackInfo() {
