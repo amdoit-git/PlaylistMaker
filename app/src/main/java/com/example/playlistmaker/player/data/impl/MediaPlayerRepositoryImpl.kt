@@ -1,7 +1,7 @@
-package com.example.playlistmaker.data.repository
+package com.example.playlistmaker.player.data.impl
 
-import com.example.playlistmaker.data.MediaPlayerService
-import com.example.playlistmaker.domain.repository.MediaPlayerRepository
+import com.example.playlistmaker.player.data.MediaPlayerService
+import com.example.playlistmaker.player.domain.repository.MediaPlayerRepository
 
 class MediaPlayerRepositoryImpl : MediaPlayerRepository {
 

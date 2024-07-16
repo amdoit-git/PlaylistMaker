@@ -1,13 +1,13 @@
 package com.example.playlistmaker.creator
 
-import com.example.playlistmaker.data.repository.MediaPlayerRepositoryImpl
-import com.example.playlistmaker.data.repository.TracksHistoryRepositoryImpl
-import com.example.playlistmaker.domain.repository.MediaPlayerInteractor
-import com.example.playlistmaker.domain.repository.MediaPlayerRepository
-import com.example.playlistmaker.domain.repository.TrackHistoryInteractor
-import com.example.playlistmaker.domain.repository.TracksHistoryRepository
-import com.example.playlistmaker.domain.usecase.MediaPlayerInteractorImpl
-import com.example.playlistmaker.domain.usecase.TracksHistoryInteractorImpl
+import com.example.playlistmaker.player.data.impl.MediaPlayerRepositoryImpl
+import com.example.playlistmaker.player.data.impl.TracksHistoryRepositoryImpl
+import com.example.playlistmaker.player.domain.repository.MediaPlayerInteractor
+import com.example.playlistmaker.player.domain.repository.MediaPlayerRepository
+import com.example.playlistmaker.player.domain.repository.TrackHistoryInteractor
+import com.example.playlistmaker.player.domain.repository.TracksHistoryRepository
+import com.example.playlistmaker.player.domain.impl.MediaPlayerInteractorImpl
+import com.example.playlistmaker.player.domain.impl.TracksHistoryInteractorImpl
 
 object Creator {
 
@@ -15,7 +15,7 @@ object Creator {
         return MediaPlayerInteractorImpl(provideMediaPlayerRepository())
     }
 
-    fun provideMediaPlayerRepository(): MediaPlayerRepository{
+    fun provideMediaPlayerRepository(): MediaPlayerRepository {
         return MediaPlayerRepositoryImpl()
     }
 
@@ -23,7 +23,7 @@ object Creator {
         return TracksHistoryInteractorImpl(provideTracksHistoryRepository())
     }
 
-    fun provideTracksHistoryRepository(): TracksHistoryRepository{
+    fun provideTracksHistoryRepository(): TracksHistoryRepository {
         return TracksHistoryRepositoryImpl()
     }
 }

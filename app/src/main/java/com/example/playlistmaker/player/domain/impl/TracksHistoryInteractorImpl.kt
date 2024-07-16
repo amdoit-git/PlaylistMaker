@@ -1,10 +1,11 @@
-package com.example.playlistmaker.domain.usecase
+package com.example.playlistmaker.player.domain.impl
 
-import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.TrackHistoryInteractor
-import com.example.playlistmaker.domain.repository.TracksHistoryRepository
+import com.example.playlistmaker.player.domain.models.Track
+import com.example.playlistmaker.player.domain.repository.TrackHistoryInteractor
+import com.example.playlistmaker.player.domain.repository.TracksHistoryRepository
 
-class TracksHistoryInteractorImpl(private val repository: TracksHistoryRepository) : TrackHistoryInteractor {
+class TracksHistoryInteractorImpl(private val repository: TracksHistoryRepository) :
+    TrackHistoryInteractor {
 
     override fun save(track: Track) {
         repository.save(track)

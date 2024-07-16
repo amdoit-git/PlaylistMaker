@@ -1,6 +1,6 @@
-package com.example.playlistmaker.domain.repository
+package com.example.playlistmaker.player.domain.repository
 
-interface MediaPlayerInteractor {
+interface MediaPlayerRepository {
 
     fun setDisplayPorts(
         forTime: ((Int) -> Unit)?,

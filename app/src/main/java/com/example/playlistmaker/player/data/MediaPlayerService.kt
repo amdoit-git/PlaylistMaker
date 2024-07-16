@@ -1,10 +1,10 @@
-package com.example.playlistmaker.data
+package com.example.playlistmaker.player.data
 
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.player.domain.models.Track
 
 class MediaPlayerService {
 
@@ -57,7 +57,7 @@ class MediaPlayerService {
 
         fun setDataSource(url: String) {
 
-            this.url = url;
+            Companion.url = url;
             mediaPlayer.reset()
             isPrepared = false
             mediaPlayer.setAudioAttributes(
@@ -127,7 +127,7 @@ class MediaPlayerService {
         fun destroy() {
             handler.removeCallbacksAndMessages(null)
             mediaPlayer.release()
-            this.url = null
+            url = null
         }
 
         private fun setTimeout() {

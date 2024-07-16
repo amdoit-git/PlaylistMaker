@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui
+package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
 import android.os.Handler
@@ -15,7 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.DpToPx
 import com.example.playlistmaker.R
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.player.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 

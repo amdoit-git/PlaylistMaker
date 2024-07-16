@@ -1,8 +1,8 @@
-package com.example.playlistmaker.data.repository
+package com.example.playlistmaker.player.data.impl
 
 import com.example.playlistmaker.SearchHistory
-import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.TracksHistoryRepository
+import com.example.playlistmaker.player.domain.models.Track
+import com.example.playlistmaker.player.domain.repository.TracksHistoryRepository
 
 class TracksHistoryRepositoryImpl() : TracksHistoryRepository {
 

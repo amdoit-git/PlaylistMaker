@@ -1,7 +1,7 @@
-package com.example.playlistmaker.domain.usecase
+package com.example.playlistmaker.player.domain.impl
 
-import com.example.playlistmaker.domain.repository.MediaPlayerInteractor
-import com.example.playlistmaker.domain.repository.MediaPlayerRepository
+import com.example.playlistmaker.player.domain.repository.MediaPlayerInteractor
+import com.example.playlistmaker.player.domain.repository.MediaPlayerRepository
 
 class MediaPlayerInteractorImpl(val repository: MediaPlayerRepository) : MediaPlayerInteractor {
 
