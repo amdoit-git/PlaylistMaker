@@ -1,139 +1,142 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.DpToPx
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.databinding.ActivityPlayerScreenBinding
 import com.example.playlistmaker.player.domain.models.Track
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.playlistmaker.player.presentation.PlayerScreenViewModel
 
 class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
     data class TrackData(val keyId: Int, val valueId: Int, val value: String)
 
-    private val player = Creator.provideMediaPlayerInteractor()
-    private val history = Creator.provideTrackHistoryInteractor()
-    private lateinit var playPauseBt: ToggleButton
-    private lateinit var playTime: TextView
-    private lateinit var track: Track
-    private val handlerToast = Handler(Looper.getMainLooper())
+    private lateinit var presenter: PlayerScreenViewModel
+    private lateinit var binding: ActivityPlayerScreenBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player_screen)
+
+        binding = ActivityPlayerScreenBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         intent.getStringExtra("track")?.let { json ->
 
-            history.jsonToTrack(json)?.let {
+            presenter =
+                ViewModelProvider(this, PlayerScreenViewModel.Factory(application, json)).get(
+                    PlayerScreenViewModel::class.java
+                )
 
-                track = it
-
-                fillTrackInfo()
-
-                initPlayer(savedInstanceState)
+            presenter.getTrackInfoLiveData().observe(this) { track ->
+                fillTrackInfo(track)
             }
-        }
 
-        findViewById<View>(R.id.backButton).setOnClickListener {
-            this.finish()
-        }
+            presenter.getToastLiveData().observe(this) { toast ->
 
-        findViewById<ToggleButton>(R.id.favoriteBt).setOnCheckedChangeListener { _, isChecked ->
-            showToast(
-                if (isChecked) {
-                    String.format(
-                        getString(R.string.player_screen_add_to_favorite), track.trackName
-                    )
+                binding.infoText.text = toast.message
+
+                binding.info.visibility = if (toast.isVisible) {
+                    View.VISIBLE
                 } else {
-                    String.format(
-                        getString(R.string.player_screen_remove_from_favorite), track.trackName
+                    View.GONE
+                }
+
+                Log.d("toast", toast.toString())
+            }
+
+            presenter.getProgressLiveData().observe(this) {
+
+                it.time?.let { time ->
+                    binding.playTime.text = time
+                }
+
+                it.duration?.let {
+
+                }
+
+                it.stopped?.let { stopped ->
+                    binding.playPauseBt.isChecked = !stopped
+                }
+            }
+
+            binding.playPauseBt.setOnCheckedChangeListener { _, isChecked ->
+
+                if (isChecked) {
+                    presenter.play()
+                } else {
+                    presenter.pause()
+                }
+            }
+
+            binding.backButton.setOnClickListener {
+                this.finish()
+            }
+
+            binding.favoriteBt.setOnCheckedChangeListener { button, isChecked ->
+
+                if (button.isPressed) {
+
+                    Log.d("toast", "presenter.showToast(")
+
+                    presenter.showToast(
+                        if (isChecked) {
+                            String.format(
+                                getString(R.string.player_screen_add_to_favorite), "track.trackName"
+                            )
+                        } else {
+                            String.format(
+                                getString(R.string.player_screen_remove_from_favorite),
+                                "track.trackName"
+                            )
+                        }
                     )
                 }
-            )
-        }
-    }
-
-    private fun initPlayer(savedInstanceState: Bundle?) {
-
-        playTime = findViewById(R.id.playTime)
-
-        playPauseBt = findViewById(R.id.playPauseBt)
-
-        playPauseBt.setOnCheckedChangeListener { _, isChecked ->
-
-            if (isChecked) {
-                player.play()
-            } else {
-                player.pause()
             }
+
+//            binding.favoriteBt.setOnClickListener {
+//
+//                Log.d("toast", "presenter.showToast(")
+//
+//                presenter.showToast(
+//                    if (binding.favoriteBt.isChecked) {
+//                        String.format(
+//                            getString(R.string.player_screen_add_to_favorite), "track.trackName"
+//                        )
+//                    } else {
+//                        String.format(
+//                            getString(R.string.player_screen_remove_from_favorite), "track.trackName"
+//                        )
+//                    }
+//                )
+//            }
         }
-
-        player.setDisplayPorts(::showPlayProgress, null, ::onPlayingStopped, ::onPlayerError)
-
-        if (savedInstanceState == null) {
-            player.setDataSource(track.previewUrl)
-        }
-    }
-
-    private fun showPlayProgress(currentTime: Int) {
-
-        playTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentTime)
-    }
-
-    private fun onPlayingStopped() {
-        playPauseBt.isChecked = false
-    }
-
-    private fun onPlayerError() {
-        showToast(getString(R.string.player_screen_track_error))
-        playPauseBt.isChecked = false
-    }
-
-    private fun showToast(message: String, seconds: Int = 2) {
-        handlerToast.removeCallbacksAndMessages(null)
-        val info = findViewById<View>(R.id.info)
-        val infoText = findViewById<TextView>(R.id.infoText)
-        infoText.text = message
-        info.visibility = View.VISIBLE
-        handlerToast.postDelayed({
-            info.visibility = View.GONE
-        }, seconds * 1000L)
     }
 
     override fun onStop() {
         super.onStop()
-        player.pause()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean("IS_ACTIVITY_RECREATED", true)
+        presenter.pause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        handlerToast.removeCallbacksAndMessages(null)
-        player.resetDisplayPorts()
     }
 
-    private fun fillTrackInfo() {
+    private fun fillTrackInfo(track: Track) {
 
-        findViewById<TextView>(R.id.trackName).text = track.trackName
-        findViewById<TextView>(R.id.artistName).text = track.artistName
+        binding.trackName.text = track.trackName
+        binding.artistName.text = track.artistName
 
-        val cover = findViewById<ImageView>(R.id.albumCover)
+        val cover = binding.albumCover
 
         val coverUrl = track.trackCover.replaceAfterLast('/', "512x512bb.jpg")
 
@@ -141,7 +144,7 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
             .transform(RoundedCorners(dpToPx(8f, cover.context))).into(cover)
 
 
-        val constraintLayout = findViewById<ConstraintLayout>(R.id.scrollBody)
+        val constraintLayout = binding.scrollBody
 
         val constraintSet = ConstraintSet()
 
@@ -168,7 +171,9 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
                 constraintSet.connect(
                     item.keyId, ConstraintSet.TOP, topId, ConstraintSet.BOTTOM
                 )
+
                 findViewById<TextView>(item.valueId).text = item.value
+
                 topId = item.keyId
             }
         }

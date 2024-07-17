@@ -18,7 +18,7 @@
         <activity
             android:name=".player.ui.PlayerScreenActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".SearchActivity"
             android:exported="false" />
