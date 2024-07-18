@@ -50,8 +50,6 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
                 } else {
                     View.GONE
                 }
-
-                Log.d("toast", toast.toString())
             }
 
             presenter.getProgressLiveData().observe(this) {
@@ -86,8 +84,6 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
                 if (button.isPressed) {
 
-                    Log.d("toast", "presenter.showToast(")
-
                     presenter.showToast(
                         if (isChecked) {
                             String.format(
@@ -102,33 +98,12 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
                     )
                 }
             }
-
-//            binding.favoriteBt.setOnClickListener {
-//
-//                Log.d("toast", "presenter.showToast(")
-//
-//                presenter.showToast(
-//                    if (binding.favoriteBt.isChecked) {
-//                        String.format(
-//                            getString(R.string.player_screen_add_to_favorite), "track.trackName"
-//                        )
-//                    } else {
-//                        String.format(
-//                            getString(R.string.player_screen_remove_from_favorite), "track.trackName"
-//                        )
-//                    }
-//                )
-//            }
         }
     }
 
     override fun onStop() {
         super.onStop()
         presenter.pause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     private fun fillTrackInfo(track: Track) {
@@ -162,16 +137,21 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
         for (item in list) {
 
-            if (item.value.isEmpty() || item.value == "-") {
+            if (item.value.isBlank() || item.value == "-") {
+
+                //скрываем пустые поля в свойствах трека и отвязываем их от соседей
                 constraintSet.clear(item.valueId)
                 constraintSet.clear(item.keyId)
                 constraintSet.setVisibility(item.valueId, View.GONE)
                 constraintSet.setVisibility(item.keyId, View.GONE)
             } else {
+
+                //соединяем непустые поля к другим непустым полям
                 constraintSet.connect(
                     item.keyId, ConstraintSet.TOP, topId, ConstraintSet.BOTTOM
                 )
 
+                //выставляем значения непустых полей
                 findViewById<TextView>(item.valueId).text = item.value
 
                 topId = item.keyId
