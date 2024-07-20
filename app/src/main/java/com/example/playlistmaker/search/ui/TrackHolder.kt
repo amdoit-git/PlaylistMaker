@@ -11,7 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.player.ui.PlayerScreenActivity
 import com.example.playlistmaker.common.domain.models.Track
-import com.example.playlistmaker.search.data.SearchHistory
+import com.example.playlistmaker.common.data.SearchHistory
 
 class TrackHolder(view: View) : SearchActivityHolder(view) {
 

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.data
+package com.example.playlistmaker.common.data
 
 import android.content.SharedPreferences
 import android.util.Log

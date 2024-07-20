@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import com.example.playlistmaker.search.data.dto.Itunes
 import com.example.playlistmaker.search.data.dto.ItunesError
 import com.example.playlistmaker.search.data.dto.ItunesTrack
 import com.example.playlistmaker.search.data.dto.ItunesTrackList
@@ -22,7 +23,7 @@ class ItunesApi {
         Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create())
             .build();
 
-    private val api: Itunes = retrofit.create<Itunes>();
+    private val api: Itunes = retrofit.create(Itunes::class.java);
 
     fun search(
         textToSearch: String,

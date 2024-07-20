@@ -3,9 +3,8 @@ package com.example.playlistmaker.common.presentation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import java.util.concurrent.atomic.AtomicBoolean
 
-class LiveDataWithStartDataSet<T:Any> : MutableLiveData<T>() {
+class LiveDataWithStartDataSet<T : Any> : MutableLiveData<T>() {
 
     private val classMap = mutableMapOf<Class<out T>, T>()
 
@@ -22,8 +21,7 @@ class LiveDataWithStartDataSet<T:Any> : MutableLiveData<T>() {
                 }
 
                 getAll = false
-            }
-            else{
+            } else {
                 observer.onChanged(t)
             }
         }
@@ -39,7 +37,7 @@ class LiveDataWithStartDataSet<T:Any> : MutableLiveData<T>() {
         super.setValue(value)
     }
 
-    fun setValueForStartOnly(value: T){
+    fun setValueForStartOnly(value: T) {
         classMap[value::class.java] = value
     }
 }

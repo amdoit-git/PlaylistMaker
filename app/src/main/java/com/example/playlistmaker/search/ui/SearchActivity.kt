@@ -13,7 +13,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.search.presentation.TRACK_LIST_STATE
-import com.example.playlistmaker.search.data.SearchHistory
+import com.example.playlistmaker.common.data.SearchHistory
 import com.example.playlistmaker.search.data.dto.ItunesError
 import com.example.playlistmaker.search.data.dto.ItunesTrack
 import com.example.playlistmaker.search.presentation.SearchViewModel

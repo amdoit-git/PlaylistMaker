@@ -15,34 +15,8 @@ enum class TRACK_LIST_STATE(val num: Int, var tracks: List<Track>? = null) {
 
     companion object {
 
-        private var tracks: List<Track>? = null
-
         fun find(num: Int): TRACK_LIST_STATE {
             return entries.firstOrNull { it.num == num } ?: FIRST_VISIT
-        }
-
-        fun changeState(newSTATE: TRACK_LIST_STATE, oldState: TRACK_LIST_STATE): TRACK_LIST_STATE {
-
-            if (oldState == HISTORY_VISIBLE) {
-                //при смене состояния мы не очищаем список на экране, а лишь скрываем его
-                this.tracks = oldState.tracks
-            }
-
-            if (newSTATE == SEARCH_VISIBLE) {
-                //заполнили список на экране треками с поиска убрав историю прослушивания
-                clear()
-            }
-
-            if (newSTATE == HISTORY_VISIBLE && this.tracks != null) {
-                //если не были показаны треки с iTunes, то в списке на экране находятся треки с истории поиска
-                newSTATE.tracks = this.tracks
-            }
-
-            return newSTATE
-        }
-
-        fun clear() {
-            this.tracks = null
         }
     }
 }

@@ -3,13 +3,11 @@ package com.example.playlistmaker.search.presentation
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.common.domain.consumer.Consumer
 import com.example.playlistmaker.common.domain.consumer.ConsumerData
 import com.example.playlistmaker.common.domain.models.Track
-import com.example.playlistmaker.common.presentation.SingleEventLiveData
+import com.example.playlistmaker.common.presentation.LiveDataWithStartDataSet
 import com.example.playlistmaker.creator.Creator
 
 class SearchViewModel : ViewModel() {
@@ -17,8 +15,7 @@ class SearchViewModel : ViewModel() {
     private val history = Creator.provideTracksHistoryInteractor()
     private val iTunes = Creator.provideITunesInteractor()
 
-    private var searchTextLiveData = SingleEventLiveData<String>()
-    private val trackListLiveData = MutableLiveData<TRACK_LIST_STATE>()
+    private val liveData = LiveDataWithStartDataSet<SearchData>()
 
     private val handler = Handler(Looper.getMainLooper())
     private val obj = Any()
@@ -26,14 +23,8 @@ class SearchViewModel : ViewModel() {
     private var searchText: String = ""
     private var textInFocus: Boolean = false
     private var STATE = TRACK_LIST_STATE.FIRST_VISIT
+    private var tracksInHistory: List<Track>? = null
 
-    fun onCreate() {
-        searchTextLiveData.postValue(searchText)
-    }
-
-    fun getSearchTextLiveData(): LiveData<String> {
-        return searchTextLiveData
-    }
 
     fun onTextChanged(text: String) {
 
@@ -46,6 +37,8 @@ class SearchViewModel : ViewModel() {
         }, obj, 2000L + SystemClock.uptimeMillis())
 
         switchHistoryVisibility()
+
+        liveData.setValueForStartOnly(SearchData.SearchText(searchText))
     }
 
     fun onFocusChanged(hasFocus: Boolean) {
@@ -64,29 +57,36 @@ class SearchViewModel : ViewModel() {
         } else if (STATE == TRACK_LIST_STATE.HISTORY_VISIBLE) {
 
             changeState(TRACK_LIST_STATE.HISTORY_GONE)
-
-            trackListLiveData.postValue(STATE)
         }
     }
 
-    private fun changeState(newSTATE: TRACK_LIST_STATE) {
+    private fun changeState(newSTATE: TRACK_LIST_STATE, tracks: List<Track>? = null) {
 
-        STATE = TRACK_LIST_STATE.changeState(newSTATE, STATE)
+        STATE = newSTATE
+
+        tracks?.let {
+            STATE.tracks = tracks
+        }
+
+        if (STATE == TRACK_LIST_STATE.SEARCH_VISIBLE) {
+            //история просмотров будет не актуальна, потому очищаем ее
+            tracksInHistory = null
+        }
+
+        liveData.postValue(SearchData.TrackList(STATE))
     }
 
     private fun showHistory() {
 
-        changeState(TRACK_LIST_STATE.HISTORY_VISIBLE)
-
-        if (STATE.tracks == null) {
-            STATE.tracks = history.getList()
+        if (tracksInHistory == null) {
+            tracksInHistory = history.getList()
         }
 
-        if (STATE.tracks.isNullOrEmpty()) {
+        if (tracksInHistory.isNullOrEmpty()) {
             changeState(TRACK_LIST_STATE.HISTORY_EMPTY)
+        } else {
+            changeState(TRACK_LIST_STATE.HISTORY_VISIBLE, tracksInHistory)
         }
-
-        trackListLiveData.postValue(STATE)
     }
 
     fun onActionButton() {
@@ -99,35 +99,38 @@ class SearchViewModel : ViewModel() {
     }
 
     fun onHistoryClearButtonClicked() {
+        tracksInHistory = null
         history.clear()
-        TRACK_LIST_STATE.clear()
         changeState(TRACK_LIST_STATE.HISTORY_EMPTY)
-        trackListLiveData.postValue(STATE)
     }
 
     private fun search(text: String) {
 
         if (text.isBlank()) return;
 
+        liveData.postValue(SearchData.ProgressBar(true))
+
         iTunes.search(text, object : Consumer<List<Track>> {
             override fun consume(data: ConsumerData<List<Track>>) {
 
                 when (data) {
-                    is ConsumerData.Data -> {
-                        when (data.value.size) {
-                            0 -> {}
-                            else -> {}
+                    is ConsumerData.Data -> changeState(TRACK_LIST_STATE.SEARCH_VISIBLE, data.value)
+
+                    is ConsumerData.Error -> {
+                        when (data.code) {
+                            404 -> changeState(TRACK_LIST_STATE.SEARCH_EMPTY)
+                            else -> changeState(TRACK_LIST_STATE.SEARCH_FAIL)
                         }
                     }
-
-                    is ConsumerData.Error -> TODO()
                 }
+
+                liveData.postValue(SearchData.ProgressBar(false))
             }
         })
     }
 
     override fun onCleared() {
+        iTunes.cancel()
         super.onCleared()
-        TRACK_LIST_STATE.clear()
     }
 }
