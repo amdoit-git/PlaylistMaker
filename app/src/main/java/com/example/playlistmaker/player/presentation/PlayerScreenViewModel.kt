@@ -4,27 +4,24 @@ import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
+import com.example.playlistmaker.common.domain.models.Track
+import com.example.playlistmaker.common.presentation.LiveDataWithStartDataSet
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.player.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerScreenViewModel(private val application: Application, jsonTrack: String) :
     ViewModel() {
 
-    private val liveDataTrackProgress = MutableLiveData<TrackProgress>()
-    private val liveDataTrackInfo = MutableLiveData<Track>()
-    private val liveDataToast = MutableLiveData<ToastMessage>()
-    private val trackProgress = TrackProgress()
+    private val liveData = LiveDataWithStartDataSet<PlayerScreenData>()
+    private val trackProgress = PlayerScreenData.TrackProgress()
 
     private val player = Creator.provideMediaPlayerInteractor()
-    private val history = Creator.provideTrackHistoryInteractor()
+    private val history = Creator.provideTracksHistoryInteractor()
     private val handlerToast = Handler(Looper.getMainLooper())
     private val obj = Any()
 
@@ -34,22 +31,22 @@ class PlayerScreenViewModel(private val application: Application, jsonTrack: Str
 
         history.jsonToTrack(jsonTrack)?.let {
             track = it
-            liveDataTrackInfo.postValue(track)
+            liveData.postValue(PlayerScreenData.TrackData(track = track))
             player.setDataSource(track.previewUrl)
             player.setDisplayPorts(::showPlayProgress, null, ::onPlayingStopped, ::onPlayerError)
         }
     }
 
     fun play() {
-        player.play()
         trackProgress.stopped = false
-        liveDataTrackProgress.postValue(TrackProgress(stopped = false))
+        player.play()
+        displayProgress()
     }
 
     fun pause() {
-        player.pause()
         trackProgress.stopped = true
-        liveDataTrackProgress.postValue(TrackProgress(stopped = true))
+        player.pause()
+        displayProgress()
     }
 
     private fun showPlayProgress(currentTime: Int) {
@@ -63,41 +60,32 @@ class PlayerScreenViewModel(private val application: Application, jsonTrack: Str
     }
 
     private fun onPlayerError() {
-        onPlayingStopped()
+        trackProgress.stopped = true
+        displayProgress()
         showToast(getString(R.string.player_screen_track_error))
     }
 
-    fun showToast(message: String, seconds: Int = 5) {
-
-        Log.d("toast", "showToast(message: String, seconds: Int = 5)")
+    fun showToast(message: String, seconds: Int = 3) {
 
         handlerToast.removeCallbacksAndMessages(obj)
 
         handlerToast.postAtTime({
-            liveDataToast.postValue(ToastMessage(message = "", isVisible = false))
+            liveData.postValue(PlayerScreenData.ToastMessage(message = "", isVisible = false))
         }, obj, seconds * 1000L + SystemClock.uptimeMillis())
 
-        liveDataToast.postValue(ToastMessage(message = message, isVisible = true))
+        liveData.postValue(PlayerScreenData.ToastMessage(message = message, isVisible = true))
     }
 
     private fun displayProgress() {
-        liveDataTrackProgress.postValue(trackProgress)
+        liveData.postValue(trackProgress)
     }
 
     private fun getString(id: Int): String {
         return application.applicationContext.resources.getString(id)
     }
 
-    fun getProgressLiveData(): LiveData<TrackProgress> {
-        return liveDataTrackProgress
-    }
-
-    fun getTrackInfoLiveData(): LiveData<Track> {
-        return liveDataTrackInfo
-    }
-
-    fun getToastLiveData(): LiveData<ToastMessage> {
-        return liveDataToast
+    fun getLiveData(): LiveData<PlayerScreenData> {
+        return liveData
     }
 
     override fun onCleared() {

@@ -1,10 +1,10 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.search.ui
 
 import android.os.Handler
 import android.os.Looper
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.player.domain.models.Track
+import com.example.playlistmaker.common.domain.models.Track
 
 class TrackAdapter(
     val tracks: MutableList<Track> = mutableListOf()

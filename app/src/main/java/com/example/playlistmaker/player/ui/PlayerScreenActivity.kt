@@ -1,7 +1,6 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -9,10 +8,11 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.DpToPx
 import com.example.playlistmaker.R
+import com.example.playlistmaker.common.domain.models.Track
+import com.example.playlistmaker.common.ui.DpToPx
 import com.example.playlistmaker.databinding.ActivityPlayerScreenBinding
-import com.example.playlistmaker.player.domain.models.Track
+import com.example.playlistmaker.player.presentation.PlayerScreenData
 import com.example.playlistmaker.player.presentation.PlayerScreenViewModel
 
 class PlayerScreenActivity : AppCompatActivity(), DpToPx {
@@ -32,38 +32,41 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
         intent.getStringExtra("track")?.let { json ->
 
-            presenter =
-                ViewModelProvider(this, PlayerScreenViewModel.Factory(application, json)).get(
-                    PlayerScreenViewModel::class.java
-                )
+            presenter = ViewModelProvider(
+                this,
+                PlayerScreenViewModel.Factory(application, json)
+            )[PlayerScreenViewModel::class.java]
 
-            presenter.getTrackInfoLiveData().observe(this) { track ->
-                fillTrackInfo(track)
-            }
+            presenter.getLiveData().observe(this) {
 
-            presenter.getToastLiveData().observe(this) { toast ->
+                when (it) {
 
-                binding.infoText.text = toast.message
+                    is PlayerScreenData.TrackData -> fillTrackInfo(it.track)
 
-                binding.info.visibility = if (toast.isVisible) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
-            }
+                    is PlayerScreenData.TrackProgress -> {
+                        it.time?.let { time ->
+                            binding.playTime.text = time
+                        }
 
-            presenter.getProgressLiveData().observe(this) {
+                        it.duration?.let {
 
-                it.time?.let { time ->
-                    binding.playTime.text = time
-                }
+                        }
 
-                it.duration?.let {
+                        it.stopped?.let { stopped ->
+                            binding.playPauseBt.isChecked = !stopped
+                        }
+                    }
 
-                }
+                    is PlayerScreenData.ToastMessage -> {
 
-                it.stopped?.let { stopped ->
-                    binding.playPauseBt.isChecked = !stopped
+                        binding.infoText.text = it.message
+
+                        binding.info.visibility = if (it.isVisible) {
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        }
+                    }
                 }
             }
 
@@ -103,7 +106,9 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
     override fun onStop() {
         super.onStop()
-        presenter.pause()
+        if (!isChangingConfigurations) {
+            presenter.pause()
+        }
     }
 
     private fun fillTrackInfo(track: Track) {

@@ -1,6 +1,6 @@
 package com.example.playlistmaker.player.domain.repository
 
-import com.example.playlistmaker.player.domain.models.Track
+import com.example.playlistmaker.common.domain.models.Track
 
 interface TrackHistoryInteractor {
     fun save(track: Track)

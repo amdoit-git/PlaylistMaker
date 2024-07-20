@@ -4,7 +4,7 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import com.example.playlistmaker.player.domain.models.Track
+import android.os.SystemClock
 
 class MediaPlayerService {
 
@@ -32,6 +32,7 @@ class MediaPlayerService {
 
         private var STATE = State.STOPPED
         private val handler = Handler(Looper.getMainLooper())
+        private val obj = Any()
 
         fun setDisplayPorts(
             forTime: ((Int) -> Unit)?,
@@ -107,7 +108,7 @@ class MediaPlayerService {
                 displayPlayProgress()
             }
             STATE = State.PAUSED
-            handler.removeCallbacksAndMessages(null)
+            handler.removeCallbacksAndMessages(obj)
             onStop?.let { it() }
         }
 
@@ -120,21 +121,22 @@ class MediaPlayerService {
                 displayPlayProgress()
             }
             STATE = State.STOPPED
-            handler.removeCallbacksAndMessages(null)
+            handler.removeCallbacksAndMessages(obj)
             onStop?.let { it() }
         }
 
         fun destroy() {
-            handler.removeCallbacksAndMessages(null)
+            handler.removeCallbacksAndMessages(obj)
             mediaPlayer.release()
             url = null
         }
 
         private fun setTimeout() {
-            handler.postDelayed({
+            handler.removeCallbacksAndMessages(obj)
+            handler.postAtTime({
                 displayPlayProgress()
                 setTimeout()
-            }, 1000)
+            }, obj,1000L + SystemClock.uptimeMillis())
         }
 
 

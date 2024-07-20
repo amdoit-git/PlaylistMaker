@@ -8,6 +8,8 @@ import com.example.playlistmaker.player.domain.repository.TrackHistoryInteractor
 import com.example.playlistmaker.player.domain.repository.TracksHistoryRepository
 import com.example.playlistmaker.player.domain.impl.MediaPlayerInteractorImpl
 import com.example.playlistmaker.player.domain.impl.TracksHistoryInteractorImpl
+import com.example.playlistmaker.search.data.impl.ITunesInteractorImpl
+import com.example.playlistmaker.search.domain.repository.ITunesInteractor
 
 object Creator {
 
@@ -19,11 +21,15 @@ object Creator {
         return MediaPlayerRepositoryImpl()
     }
 
-    fun provideTrackHistoryInteractor(): TrackHistoryInteractor {
+    fun provideTracksHistoryInteractor(): TrackHistoryInteractor {
         return TracksHistoryInteractorImpl(provideTracksHistoryRepository())
     }
 
     fun provideTracksHistoryRepository(): TracksHistoryRepository {
         return TracksHistoryRepositoryImpl()
+    }
+
+    fun provideITunesInteractor(): ITunesInteractor {
+        return ITunesInteractorImpl()
     }
 }

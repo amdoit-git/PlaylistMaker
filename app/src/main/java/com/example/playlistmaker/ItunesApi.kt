@@ -1,5 +1,8 @@
 package com.example.playlistmaker
 
+import com.example.playlistmaker.search.data.dto.ItunesError
+import com.example.playlistmaker.search.data.dto.ItunesTrack
+import com.example.playlistmaker.search.data.dto.ItunesTrackList
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import retrofit2.Call

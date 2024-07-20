@@ -1,13 +1,22 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.search.ui
 
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.player.domain.models.Track
+import com.example.playlistmaker.ItunesApi
+import com.example.playlistmaker.MusicPlayer
+import com.example.playlistmaker.R
+import com.example.playlistmaker.common.domain.models.Track
+import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.search.presentation.TRACK_LIST_STATE
+import com.example.playlistmaker.search.data.SearchHistory
+import com.example.playlistmaker.search.data.dto.ItunesError
+import com.example.playlistmaker.search.data.dto.ItunesTrack
+import com.example.playlistmaker.search.presentation.SearchViewModel
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -21,16 +30,24 @@ class SearchActivity : AppCompatActivity() {
     private val KEY_FOR_SEARCH_STATE_TRACKS = "STATE_KEY_SEARCH_STATE_INFO"
     private var searchText: String = ""
     private val itunesApi: ItunesApi = ItunesApi()
-    private var STATE = SEARCH_STATE.FIRST_VISIT
+    private var STATE = TRACK_LIST_STATE.FIRST_VISIT
     private lateinit var tracksList: RecyclerView
     private lateinit var adapter: TrackAdapter
     private lateinit var textField: SearchTextField
 
+    private lateinit var presenter: SearchViewModel
+    private lateinit var binding: ActivitySearchBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
 
-        tracksList = findViewById<RecyclerView>(R.id.tracksList)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
+
+        presenter = ViewModelProvider(this).get(SearchViewModel::class.java)
+
+        tracksList = findViewById(R.id.tracksList)
 
         adapter = TrackAdapter()
 
@@ -47,18 +64,24 @@ class SearchActivity : AppCompatActivity() {
             onFocusChanged = ::onFocusChanged
         )
 
-        findViewById<View>(R.id.button_to_main_screen).setOnClickListener {
+        binding.buttonToMainScreen.setOnClickListener {
             this.finish()
         }
 
-        findViewById<Button>(R.id.no_internet_button).setOnClickListener {
+        binding.noInternetButton.setOnClickListener {
             searchOnItunes(searchText)
         }
 
         textField.activate()
+
+        presenter.getSearchTextLiveData().observe(this){
+            binding.editText.setText(it)
+        }
+
+        presenter.onCreate()
     }
 
-    private fun setScreenState(state: SEARCH_STATE, jsonTracks: String = "") {
+    private fun setScreenState(state: TRACK_LIST_STATE, jsonTracks: String = "") {
 
         val noTracks = findViewById<View>(R.id.no_tracks)
         val noInternet = findViewById<View>(R.id.no_internet)
@@ -71,23 +94,23 @@ class SearchActivity : AppCompatActivity() {
         elements.forEach { it.visibility = View.GONE }
 
         when (STATE) {
-            SEARCH_STATE.FIRST_VISIT -> {}
-            SEARCH_STATE.HISTORY_EMPTY -> {}
-            SEARCH_STATE.HISTORY_GONE -> {}
-            SEARCH_STATE.HISTORY_TRACKS_VISIBLE -> {
+            TRACK_LIST_STATE.FIRST_VISIT -> {}
+            TRACK_LIST_STATE.HISTORY_EMPTY -> {}
+            TRACK_LIST_STATE.HISTORY_GONE -> {}
+            TRACK_LIST_STATE.HISTORY_VISIBLE -> {
                 trackListTitle.visibility = View.VISIBLE
                 tracksList.visibility = View.VISIBLE
             }
 
-            SEARCH_STATE.SEARCH_TRACKS_VISIBLE -> {
+            TRACK_LIST_STATE.SEARCH_VISIBLE -> {
                 tracksList.visibility = View.VISIBLE
             }
 
-            SEARCH_STATE.SEARCH_EMPTY -> {
+            TRACK_LIST_STATE.SEARCH_EMPTY -> {
                 noTracks.visibility = View.VISIBLE
             }
 
-            SEARCH_STATE.SEARCH_FAIL -> {
+            TRACK_LIST_STATE.SEARCH_FAIL -> {
                 noInternet.visibility = View.VISIBLE
             }
         }
@@ -112,18 +135,18 @@ class SearchActivity : AppCompatActivity() {
         if (isVisible) {
 
             when (STATE) {
-                SEARCH_STATE.FIRST_VISIT -> showHistoryList()
-                SEARCH_STATE.HISTORY_TRACKS_VISIBLE -> {}
-                SEARCH_STATE.HISTORY_GONE -> setScreenState(SEARCH_STATE.HISTORY_TRACKS_VISIBLE)
-                SEARCH_STATE.HISTORY_EMPTY -> {}
-                SEARCH_STATE.SEARCH_TRACKS_VISIBLE -> showHistoryList()
-                SEARCH_STATE.SEARCH_EMPTY -> showHistoryList()
-                SEARCH_STATE.SEARCH_FAIL -> showHistoryList()
+                TRACK_LIST_STATE.FIRST_VISIT -> showHistoryList()
+                TRACK_LIST_STATE.HISTORY_VISIBLE -> {}
+                TRACK_LIST_STATE.HISTORY_GONE -> setScreenState(TRACK_LIST_STATE.HISTORY_VISIBLE)
+                TRACK_LIST_STATE.HISTORY_EMPTY -> {}
+                TRACK_LIST_STATE.SEARCH_VISIBLE -> showHistoryList()
+                TRACK_LIST_STATE.SEARCH_EMPTY -> showHistoryList()
+                TRACK_LIST_STATE.SEARCH_FAIL -> showHistoryList()
             }
 
-        } else if (STATE == SEARCH_STATE.HISTORY_TRACKS_VISIBLE) {
+        } else if (STATE == TRACK_LIST_STATE.HISTORY_VISIBLE) {
 
-            setScreenState(SEARCH_STATE.HISTORY_GONE)
+            setScreenState(TRACK_LIST_STATE.HISTORY_GONE)
         }
     }
 
@@ -132,30 +155,30 @@ class SearchActivity : AppCompatActivity() {
         if (adapter.hasClearButton) {
             //История прослущиваний уже на экране. Просто показываем ее
 
-            setScreenState(SEARCH_STATE.HISTORY_TRACKS_VISIBLE)
+            setScreenState(TRACK_LIST_STATE.HISTORY_VISIBLE)
         } else {
             //Загружаем историю прослущиваний и показываем если она есть
 
             SearchHistory.loadTracksList()?.let {
                 if (it.size > 0) {
                     setScreenState(
-                        SEARCH_STATE.HISTORY_TRACKS_VISIBLE, SearchHistory.toJson(it)
+                        TRACK_LIST_STATE.HISTORY_VISIBLE, SearchHistory.toJson(it)
                     )
                     showTracks(it, true)
                     tracksList.smoothScrollToPosition(0)
                 } else {
-                    setScreenState(SEARCH_STATE.HISTORY_EMPTY)
+                    setScreenState(TRACK_LIST_STATE.HISTORY_EMPTY)
                 }
             } ?: run {
 
-                setScreenState(SEARCH_STATE.HISTORY_EMPTY)
+                setScreenState(TRACK_LIST_STATE.HISTORY_EMPTY)
             }
         }
     }
 
     private fun clearHistory() {
         showTracks(emptyList())
-        setScreenState(SEARCH_STATE.FIRST_VISIT)
+        setScreenState(TRACK_LIST_STATE.FIRST_VISIT)
         SearchHistory.clearHistory()
         MusicPlayer.destroy()
     }
@@ -196,11 +219,11 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         findViewById<View>(R.id.progressBar).visibility = View.VISIBLE
     }
 
-    private fun hideProgressBar(){
+    private fun hideProgressBar() {
         findViewById<View>(R.id.progressBar).visibility = View.GONE
     }
 
@@ -256,7 +279,7 @@ class SearchActivity : AppCompatActivity() {
             tracks.add(track)
         }
 
-        setScreenState(SEARCH_STATE.SEARCH_TRACKS_VISIBLE, SearchHistory.toJson(tracks))
+        setScreenState(TRACK_LIST_STATE.SEARCH_VISIBLE, SearchHistory.toJson(tracks))
 
         showTracks(tracks)
 
@@ -267,14 +290,14 @@ class SearchActivity : AppCompatActivity() {
 
     private fun onSearchEmpty() {
 
-        setScreenState(SEARCH_STATE.SEARCH_EMPTY)
+        setScreenState(TRACK_LIST_STATE.SEARCH_EMPTY)
 
         hideProgressBar()
     }
 
     private fun onSearchFail(textToSearch: String, error: ItunesError? = null) {
 
-        setScreenState(SEARCH_STATE.SEARCH_FAIL, textToSearch)
+        setScreenState(TRACK_LIST_STATE.SEARCH_FAIL, textToSearch)
 
         hideProgressBar()
     }
@@ -291,18 +314,18 @@ class SearchActivity : AppCompatActivity() {
             textField.setText(searchText)
 
             setScreenState(
-                state = SEARCH_STATE.find(it.getInt(KEY_FOR_SEARCH_STATE, 0)),
+                state = TRACK_LIST_STATE.find(it.getInt(KEY_FOR_SEARCH_STATE, 0)),
                 jsonTracks = it.getString(KEY_FOR_SEARCH_STATE_TRACKS, "")
             )
 
             when (STATE) {
-                SEARCH_STATE.FIRST_VISIT -> {}
-                SEARCH_STATE.HISTORY_EMPTY -> {}
-                SEARCH_STATE.HISTORY_GONE -> restoreTracksOnStart(STATE.jsonTracks, true)
-                SEARCH_STATE.HISTORY_TRACKS_VISIBLE -> restoreTracksOnStart(STATE.jsonTracks, true)
-                SEARCH_STATE.SEARCH_TRACKS_VISIBLE -> restoreTracksOnStart(STATE.jsonTracks)
-                SEARCH_STATE.SEARCH_EMPTY -> {}
-                SEARCH_STATE.SEARCH_FAIL -> {}
+                TRACK_LIST_STATE.FIRST_VISIT -> {}
+                TRACK_LIST_STATE.HISTORY_EMPTY -> {}
+                TRACK_LIST_STATE.HISTORY_GONE -> restoreTracksOnStart(STATE.jsonTracks, true)
+                TRACK_LIST_STATE.HISTORY_VISIBLE -> restoreTracksOnStart(STATE.jsonTracks, true)
+                TRACK_LIST_STATE.SEARCH_VISIBLE -> restoreTracksOnStart(STATE.jsonTracks)
+                TRACK_LIST_STATE.SEARCH_EMPTY -> {}
+                TRACK_LIST_STATE.SEARCH_FAIL -> {}
             }
         }
     }
@@ -319,7 +342,7 @@ class SearchActivity : AppCompatActivity() {
         SearchHistory.jsonToTracks(json)?.let {
             showTracks(it, showClearButton)
         } ?: run {
-            setScreenState(SEARCH_STATE.FIRST_VISIT)
+            setScreenState(TRACK_LIST_STATE.FIRST_VISIT)
         }
     }
 }

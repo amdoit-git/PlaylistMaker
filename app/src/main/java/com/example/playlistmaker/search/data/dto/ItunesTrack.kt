@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.search.data.dto
 
 data class ItunesTrack(
     val trackId: Int,

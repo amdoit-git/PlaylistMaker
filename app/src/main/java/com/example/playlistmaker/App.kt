@@ -3,6 +3,7 @@ package com.example.playlistmaker
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.search.data.SearchHistory
 
 const val APP_SETTINGS_PREFERENCES = "APP_SETTINGS_PREFERENCES"
 const val DARK_THEME_KEY = "DARK_THEME"

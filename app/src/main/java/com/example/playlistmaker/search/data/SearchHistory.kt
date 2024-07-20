@@ -1,8 +1,8 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.search.data
 
 import android.content.SharedPreferences
 import android.util.Log
-import com.example.playlistmaker.player.domain.models.Track
+import com.example.playlistmaker.common.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -17,7 +17,7 @@ class SearchHistory {
         private val gson = Gson()
 
         fun setSharedPreferences(sharedPrefs: SharedPreferences) {
-            this.sharedPrefs = sharedPrefs
+            Companion.sharedPrefs = sharedPrefs
         }
 
         fun jsonToTracks(json: String): List<Track>? {

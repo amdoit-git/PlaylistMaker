@@ -1,4 +1,4 @@
-package com.example.playlistmaker.player.domain.models
+package com.example.playlistmaker.common.domain.models
 
 data class Track(
     val trackId: Int, //id трека
