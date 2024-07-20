@@ -1,5 +1,6 @@
 package com.example.playlistmaker.creator
 
+import android.content.Context
 import com.example.playlistmaker.player.data.impl.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.player.data.impl.TracksHistoryRepositoryImpl
 import com.example.playlistmaker.player.domain.repository.MediaPlayerInteractor
@@ -29,7 +30,7 @@ object Creator {
         return TracksHistoryRepositoryImpl()
     }
 
-    fun provideITunesInteractor(): ITunesInteractor {
-        return ITunesInteractorImpl()
+    fun provideITunesInteractor(context: Context): ITunesInteractor {
+        return ITunesInteractorImpl(context)
     }
 }

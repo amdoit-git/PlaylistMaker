@@ -1,28 +1,27 @@
 package com.example.playlistmaker.search.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ClearSearchHistoryButtonBinding
 
-class ButtonHolder(view: View) : SearchActivityHolder(view) {
+class ButtonHolder(private val binding: ClearSearchHistoryButtonBinding) :
+    SearchActivityHolder(binding.root) {
 
-    override fun onButtonClick(callback: (() -> Unit)?) {
-        callback?.let {
-            itemView.findViewById<Button>(R.id.clear_search_histroy_button).setOnClickListener {
-                callback()
-            }
+    override fun onButtonClick(callback: () -> Unit) {
+
+        binding.clearSearchHistroyButton.setOnClickListener {
+            callback()
         }
     }
 
     companion object {
 
         fun create(parent: ViewGroup): ButtonHolder {
-            return ButtonHolder(
-                LayoutInflater.from(parent.context)
-                    .inflate(R.layout.clear_search_history_button, parent, false)
-            )
+            return ButtonHolder(ClearSearchHistoryButtonBinding.inflate(LayoutInflater.from(parent.context)))
+//            return ButtonHolder(
+//                LayoutInflater.from(parent.context)
+//                    .inflate(R.layout.clear_search_history_button, parent, false)
+//            )
         }
     }
 }

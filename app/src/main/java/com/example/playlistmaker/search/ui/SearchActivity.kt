@@ -1,39 +1,26 @@
 package com.example.playlistmaker.search.ui
 
-import android.content.res.Resources
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.ItunesApi
-import com.example.playlistmaker.MusicPlayer
-import com.example.playlistmaker.R
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.search.presentation.TRACK_LIST_STATE
-import com.example.playlistmaker.common.data.SearchHistory
-import com.example.playlistmaker.search.data.dto.ItunesError
-import com.example.playlistmaker.search.data.dto.ItunesTrack
+import com.example.playlistmaker.search.presentation.SearchData
 import com.example.playlistmaker.search.presentation.SearchViewModel
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
-import java.util.Locale
+import com.example.playlistmaker.search.presentation.TRACK_LIST_STATE
 
 class SearchActivity : AppCompatActivity() {
 
-    private val KEY_FOR_SEARCH_FIELD = "SEARCH_FIELD_STATE_KEY"
-    private val KEY_FOR_SEARCH_STATE = "STATE_KEY_SEARCH_STATE"
-    private val KEY_FOR_SEARCH_STATE_TRACKS = "STATE_KEY_SEARCH_STATE_INFO"
-    private var searchText: String = ""
-    private val itunesApi: ItunesApi = ItunesApi()
-    private var STATE = TRACK_LIST_STATE.FIRST_VISIT
     private lateinit var tracksList: RecyclerView
     private lateinit var adapter: TrackAdapter
-    private lateinit var textField: SearchTextField
 
     private lateinit var presenter: SearchViewModel
     private lateinit var binding: ActivitySearchBinding
@@ -45,304 +32,166 @@ class SearchActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        presenter = ViewModelProvider(this).get(SearchViewModel::class.java)
+        presenter = ViewModelProvider(this, SearchViewModel.Factory(application))[SearchViewModel::class.java]
 
-        tracksList = findViewById(R.id.tracksList)
+        tracksList = binding.tracksList
 
-        adapter = TrackAdapter()
+        adapter = TrackAdapter(presenter::onTrackClicked, presenter::clearHistory)
 
         tracksList.adapter = adapter
-
-        MusicPlayer.setOnCompleteCallback(adapter::updateTracks)
-
-        textField = SearchTextField(
-            activity = this,
-            editText = findViewById<EditText>(R.id.editText),
-            clearButton = findViewById<View>(R.id.editText_delete),
-            onTextChanged = ::onTextChanged,
-            onAction = ::searchOnItunes,
-            onFocusChanged = ::onFocusChanged
-        )
 
         binding.buttonToMainScreen.setOnClickListener {
             this.finish()
         }
 
         binding.noInternetButton.setOnClickListener {
-            searchOnItunes(searchText)
+            presenter.searchOnITunes()
         }
 
-        textField.activate()
+        presenter.getLiveData().observe(this) {
 
-        presenter.getSearchTextLiveData().observe(this){
-            binding.editText.setText(it)
-        }
+            Log.d("TEST_API", it.toString())
 
-        presenter.onCreate()
-    }
+            when (it) {
 
-    private fun setScreenState(state: TRACK_LIST_STATE, jsonTracks: String = "") {
-
-        val noTracks = findViewById<View>(R.id.no_tracks)
-        val noInternet = findViewById<View>(R.id.no_internet)
-        val trackListTitle = findViewById<View>(R.id.tracksListTitle)
-        val elements: List<View> = listOf(tracksList, noTracks, noInternet, trackListTitle)
-
-        STATE = state
-        STATE.jsonTracks = jsonTracks
-
-        elements.forEach { it.visibility = View.GONE }
-
-        when (STATE) {
-            TRACK_LIST_STATE.FIRST_VISIT -> {}
-            TRACK_LIST_STATE.HISTORY_EMPTY -> {}
-            TRACK_LIST_STATE.HISTORY_GONE -> {}
-            TRACK_LIST_STATE.HISTORY_VISIBLE -> {
-                trackListTitle.visibility = View.VISIBLE
-                tracksList.visibility = View.VISIBLE
-            }
-
-            TRACK_LIST_STATE.SEARCH_VISIBLE -> {
-                tracksList.visibility = View.VISIBLE
-            }
-
-            TRACK_LIST_STATE.SEARCH_EMPTY -> {
-                noTracks.visibility = View.VISIBLE
-            }
-
-            TRACK_LIST_STATE.SEARCH_FAIL -> {
-                noInternet.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    private fun onFocusChanged(str: String, hasFocus: Boolean) {
-
-        switchHistoryVisibility(str, hasFocus)
-    }
-
-    private fun onTextChanged(str: String, hasFocus: Boolean) {
-
-        searchText = str
-
-        switchHistoryVisibility(str, hasFocus)
-    }
-
-    private fun switchHistoryVisibility(str: String, hasFocus: Boolean) {
-
-        val isVisible = str.isEmpty() && hasFocus
-
-        if (isVisible) {
-
-            when (STATE) {
-                TRACK_LIST_STATE.FIRST_VISIT -> showHistoryList()
-                TRACK_LIST_STATE.HISTORY_VISIBLE -> {}
-                TRACK_LIST_STATE.HISTORY_GONE -> setScreenState(TRACK_LIST_STATE.HISTORY_VISIBLE)
-                TRACK_LIST_STATE.HISTORY_EMPTY -> {}
-                TRACK_LIST_STATE.SEARCH_VISIBLE -> showHistoryList()
-                TRACK_LIST_STATE.SEARCH_EMPTY -> showHistoryList()
-                TRACK_LIST_STATE.SEARCH_FAIL -> showHistoryList()
-            }
-
-        } else if (STATE == TRACK_LIST_STATE.HISTORY_VISIBLE) {
-
-            setScreenState(TRACK_LIST_STATE.HISTORY_GONE)
-        }
-    }
-
-    private fun showHistoryList() {
-
-        if (adapter.hasClearButton) {
-            //История прослущиваний уже на экране. Просто показываем ее
-
-            setScreenState(TRACK_LIST_STATE.HISTORY_VISIBLE)
-        } else {
-            //Загружаем историю прослущиваний и показываем если она есть
-
-            SearchHistory.loadTracksList()?.let {
-                if (it.size > 0) {
-                    setScreenState(
-                        TRACK_LIST_STATE.HISTORY_VISIBLE, SearchHistory.toJson(it)
-                    )
-                    showTracks(it, true)
-                    tracksList.smoothScrollToPosition(0)
-                } else {
-                    setScreenState(TRACK_LIST_STATE.HISTORY_EMPTY)
+                is SearchData.ProgressBar -> {
+                    binding.progressBar.visibility = if (it.visible) View.VISIBLE else View.GONE
                 }
-            } ?: run {
 
-                setScreenState(TRACK_LIST_STATE.HISTORY_EMPTY)
+                is SearchData.SearchText -> {
+                    binding.editText.setText(it.text)
+                    binding.editTextDelete.visibility = if (it.text.isEmpty()) {
+                        View.GONE
+                    } else {
+                        View.VISIBLE
+                    }
+                }
+
+                is SearchData.TrackList -> {
+
+                    val STATE = it.state
+
+                    val elements: List<View> = listOf(
+                        tracksList,
+                        binding.noTracks,
+                        binding.noInternet,
+                        binding.tracksListTitle
+                    )
+
+                    elements.forEach { view ->
+                        view.visibility = View.GONE
+                    }
+
+                    when (STATE) {
+                        TRACK_LIST_STATE.FIRST_VISIT -> {}
+                        TRACK_LIST_STATE.HISTORY_EMPTY -> {}
+                        TRACK_LIST_STATE.HISTORY_GONE -> {}
+                        TRACK_LIST_STATE.HISTORY_VISIBLE -> {
+                            binding.tracksListTitle.visibility = View.VISIBLE
+                            tracksList.visibility = View.VISIBLE
+                        }
+
+                        TRACK_LIST_STATE.SEARCH_VISIBLE -> {
+                            tracksList.visibility = View.VISIBLE
+                        }
+
+                        TRACK_LIST_STATE.SEARCH_EMPTY -> {
+                            binding.noTracks.visibility = View.VISIBLE
+                        }
+
+                        TRACK_LIST_STATE.SEARCH_FAIL -> {
+                            binding.noInternet.visibility = View.VISIBLE
+                        }
+                    }
+
+                    STATE.tracks?.let { tracks ->
+                        showTracksList(tracks, STATE == TRACK_LIST_STATE.HISTORY_VISIBLE)
+                    } ?: run {
+                        clearTracksList()
+                    }
+                }
             }
         }
+
+        initTextField(binding.editText)
     }
 
-    private fun clearHistory() {
-        showTracks(emptyList())
-        setScreenState(TRACK_LIST_STATE.FIRST_VISIT)
-        SearchHistory.clearHistory()
-        MusicPlayer.destroy()
-    }
-
-    private fun showTracks(tracks: List<Track>, showClearButton: Boolean = false) {
+    private fun showTracksList(tracks: List<Track>, showClearButton: Boolean = false) {
 
         adapter.tracks.clear()
 
         tracks.forEach {
-            it.isPlaying = MusicPlayer.isPlayingNow(it)
             adapter.tracks.add(it)
         }
 
-        if (showClearButton) {
-
-            adapter.showClearButton(::clearHistory) {
-                tracksList.scrollToPosition(it)
-            }
-
-        } else {
-            adapter.showClearButton(null)
-        }
+        adapter.showClearButton(showClearButton)
 
         adapter.notifyDataSetChanged()
-
-        if (tracks.none { it.isPlaying }) {
-            MusicPlayer.destroy()
-        }
     }
 
-    private fun searchOnItunes(textToSearch: String) {
-        if (textToSearch.isNotBlank()) {
-            itunesApi.search(
-                textToSearch.trim(), ::onSearchSuccess, ::onSearchEmpty, ::onSearchFail
-            )
-
-            showProgressBar()
-        }
+    private fun clearTracksList() {
+        adapter.tracks.clear()
+        adapter.showClearButton(false)
+        adapter.notifyDataSetChanged()
     }
 
-    private fun showProgressBar() {
-        findViewById<View>(R.id.progressBar).visibility = View.VISIBLE
-    }
+    private fun initTextField(editText: EditText) {
 
-    private fun hideProgressBar() {
-        findViewById<View>(R.id.progressBar).visibility = View.GONE
-    }
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
-    private fun getStringResourceByName(aString: String?): String? {
+            }
 
-        if (aString != null) {
-            try {
-                val resId: Int = resources.getIdentifier(aString, "string", packageName);
-                return getString(resId);
-            } catch (_: Resources.NotFoundException) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+                val text = editText.text.toString()
+
+                binding.editTextDelete.visibility = if (text.isEmpty()) {
+                    View.GONE
+                } else {
+                    View.VISIBLE
+                }
+
+                presenter.onTextChanged(text)
+            }
+        })
+
+        editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                presenter.onActionButton()
+                closeKeyboard()
+                true
+            } else {
+                false
             }
         }
 
-        return null;
-    }
-
-    private fun getReleaseYear(releaseDate: String?): String? {
-        val format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-
-        releaseDate?.let {
-            try {
-                val date = LocalDate.parse(it, format)
-                return date.year.toString()
-            } catch (_: DateTimeParseException) {
-            }
+        editText.setOnFocusChangeListener { _, hasFocus ->
+            presenter.onFocusChanged(hasFocus)
         }
 
-        return null
+        binding.editTextDelete.setOnClickListener {
+            editText.setText("")
+            closeKeyboard()
+        }
     }
 
-    private fun onSearchSuccess(itunesTracks: List<ItunesTrack>) {
+    private fun closeKeyboard() {
 
-        val tracks: MutableList<Track> = mutableListOf()
+        val view = currentFocus
 
-        for (item in itunesTracks) {
+        if (view != null) {
 
-            val track = Track(
-                trackId = item.trackId,
-                trackName = item.trackName ?: "-",
-                artistName = item.artistName ?: "-",
-                trackTime = SimpleDateFormat(
-                    "mm:ss",
-                    Locale.getDefault()
-                ).format(item.trackTimeMillis),
-                trackCover = item.artworkUrl100 ?: "",
-                previewUrl = item.previewUrl ?: "",
-                albumName = item.collectionName ?: "-",
-                country = getStringResourceByName("country_code_" + item.country) ?: "-",
-                genre = item.primaryGenreName ?: "-",
-                albumYear = getReleaseYear(item.releaseDate) ?: "-"
+            val manager = baseContext.getSystemService(
+                INPUT_METHOD_SERVICE
+            ) as InputMethodManager
+            manager.hideSoftInputFromWindow(
+                view.windowToken, 0
             )
-
-            tracks.add(track)
-        }
-
-        setScreenState(TRACK_LIST_STATE.SEARCH_VISIBLE, SearchHistory.toJson(tracks))
-
-        showTracks(tracks)
-
-        tracksList.smoothScrollToPosition(0)
-
-        hideProgressBar()
-    }
-
-    private fun onSearchEmpty() {
-
-        setScreenState(TRACK_LIST_STATE.SEARCH_EMPTY)
-
-        hideProgressBar()
-    }
-
-    private fun onSearchFail(textToSearch: String, error: ItunesError? = null) {
-
-        setScreenState(TRACK_LIST_STATE.SEARCH_FAIL, textToSearch)
-
-        hideProgressBar()
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        //восстанавливаем состояние при повороте экрана или смене темы
-
-        savedInstanceState.let {
-
-            searchText = it.getString(KEY_FOR_SEARCH_FIELD, "")
-
-            textField.setText(searchText)
-
-            setScreenState(
-                state = TRACK_LIST_STATE.find(it.getInt(KEY_FOR_SEARCH_STATE, 0)),
-                jsonTracks = it.getString(KEY_FOR_SEARCH_STATE_TRACKS, "")
-            )
-
-            when (STATE) {
-                TRACK_LIST_STATE.FIRST_VISIT -> {}
-                TRACK_LIST_STATE.HISTORY_EMPTY -> {}
-                TRACK_LIST_STATE.HISTORY_GONE -> restoreTracksOnStart(STATE.jsonTracks, true)
-                TRACK_LIST_STATE.HISTORY_VISIBLE -> restoreTracksOnStart(STATE.jsonTracks, true)
-                TRACK_LIST_STATE.SEARCH_VISIBLE -> restoreTracksOnStart(STATE.jsonTracks)
-                TRACK_LIST_STATE.SEARCH_EMPTY -> {}
-                TRACK_LIST_STATE.SEARCH_FAIL -> {}
-            }
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(KEY_FOR_SEARCH_FIELD, searchText)
-        outState.putInt(KEY_FOR_SEARCH_STATE, STATE.num)
-        outState.putString(KEY_FOR_SEARCH_STATE_TRACKS, SearchHistory.toJson(adapter.tracks))
-    }
-
-    private fun restoreTracksOnStart(json: String, showClearButton: Boolean = false) {
-
-        SearchHistory.jsonToTracks(json)?.let {
-            showTracks(it, showClearButton)
-        } ?: run {
-            setScreenState(TRACK_LIST_STATE.FIRST_VISIT)
         }
     }
 }

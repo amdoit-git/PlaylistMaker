@@ -7,8 +7,7 @@ import com.example.playlistmaker.common.domain.models.Track
 
 open class SearchActivityHolder(view: View) : RecyclerView.ViewHolder(view), DpToPx {
 
-    open fun bind(track: Track, updateTracks: (Int) -> Unit, isClickAllowed:()->Boolean) {}
+    open fun bind(track: Track, onTrackClick: (Track) -> Unit) {}
 
-    open fun onButtonClick(callback: (() -> Unit)?) {}
-
+    open fun onButtonClick(callback: () -> Unit) {}
 }

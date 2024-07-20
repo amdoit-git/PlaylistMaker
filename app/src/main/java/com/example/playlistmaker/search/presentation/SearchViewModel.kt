@@ -1,19 +1,25 @@
 package com.example.playlistmaker.search.presentation
 
+import android.app.Application
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.common.domain.consumer.Consumer
 import com.example.playlistmaker.common.domain.consumer.ConsumerData
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.common.presentation.LiveDataWithStartDataSet
 import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.player.ui.PlayerScreenActivity
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel(private val application: Application) : ViewModel() {
 
     private val history = Creator.provideTracksHistoryInteractor()
-    private val iTunes = Creator.provideITunesInteractor()
+    private val iTunes = Creator.provideITunesInteractor(application.applicationContext)
 
     private val liveData = LiveDataWithStartDataSet<SearchData>()
 
@@ -25,6 +31,12 @@ class SearchViewModel : ViewModel() {
     private var STATE = TRACK_LIST_STATE.FIRST_VISIT
     private var tracksInHistory: List<Track>? = null
 
+    private var trackClickAllowed = true
+
+    fun getLiveData(): LiveData<SearchData> {
+        return liveData
+    }
+
 
     fun onTextChanged(text: String) {
 
@@ -33,12 +45,17 @@ class SearchViewModel : ViewModel() {
         handler.removeCallbacksAndMessages(obj)
 
         handler.postAtTime({
-            search(searchText)
+            searchOnITunes()
         }, obj, 2000L + SystemClock.uptimeMillis())
 
         switchHistoryVisibility()
 
         liveData.setValueForStartOnly(SearchData.SearchText(searchText))
+    }
+
+    fun onActionButton() {
+        searchOnITunes()
+        handler.removeCallbacksAndMessages(obj)
     }
 
     fun onFocusChanged(hasFocus: Boolean) {
@@ -73,7 +90,9 @@ class SearchViewModel : ViewModel() {
             tracksInHistory = null
         }
 
-        liveData.postValue(SearchData.TrackList(STATE))
+        Log.d("TEST_API", STATE.toString())
+
+        liveData.setValue(SearchData.TrackList(STATE))
     }
 
     private fun showHistory() {
@@ -89,28 +108,47 @@ class SearchViewModel : ViewModel() {
         }
     }
 
-    fun onActionButton() {
+    fun onTrackClicked(track: Track) {
 
-        search(searchText)
+        if (!isClickAllowed()) return Unit;
+
+        history.save(track)
+
+        val intent = Intent(application.applicationContext, PlayerScreenActivity::class.java)
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        intent.putExtra("track", history.toJson(track));
+
+        application.applicationContext.startActivity(intent)
+
+        tracksInHistory = null
     }
 
-    fun onTrackClicked() {
-
+    private fun isClickAllowed(): Boolean {
+        if(trackClickAllowed){
+            trackClickAllowed = false
+            handler.postDelayed({
+                trackClickAllowed = true
+            }, 1000L)
+            return true
+        }
+        return false
     }
 
-    fun onHistoryClearButtonClicked() {
+    fun clearHistory() {
         tracksInHistory = null
         history.clear()
         changeState(TRACK_LIST_STATE.HISTORY_EMPTY)
     }
 
-    private fun search(text: String) {
+    fun searchOnITunes() {
 
-        if (text.isBlank()) return;
+        if (searchText.isBlank()) return;
 
         liveData.postValue(SearchData.ProgressBar(true))
 
-        iTunes.search(text, object : Consumer<List<Track>> {
+        iTunes.search(searchText, object : Consumer<List<Track>> {
             override fun consume(data: ConsumerData<List<Track>>) {
 
                 when (data) {
@@ -132,5 +170,13 @@ class SearchViewModel : ViewModel() {
     override fun onCleared() {
         iTunes.cancel()
         super.onCleared()
+    }
+
+    class Factory(private val application: Application) :
+        ViewModelProvider.AndroidViewModelFactory(application) {
+
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return SearchViewModel(application) as T
+        }
     }
 }
