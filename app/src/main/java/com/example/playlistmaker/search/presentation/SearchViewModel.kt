@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -90,8 +89,6 @@ class SearchViewModel(private val application: Application) : ViewModel() {
             tracksInHistory = null
         }
 
-        Log.d("TEST_API", STATE.toString())
-
         liveData.setValue(SearchData.TrackList(STATE))
     }
 
@@ -123,10 +120,15 @@ class SearchViewModel(private val application: Application) : ViewModel() {
         application.applicationContext.startActivity(intent)
 
         tracksInHistory = null
+
+        if (STATE == TRACK_LIST_STATE.HISTORY_VISIBLE) {
+            liveData.setValueOnce(SearchData.MoveToTop(track))
+            //showHistory()
+        }
     }
 
     private fun isClickAllowed(): Boolean {
-        if(trackClickAllowed){
+        if (trackClickAllowed) {
             trackClickAllowed = false
             handler.postDelayed({
                 trackClickAllowed = true
@@ -146,7 +148,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
 
         if (searchText.isBlank()) return;
 
-        liveData.postValue(SearchData.ProgressBar(true))
+        liveData.setValue(SearchData.ProgressBar(true))
 
         iTunes.search(searchText, object : Consumer<List<Track>> {
             override fun consume(data: ConsumerData<List<Track>>) {
@@ -162,7 +164,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
                     }
                 }
 
-                liveData.postValue(SearchData.ProgressBar(false))
+                liveData.setValue(SearchData.ProgressBar(false))
             }
         })
     }

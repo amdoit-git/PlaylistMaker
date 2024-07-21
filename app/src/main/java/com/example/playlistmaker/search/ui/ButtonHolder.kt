@@ -17,11 +17,13 @@ class ButtonHolder(private val binding: ClearSearchHistoryButtonBinding) :
     companion object {
 
         fun create(parent: ViewGroup): ButtonHolder {
-            return ButtonHolder(ClearSearchHistoryButtonBinding.inflate(LayoutInflater.from(parent.context)))
-//            return ButtonHolder(
-//                LayoutInflater.from(parent.context)
-//                    .inflate(R.layout.clear_search_history_button, parent, false)
-//            )
+            return ButtonHolder(
+                ClearSearchHistoryButtonBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
         }
     }
 }

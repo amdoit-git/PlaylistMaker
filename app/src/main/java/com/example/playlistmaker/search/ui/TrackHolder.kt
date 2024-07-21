@@ -27,12 +27,13 @@ class TrackHolder(private val binding: TrackInListBinding) : SearchActivityHolde
     companion object {
         fun create(parent: ViewGroup): TrackHolder {
 
-            return TrackHolder(TrackInListBinding.inflate(LayoutInflater.from(parent.context)))
-
-
-//            return TrackHolder(
-//                LayoutInflater.from(parent.context).inflate(R.layout.track_in_list, parent, false)
-//            )
+            return TrackHolder(
+                TrackInListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
         }
     }
 }

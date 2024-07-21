@@ -7,6 +7,7 @@ import com.example.playlistmaker.common.domain.models.Track
 class TrackAdapter(
     private val onTrackClick: (Track) -> Unit,
     private val onButtonClick: () -> Unit,
+    private val scrollListToTop: () -> Unit,
     val tracks: MutableList<Track> = mutableListOf()
 ) : RecyclerView.Adapter<SearchActivityHolder>() {
 
@@ -39,6 +40,25 @@ class TrackAdapter(
 
     fun showClearButton(visible: Boolean) {
         hasClearButton = visible
+    }
+
+    fun moveTrackToTop(track: Track) {
+
+        var index = 0
+
+        tracks.forEachIndexed { i, item ->
+            if (item.trackId == track.trackId) {
+                index = i
+            }
+        }
+
+        if (index > 0) {
+            tracks.add(0, tracks.removeAt(index))
+
+            scrollListToTop()
+
+            this.notifyItemMoved(index, 0)
+        }
     }
 
     companion object {

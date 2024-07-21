@@ -3,10 +3,12 @@ package com.example.playlistmaker.common.presentation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import java.util.concurrent.atomic.AtomicBoolean
 
 class LiveDataWithStartDataSet<T : Any> : MutableLiveData<T>() {
 
     private val classMap = mutableMapOf<Class<out T>, T>()
+    private val pending = AtomicBoolean(false)
 
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
 
@@ -22,7 +24,10 @@ class LiveDataWithStartDataSet<T : Any> : MutableLiveData<T>() {
 
                 getAll = false
             } else {
-                observer.onChanged(t)
+
+                if(classMap.contains(t::class.java) || pending.compareAndSet(true, false)){
+                    observer.onChanged(t)
+                }
             }
         }
     }
@@ -39,5 +44,10 @@ class LiveDataWithStartDataSet<T : Any> : MutableLiveData<T>() {
 
     fun setValueForStartOnly(value: T) {
         classMap[value::class.java] = value
+    }
+
+    fun setValueOnce(value: T){
+        pending.set(true)
+        super.setValue(value)
     }
 }

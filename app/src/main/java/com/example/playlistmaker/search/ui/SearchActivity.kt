@@ -36,7 +36,7 @@ class SearchActivity : AppCompatActivity() {
 
         tracksList = binding.tracksList
 
-        adapter = TrackAdapter(presenter::onTrackClicked, presenter::clearHistory)
+        adapter = TrackAdapter(presenter::onTrackClicked, presenter::clearHistory, ::scrollListToTop)
 
         tracksList.adapter = adapter
 
@@ -49,8 +49,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         presenter.getLiveData().observe(this) {
-
-            Log.d("TEST_API", it.toString())
 
             when (it) {
 
@@ -110,10 +108,18 @@ class SearchActivity : AppCompatActivity() {
                         clearTracksList()
                     }
                 }
+
+                is SearchData.MoveToTop -> {
+                    adapter.moveTrackToTop(it.track)
+                }
             }
         }
 
         initTextField(binding.editText)
+    }
+
+    private fun scrollListToTop(){
+        tracksList.scrollToPosition(0)
     }
 
     private fun showTracksList(tracks: List<Track>, showClearButton: Boolean = false) {
@@ -127,6 +133,8 @@ class SearchActivity : AppCompatActivity() {
         adapter.showClearButton(showClearButton)
 
         adapter.notifyDataSetChanged()
+
+        tracksList.smoothScrollToPosition(0)
     }
 
     private fun clearTracksList() {
