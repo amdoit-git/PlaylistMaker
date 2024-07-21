@@ -12,8 +12,8 @@ import com.example.playlistmaker.common.domain.consumer.Consumer
 import com.example.playlistmaker.common.domain.consumer.ConsumerData
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.common.presentation.LiveDataWithStartDataSet
+import com.example.playlistmaker.common.presentation.SCREEN_NAME
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.player.ui.PlayerScreenActivity
 
 class SearchViewModel(private val application: Application) : ViewModel() {
 
@@ -49,7 +49,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
 
         switchHistoryVisibility()
 
-        liveData.setValueForStartOnly(SearchData.SearchText(searchText))
+        liveData.setStartValue(SearchData.SearchText(searchText))
     }
 
     fun onActionButton() {
@@ -111,7 +111,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
 
         history.save(track)
 
-        val intent = Intent(application.applicationContext, PlayerScreenActivity::class.java)
+        val intent = Intent(application.applicationContext, SCREEN_NAME.PLAYER.className)
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
@@ -122,7 +122,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
         tracksInHistory = null
 
         if (STATE == TRACK_LIST_STATE.HISTORY_VISIBLE) {
-            liveData.setValueOnce(SearchData.MoveToTop(track))
+            liveData.setSingleEventValue(SearchData.MoveToTop(track))
             //showHistory()
         }
     }

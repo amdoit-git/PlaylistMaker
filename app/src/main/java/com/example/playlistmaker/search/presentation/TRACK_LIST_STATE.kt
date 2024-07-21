@@ -12,11 +12,4 @@ enum class TRACK_LIST_STATE(val num: Int, var tracks: List<Track>? = null) {
     SEARCH_VISIBLE(5),//на экране список треков найденный в поиске
     SEARCH_EMPTY(6),//ошибка поиска "ничего ненайдено"
     SEARCH_FAIL(7);//ошибка поиска "проблемы с сетью, повторите запрос"
-
-    companion object {
-
-        fun find(num: Int): TRACK_LIST_STATE {
-            return entries.firstOrNull { it.num == num } ?: FIRST_VISIT
-        }
-    }
 }

@@ -35,7 +35,7 @@ class ITunesInteractorImpl(private val context: Context) : ITunesInteractor {
         }
 
         thread =
-            ITunesSearchThread(api = api, searchText = text, consumer = consumer, context = context)
+            ITunesSearchThread(api = api, searchText = text, consumer = consumer)
 
         thread?.start()
     }

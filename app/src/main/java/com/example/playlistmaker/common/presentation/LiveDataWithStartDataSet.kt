@@ -42,11 +42,11 @@ class LiveDataWithStartDataSet<T : Any> : MutableLiveData<T>() {
         super.setValue(value)
     }
 
-    fun setValueForStartOnly(value: T) {
+    fun setStartValue(value: T) {
         classMap[value::class.java] = value
     }
 
-    fun setValueOnce(value: T){
+    fun setSingleEventValue(value: T){
         pending.set(true)
         super.setValue(value)
     }

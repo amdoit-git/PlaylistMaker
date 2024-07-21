@@ -3,6 +3,7 @@ package com.example.playlistmaker
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.common.data.GetStringResource
 import com.example.playlistmaker.common.data.SearchHistory
 
 const val APP_SETTINGS_PREFERENCES = "APP_SETTINGS_PREFERENCES"
@@ -17,6 +18,7 @@ class App : Application() {
         sharedPrefs = getSharedPreferences(APP_SETTINGS_PREFERENCES, MODE_PRIVATE)
         restoreTheme()
         SearchHistory.setSharedPreferences(sharedPrefs)
+        GetStringResource.setApplication(this)
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {

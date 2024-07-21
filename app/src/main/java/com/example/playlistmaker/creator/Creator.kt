@@ -5,10 +5,10 @@ import com.example.playlistmaker.player.data.impl.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.player.data.impl.TracksHistoryRepositoryImpl
 import com.example.playlistmaker.player.domain.repository.MediaPlayerInteractor
 import com.example.playlistmaker.player.domain.repository.MediaPlayerRepository
-import com.example.playlistmaker.player.domain.repository.TrackHistoryInteractor
-import com.example.playlistmaker.player.domain.repository.TracksHistoryRepository
+import com.example.playlistmaker.common.domain.repository.TrackHistoryInteractor
+import com.example.playlistmaker.common.domain.repository.TracksHistoryRepository
 import com.example.playlistmaker.player.domain.impl.MediaPlayerInteractorImpl
-import com.example.playlistmaker.player.domain.impl.TracksHistoryInteractorImpl
+import com.example.playlistmaker.common.domain.impl.TracksHistoryInteractorImpl
 import com.example.playlistmaker.search.data.impl.ITunesInteractorImpl
 import com.example.playlistmaker.search.domain.repository.ITunesInteractor
 

@@ -1,8 +1,8 @@
-package com.example.playlistmaker.player.domain.impl
+package com.example.playlistmaker.common.domain.impl
 
 import com.example.playlistmaker.common.domain.models.Track
-import com.example.playlistmaker.player.domain.repository.TrackHistoryInteractor
-import com.example.playlistmaker.player.domain.repository.TracksHistoryRepository
+import com.example.playlistmaker.common.domain.repository.TrackHistoryInteractor
+import com.example.playlistmaker.common.domain.repository.TracksHistoryRepository
 
 class TracksHistoryInteractorImpl(private val repository: TracksHistoryRepository) :
     TrackHistoryInteractor {

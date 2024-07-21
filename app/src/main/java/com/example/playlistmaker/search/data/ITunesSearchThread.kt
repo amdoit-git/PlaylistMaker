@@ -1,9 +1,7 @@
 package com.example.playlistmaker.search.data
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.example.playlistmaker.common.domain.consumer.Consumer
 import com.example.playlistmaker.common.domain.consumer.ConsumerData
 import com.example.playlistmaker.common.domain.models.Track
@@ -14,8 +12,7 @@ import java.io.IOException
 class ITunesSearchThread(
     private val api: Itunes,
     private val searchText: String,
-    private val consumer: Consumer<List<Track>>,
-    private val context: Context
+    private val consumer: Consumer<List<Track>>
 ) : Thread() {
 
     private val handler = Handler(Looper.getMainLooper())
@@ -37,7 +34,7 @@ class ITunesSearchThread(
                                     consumer.consume(
                                         ConsumerData.Data(
                                             value = ITunesTrackToTrackMapper.map(
-                                                it.results, context
+                                                it.results
                                             )
                                         )
                                     )

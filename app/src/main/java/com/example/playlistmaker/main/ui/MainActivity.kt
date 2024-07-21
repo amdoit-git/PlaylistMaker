@@ -1,43 +1,38 @@
 package com.example.playlistmaker.main.ui
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.MusicPlayer
-import com.example.playlistmaker.PlayListActivity
-import com.example.playlistmaker.R
-import com.example.playlistmaker.search.ui.SearchActivity
-import com.example.playlistmaker.settings.ui.SettingsActivity
+import androidx.lifecycle.ViewModelProvider
+import com.example.playlistmaker.databinding.ActivityMainBinding
+import com.example.playlistmaker.main.presentation.MainViewModel
+import com.example.playlistmaker.common.presentation.SCREEN_NAME
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var presenter: MainViewModel
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        val b_search = findViewById<View>(R.id.button_search)
-        val b_play_list = findViewById<View>(R.id.button_play_list)
-        val b_settings = findViewById<View>(R.id.button_settings)
+        binding = ActivityMainBinding.inflate(layoutInflater)
 
-        b_search.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
+        setContentView(binding.root)
+
+        presenter =
+            ViewModelProvider(this, MainViewModel.Factory(application))[MainViewModel::class.java]
+
+        binding.buttonSearch.setOnClickListener {
+            presenter.openScreen(SCREEN_NAME.SEARCH)
         }
 
-        b_play_list.setOnClickListener {
-            val intent = Intent(this, PlayListActivity::class.java)
-            startActivity(intent)
+        binding.buttonPlayList.setOnClickListener {
+            presenter.openScreen(SCREEN_NAME.PLAYLIST)
         }
 
-        b_settings.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
+        binding.buttonSettings.setOnClickListener {
+            presenter.openScreen(SCREEN_NAME.SETTINGS)
         }
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        MusicPlayer.destroy()
     }
 }

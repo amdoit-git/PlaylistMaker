@@ -31,7 +31,7 @@ class PlayerScreenViewModel(private val application: Application, jsonTrack: Str
 
         history.jsonToTrack(jsonTrack)?.let {
             track = it
-            liveData.postValue(PlayerScreenData.TrackData(track = track))
+            liveData.setValue(PlayerScreenData.TrackData(track = track))
             player.setDataSource(track.previewUrl)
             player.setDisplayPorts(::showPlayProgress, null, ::onPlayingStopped, ::onPlayerError)
         }
@@ -70,14 +70,14 @@ class PlayerScreenViewModel(private val application: Application, jsonTrack: Str
         handlerToast.removeCallbacksAndMessages(obj)
 
         handlerToast.postAtTime({
-            liveData.postValue(PlayerScreenData.ToastMessage(message = "", isVisible = false))
+            liveData.setValue(PlayerScreenData.ToastMessage(message = "", isVisible = false))
         }, obj, seconds * 1000L + SystemClock.uptimeMillis())
 
-        liveData.postValue(PlayerScreenData.ToastMessage(message = message, isVisible = true))
+        liveData.setValue(PlayerScreenData.ToastMessage(message = message, isVisible = true))
     }
 
     private fun displayProgress() {
-        liveData.postValue(trackProgress)
+        liveData.setValue(trackProgress)
     }
 
     private fun getString(id: Int): String {
