@@ -57,8 +57,8 @@ class MediaPlayerService {
         }
 
         fun setDataSource(url: String) {
-
-            Companion.url = url;
+            isError = false
+            this.url = url;
             mediaPlayer.reset()
             isPrepared = false
             mediaPlayer.setAudioAttributes(
