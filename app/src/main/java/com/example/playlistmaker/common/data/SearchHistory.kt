@@ -11,7 +11,7 @@ class SearchHistory {
 
     companion object {
 
-        const val LAST_VIEWED_TRACKS = "LAST_VIEWED_TRACKS"
+        private const val LAST_VIEWED_TRACKS = "LAST_VIEWED_TRACKS"
         private const val MAX_TRACKS_IN_LIST: Int = 10
         private var sharedPrefs: SharedPreferences? = null
         private val gson = Gson()
@@ -40,7 +40,7 @@ class SearchHistory {
             return null
         }
 
-        fun jsonToTrack(json: String): Track?{
+        fun jsonToTrack(json: String): Track? {
             try {
                 val track: Track = gson.fromJson(json, Track::class.java)
                 return track.getTrack()
@@ -62,7 +62,8 @@ class SearchHistory {
 
         fun saveTrackInList(track: Track) {
 
-            val tracks: MutableList<Track> = mutableListOf(track.copy(isPlaying = false, inFavorite = false, isLiked = false))
+            val tracks: MutableList<Track> =
+                mutableListOf(track.copy(isPlaying = false, inFavorite = false, isLiked = false))
 
             loadTracksList()?.let {
                 val loadedTracks = it.filter { t -> t.trackId != track.trackId }

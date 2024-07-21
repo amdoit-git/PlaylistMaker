@@ -1,6 +1,5 @@
 package com.example.playlistmaker.common.domain.repository
 
-
 import com.example.playlistmaker.common.domain.models.Track
 
 interface TracksHistoryRepository {

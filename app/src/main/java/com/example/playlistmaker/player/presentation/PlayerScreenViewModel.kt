@@ -88,6 +88,18 @@ class PlayerScreenViewModel(private val application: Application, jsonTrack: Str
         return liveData
     }
 
+    fun addToFavorite(){
+        showToast(String.format(
+            getString(R.string.player_screen_add_to_favorite), track.trackName
+        ))
+    }
+
+    fun removeFromFavorite(){
+        showToast(String.format(
+            getString(R.string.player_screen_remove_from_favorite), track.trackName
+        ))
+    }
+
     override fun onCleared() {
         super.onCleared()
         player.resetDisplayPorts()

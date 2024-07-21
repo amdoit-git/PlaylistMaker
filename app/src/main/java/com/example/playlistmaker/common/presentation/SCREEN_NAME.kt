@@ -1,7 +1,7 @@
 package com.example.playlistmaker.common.presentation
 
 import android.app.Activity
-import com.example.playlistmaker.PlayListActivity
+import com.example.playlistmaker.favorite.ui.PlayListActivity
 import com.example.playlistmaker.player.ui.PlayerScreenActivity
 import com.example.playlistmaker.search.ui.SearchActivity
 import com.example.playlistmaker.settings.ui.SettingsActivity

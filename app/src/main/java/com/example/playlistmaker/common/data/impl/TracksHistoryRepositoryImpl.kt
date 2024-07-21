@@ -1,4 +1,4 @@
-package com.example.playlistmaker.player.data.impl
+package com.example.playlistmaker.common.data.impl
 
 import com.example.playlistmaker.common.data.SearchHistory
 import com.example.playlistmaker.common.domain.models.Track

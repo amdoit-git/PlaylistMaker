@@ -1,63 +1,60 @@
 package com.example.playlistmaker.settings.ui
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.App
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
-import com.google.android.material.switchmaterial.SwitchMaterial
+import com.example.playlistmaker.common.domain.models.EmailData
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.example.playlistmaker.settings.presentation.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySettingsBinding
+    private lateinit var presenter: SettingsViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
 
-        val b_to_main_screen = findViewById<View>(R.id.button_to_main_screen)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
 
-        b_to_main_screen.setOnClickListener {
+        setContentView(binding.root)
+
+        presenter = ViewModelProvider(
+            this, SettingsViewModel.Factory(application)
+        )[SettingsViewModel::class.java]
+
+        binding.buttonToMainScreen.setOnClickListener {
             this.finish()
         }
 
-        val b_share = findViewById<View>(R.id.button_share)
-
-        b_share.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_text))
-            intent.type = "text/plain"
-            val shareIntent = Intent.createChooser(intent, null)
-            startActivity(shareIntent)
-            //startActivity(intent)
+        binding.buttonShare.setOnClickListener {
+            presenter.share(
+                text = getString(R.string.settings_share_text)
+            )
         }
 
-        val b_support = findViewById<View>(R.id.button_support_email)
-
-        b_support.setOnClickListener {
-            var email: String = getString(R.string.settings_email_address)
-            val intent = Intent(Intent.ACTION_SENDTO)
-            intent.data = Uri.parse("mailto:")
-            intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
-            intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.settings_email_subject))
-            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_email_text))
-            startActivity(intent)
+        binding.buttonSupportEmail.setOnClickListener {
+            presenter.sendEmail(
+                EmailData(
+                    email = getString(R.string.settings_email_address),
+                    subject = getString(R.string.settings_email_subject),
+                    text = getString(R.string.settings_email_text)
+                )
+            )
         }
 
-        val b_user_agreement = findViewById<View>(R.id.button_user_agreement)
-
-        b_user_agreement.setOnClickListener {
-            var url: String = getString(R.string.settings_user_agreement_url)
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(url)
-            startActivity(intent)
+        binding.buttonUserAgreement.setOnClickListener {
+            presenter.openUrl(
+                url = getString(R.string.settings_user_agreement_url)
+            )
         }
 
-        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
-
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            val app = this.applicationContext as App
-            app.switchTheme(checked)
-            app.saveTheme(checked)
+        binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            if (switcher.isPressed) {
+                presenter.switchTheme(checked)
+            }
         }
     }
 }

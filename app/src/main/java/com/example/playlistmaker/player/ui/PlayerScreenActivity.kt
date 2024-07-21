@@ -87,18 +87,11 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
                 if (button.isPressed) {
 
-                    presenter.showToast(
-                        if (isChecked) {
-                            String.format(
-                                getString(R.string.player_screen_add_to_favorite), "track.trackName"
-                            )
-                        } else {
-                            String.format(
-                                getString(R.string.player_screen_remove_from_favorite),
-                                "track.trackName"
-                            )
-                        }
-                    )
+                    if (isChecked) {
+                        presenter.addToFavorite()
+                    } else {
+                        presenter.removeFromFavorite()
+                    }
                 }
             }
         }

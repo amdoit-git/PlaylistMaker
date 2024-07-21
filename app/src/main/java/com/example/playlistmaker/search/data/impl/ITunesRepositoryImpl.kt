@@ -8,11 +8,11 @@ import com.example.playlistmaker.common.domain.consumer.ConsumerData
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.search.data.ITunesSearchThread
 import com.example.playlistmaker.search.data.dto.Itunes
-import com.example.playlistmaker.search.domain.repository.ITunesInteractor
+import com.example.playlistmaker.search.domain.repository.ITunesRepository
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ITunesInteractorImpl(private val context: Context) : ITunesInteractor {
+class ITunesRepositoryImpl(private val context: Context) : ITunesRepository {
 
     private val baseUrl: String = "https://itunes.apple.com"
     private val retrofit: Retrofit =
