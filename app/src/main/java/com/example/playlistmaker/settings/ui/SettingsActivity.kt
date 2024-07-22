@@ -11,7 +11,7 @@ import com.example.playlistmaker.settings.presentation.SettingsViewModel
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
-    private lateinit var presenter: SettingsViewModel
+    private lateinit var viewModel: SettingsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -21,7 +21,7 @@ class SettingsActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        presenter = ViewModelProvider(
+        viewModel = ViewModelProvider(
             this, SettingsViewModel.Factory(application)
         )[SettingsViewModel::class.java]
 
@@ -30,13 +30,13 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.buttonShare.setOnClickListener {
-            presenter.share(
+            viewModel.share(
                 text = getString(R.string.settings_share_text)
             )
         }
 
         binding.buttonSupportEmail.setOnClickListener {
-            presenter.sendEmail(
+            viewModel.sendEmail(
                 EmailData(
                     email = getString(R.string.settings_email_address),
                     subject = getString(R.string.settings_email_subject),
@@ -46,14 +46,14 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.buttonUserAgreement.setOnClickListener {
-            presenter.openUrl(
+            viewModel.openUrl(
                 url = getString(R.string.settings_user_agreement_url)
             )
         }
 
         binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             if (switcher.isPressed) {
-                presenter.switchTheme(checked)
+                viewModel.switchTheme(checked)
             }
         }
     }

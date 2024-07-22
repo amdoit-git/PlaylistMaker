@@ -28,7 +28,7 @@ object Creator {
         return MediaPlayerInteractorImpl(provideMediaPlayerRepository())
     }
 
-    fun provideMediaPlayerRepository(): MediaPlayerRepository {
+    private fun provideMediaPlayerRepository(): MediaPlayerRepository {
         return MediaPlayerRepositoryImpl()
     }
 
@@ -36,7 +36,7 @@ object Creator {
         return TracksHistoryInteractorImpl(provideTracksHistoryRepository(context))
     }
 
-    fun provideTracksHistoryRepository(context: Context): TracksHistoryRepository {
+    private fun provideTracksHistoryRepository(context: Context): TracksHistoryRepository {
         return TracksHistoryRepositoryImpl(context)
     }
 
@@ -44,7 +44,7 @@ object Creator {
         return ITunesInteractorImpl(provideITunesRepository(context))
     }
 
-    fun provideITunesRepository(context: Context): ITunesRepository {
+    private fun provideITunesRepository(context: Context): ITunesRepository {
         return ITunesRepositoryImpl(context)
     }
 
@@ -52,7 +52,7 @@ object Creator {
         return ExternalNavigatorInteractorImpl(provideExternalNavigatorRepository(context))
     }
 
-    fun provideExternalNavigatorRepository(context: Context): ExternalNavigatorRepository {
+    private fun provideExternalNavigatorRepository(context: Context): ExternalNavigatorRepository {
         return ExternalNavigatorRepositoryImpl(context)
     }
 
@@ -60,7 +60,7 @@ object Creator {
         return AppSettingsInteractorImpl(provideAppSettingsRepository(context))
     }
 
-    fun provideAppSettingsRepository(context: Context): AppSettingsRepository {
+    private fun provideAppSettingsRepository(context: Context): AppSettingsRepository {
         return AppSettingsRepositoryImpl(context)
     }
 }

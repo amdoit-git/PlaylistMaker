@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -19,7 +20,7 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
     data class TrackData(val keyId: Int, val valueId: Int, val value: String)
 
-    private lateinit var presenter: PlayerScreenViewModel
+    private lateinit var viewModel: PlayerScreenViewModel
     private lateinit var binding: ActivityPlayerScreenBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,12 +33,12 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
         intent.getStringExtra("track")?.let { json ->
 
-            presenter = ViewModelProvider(
+            viewModel = ViewModelProvider(
                 this,
                 PlayerScreenViewModel.Factory(application, json)
             )[PlayerScreenViewModel::class.java]
 
-            presenter.getLiveData().observe(this) {
+            viewModel.getLiveData().observe(this) {
 
                 when (it) {
 
@@ -46,10 +47,6 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
                     is PlayerScreenData.TrackProgress -> {
                         it.time?.let { time ->
                             binding.playTime.text = time
-                        }
-
-                        it.duration?.let {
-
                         }
 
                         it.stopped?.let { stopped ->
@@ -61,11 +58,7 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
                         binding.infoText.text = it.message
 
-                        binding.info.visibility = if (it.isVisible) {
-                            View.VISIBLE
-                        } else {
-                            View.GONE
-                        }
+                        binding.info.isVisible = it.isVisible
                     }
                 }
             }
@@ -73,9 +66,9 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
             binding.playPauseBt.setOnCheckedChangeListener { _, isChecked ->
 
                 if (isChecked) {
-                    presenter.play()
+                    viewModel.play()
                 } else {
-                    presenter.pause()
+                    viewModel.pause()
                 }
             }
 
@@ -88,9 +81,9 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
                 if (button.isPressed) {
 
                     if (isChecked) {
-                        presenter.addToFavorite()
+                        viewModel.addToFavorite()
                     } else {
-                        presenter.removeFromFavorite()
+                        viewModel.removeFromFavorite()
                     }
                 }
             }
@@ -100,7 +93,7 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
     override fun onStop() {
         super.onStop()
         if (!isChangingConfigurations) {
-            presenter.pause()
+            viewModel.pause()
         }
     }
 

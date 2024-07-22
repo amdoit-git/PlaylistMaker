@@ -21,7 +21,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var tracksList: RecyclerView
     private lateinit var adapter: TrackAdapter
 
-    private lateinit var presenter: SearchViewModel
+    private lateinit var viewModel: SearchViewModel
     private lateinit var binding: ActivitySearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +31,7 @@ class SearchActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        presenter = ViewModelProvider(
+        viewModel = ViewModelProvider(
             this,
             SearchViewModel.Factory(application)
         )[SearchViewModel::class.java]
@@ -39,7 +39,7 @@ class SearchActivity : AppCompatActivity() {
         tracksList = binding.tracksList
 
         adapter =
-            TrackAdapter(presenter::onTrackClicked, presenter::clearHistory, ::scrollListToTop)
+            TrackAdapter(viewModel::onTrackClicked, viewModel::clearHistory, ::scrollListToTop)
 
         tracksList.adapter = adapter
 
@@ -48,10 +48,10 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.noInternetButton.setOnClickListener {
-            presenter.searchOnITunes()
+            viewModel.searchOnITunes()
         }
 
-        presenter.getLiveData().observe(this) {
+        viewModel.getLiveData().observe(this) {
 
             when (it) {
 
@@ -167,13 +167,13 @@ class SearchActivity : AppCompatActivity() {
                     View.VISIBLE
                 }
 
-                presenter.onTextChanged(text)
+                viewModel.onTextChanged(text)
             }
         })
 
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                presenter.onActionButton()
+                viewModel.onActionButton()
                 closeKeyboard()
                 true
             } else {
@@ -182,7 +182,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         editText.setOnFocusChangeListener { _, hasFocus ->
-            presenter.onFocusChanged(hasFocus)
+            viewModel.onFocusChanged(hasFocus)
         }
 
         binding.editTextDelete.setOnClickListener {

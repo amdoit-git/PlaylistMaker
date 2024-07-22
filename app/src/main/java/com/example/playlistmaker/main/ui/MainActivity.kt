@@ -9,7 +9,7 @@ import com.example.playlistmaker.common.presentation.SCREEN_NAME
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var presenter: MainViewModel
+    private lateinit var viewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,19 +20,19 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        presenter =
+        viewModel =
             ViewModelProvider(this, MainViewModel.Factory(application))[MainViewModel::class.java]
 
         binding.buttonSearch.setOnClickListener {
-            presenter.openScreen(SCREEN_NAME.SEARCH)
+            viewModel.openScreen(SCREEN_NAME.SEARCH)
         }
 
         binding.buttonPlayList.setOnClickListener {
-            presenter.openScreen(SCREEN_NAME.PLAYLIST)
+            viewModel.openScreen(SCREEN_NAME.PLAYLIST)
         }
 
         binding.buttonSettings.setOnClickListener {
-            presenter.openScreen(SCREEN_NAME.SETTINGS)
+            viewModel.openScreen(SCREEN_NAME.SETTINGS)
         }
     }
 }
