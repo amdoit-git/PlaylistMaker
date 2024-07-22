@@ -7,7 +7,6 @@ import com.example.playlistmaker.common.domain.consumer.Consumer
 import com.example.playlistmaker.common.domain.consumer.ConsumerData
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.search.data.dto.ITunesTrackToTrackMapper
-import com.example.playlistmaker.search.data.dto.Itunes
 import java.io.IOException
 
 class ITunesSearchThread(
