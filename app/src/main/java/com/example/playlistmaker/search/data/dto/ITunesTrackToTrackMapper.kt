@@ -25,7 +25,7 @@ object ITunesTrackToTrackMapper {
             trackCover = item.artworkUrl100 ?: "",
             previewUrl = item.previewUrl ?: "",
             albumName = item.collectionName ?: "-",
-            country = getCountryByCode("country_code_" + item.country, context),
+            country = getCountryByCode("country_code_" + (item.country ?: ""), context),
             genre = item.primaryGenreName ?: "-",
             albumYear = getReleaseYear(item.releaseDate) ?: "-"
         )
