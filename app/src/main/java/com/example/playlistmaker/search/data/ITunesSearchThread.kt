@@ -1,5 +1,6 @@
 package com.example.playlistmaker.search.data
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import com.example.playlistmaker.common.domain.consumer.Consumer
@@ -12,7 +13,8 @@ import java.io.IOException
 class ITunesSearchThread(
     private val api: Itunes,
     private val searchText: String,
-    private val consumer: Consumer<List<Track>>
+    private val consumer: Consumer<List<Track>>,
+    private val context: Context
 ) : Thread() {
 
     private val handler = Handler(Looper.getMainLooper())
@@ -34,7 +36,8 @@ class ITunesSearchThread(
                                     consumer.consume(
                                         ConsumerData.Data(
                                             value = ITunesTrackToTrackMapper.map(
-                                                it.results
+                                                itunesTracks = it.results,
+                                                context = context
                                             )
                                         )
                                     )
@@ -57,7 +60,8 @@ class ITunesSearchThread(
                         handler.post {
                             consumer.consume(
                                 ConsumerData.Error(
-                                    code = response.code(), message = "The server rejected our request with an error. One search for \"$searchText\""
+                                    code = response.code(),
+                                    message = "The server rejected our request with an error. One search for \"$searchText\""
                                 )
                             )
                         }

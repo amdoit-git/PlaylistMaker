@@ -28,4 +28,5 @@
     <string name="player_screen_track_error">При воспроизведении трека произошла ошибка</string>
     <string name="player_screen_add_to_favorite">Трек \"%s\" добавлен в избранное</string>
     <string name="player_screen_remove_from_favorite">Трек \"%s\" удален из избранного</string>
+    <string name="unknown_country">Неизвестная страна</string>
 </resources>

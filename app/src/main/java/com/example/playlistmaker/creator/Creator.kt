@@ -32,12 +32,12 @@ object Creator {
         return MediaPlayerRepositoryImpl()
     }
 
-    fun provideTracksHistoryInteractor(): TrackHistoryInteractor {
-        return TracksHistoryInteractorImpl(provideTracksHistoryRepository())
+    fun provideTracksHistoryInteractor(context: Context): TrackHistoryInteractor {
+        return TracksHistoryInteractorImpl(provideTracksHistoryRepository(context))
     }
 
-    fun provideTracksHistoryRepository(): TracksHistoryRepository {
-        return TracksHistoryRepositoryImpl()
+    fun provideTracksHistoryRepository(context: Context): TracksHistoryRepository {
+        return TracksHistoryRepositoryImpl(context)
     }
 
     fun provideITunesInteractor(context: Context): ITunesInteractor {

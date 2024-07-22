@@ -35,7 +35,7 @@ class ITunesRepositoryImpl(private val context: Context) : ITunesRepository {
         }
 
         thread =
-            ITunesSearchThread(api = api, searchText = text, consumer = consumer)
+            ITunesSearchThread(api = api, searchText = text, consumer = consumer, context = context)
 
         thread?.start()
     }

@@ -3,7 +3,6 @@ package com.example.playlistmaker.search.ui
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -32,11 +31,15 @@ class SearchActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        presenter = ViewModelProvider(this, SearchViewModel.Factory(application))[SearchViewModel::class.java]
+        presenter = ViewModelProvider(
+            this,
+            SearchViewModel.Factory(application)
+        )[SearchViewModel::class.java]
 
         tracksList = binding.tracksList
 
-        adapter = TrackAdapter(presenter::onTrackClicked, presenter::clearHistory, ::scrollListToTop)
+        adapter =
+            TrackAdapter(presenter::onTrackClicked, presenter::clearHistory, ::scrollListToTop)
 
         tracksList.adapter = adapter
 
@@ -118,7 +121,7 @@ class SearchActivity : AppCompatActivity() {
         initTextField(binding.editText)
     }
 
-    private fun scrollListToTop(){
+    private fun scrollListToTop() {
         tracksList.scrollToPosition(0)
     }
 

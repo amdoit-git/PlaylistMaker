@@ -21,7 +21,7 @@ class PlayerScreenViewModel(private val application: Application, jsonTrack: Str
     private val trackProgress = PlayerScreenData.TrackProgress()
 
     private val player = Creator.provideMediaPlayerInteractor()
-    private val history = Creator.provideTracksHistoryInteractor()
+    private val history = Creator.provideTracksHistoryInteractor(application.applicationContext)
     private val handlerToast = Handler(Looper.getMainLooper())
     private val obj = Any()
 

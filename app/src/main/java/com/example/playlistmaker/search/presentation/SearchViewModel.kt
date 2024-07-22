@@ -17,7 +17,7 @@ import com.example.playlistmaker.creator.Creator
 
 class SearchViewModel(private val application: Application) : ViewModel() {
 
-    private val history = Creator.provideTracksHistoryInteractor()
+    private val history = Creator.provideTracksHistoryInteractor(application.applicationContext)
     private val iTunes = Creator.provideITunesInteractor(application.applicationContext)
 
     private val liveData = LiveDataWithStartDataSet<SearchData>()
