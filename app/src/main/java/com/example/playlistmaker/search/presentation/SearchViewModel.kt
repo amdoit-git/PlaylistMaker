@@ -103,6 +103,13 @@ class SearchViewModel(private val application: Application) : ViewModel() {
         } else {
             changeState(TRACK_LIST_STATE.HISTORY_VISIBLE, tracksInHistory)
         }
+
+        cancelSearch()
+    }
+
+    private fun cancelSearch(){
+        iTunes.cancelSearch()
+        liveData.setValue(SearchData.ProgressBar(false))
     }
 
     fun onTrackClicked(track: Track) {
@@ -170,7 +177,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
     }
 
     override fun onCleared() {
-        iTunes.cancel()
+        iTunes.cancelSearch()
         super.onCleared()
     }
 

@@ -11,7 +11,7 @@ class ITunesInteractorImpl(private val repository: ITunesRepository) : ITunesInt
         repository.search(text, consumer)
     }
 
-    override fun cancel() {
+    override fun cancelSearch() {
         repository.cancel()
     }
 }
