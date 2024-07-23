@@ -1,13 +1,26 @@
 package com.example.playlistmaker.creator
 
-import com.example.playlistmaker.data.repository.MediaPlayerRepositoryImpl
-import com.example.playlistmaker.data.repository.TracksHistoryRepositoryImpl
-import com.example.playlistmaker.domain.repository.MediaPlayerInteractor
-import com.example.playlistmaker.domain.repository.MediaPlayerRepository
-import com.example.playlistmaker.domain.repository.TrackHistoryInteractor
-import com.example.playlistmaker.domain.repository.TracksHistoryRepository
-import com.example.playlistmaker.domain.usecase.MediaPlayerInteractorImpl
-import com.example.playlistmaker.domain.usecase.TracksHistoryInteractorImpl
+import android.content.Context
+import com.example.playlistmaker.common.data.impl.AppSettingsRepositoryImpl
+import com.example.playlistmaker.common.data.impl.ExternalNavigatorRepositoryImpl
+import com.example.playlistmaker.common.data.impl.TracksHistoryRepositoryImpl
+import com.example.playlistmaker.common.domain.impl.AppSettingsInteractorImpl
+import com.example.playlistmaker.common.domain.impl.ExternalNavigatorInteractorImpl
+import com.example.playlistmaker.common.domain.impl.TracksHistoryInteractorImpl
+import com.example.playlistmaker.common.domain.repository.AppSettingsInteractor
+import com.example.playlistmaker.common.domain.repository.AppSettingsRepository
+import com.example.playlistmaker.common.domain.repository.ExternalNavigatorInteractor
+import com.example.playlistmaker.common.domain.repository.ExternalNavigatorRepository
+import com.example.playlistmaker.common.domain.repository.TrackHistoryInteractor
+import com.example.playlistmaker.common.domain.repository.TracksHistoryRepository
+import com.example.playlistmaker.player.data.impl.MediaPlayerRepositoryImpl
+import com.example.playlistmaker.player.domain.impl.MediaPlayerInteractorImpl
+import com.example.playlistmaker.player.domain.repository.MediaPlayerInteractor
+import com.example.playlistmaker.player.domain.repository.MediaPlayerRepository
+import com.example.playlistmaker.search.data.impl.ITunesRepositoryImpl
+import com.example.playlistmaker.search.domain.impl.ITunesInteractorImpl
+import com.example.playlistmaker.search.domain.repository.ITunesInteractor
+import com.example.playlistmaker.search.domain.repository.ITunesRepository
 
 object Creator {
 
@@ -15,15 +28,39 @@ object Creator {
         return MediaPlayerInteractorImpl(provideMediaPlayerRepository())
     }
 
-    fun provideMediaPlayerRepository(): MediaPlayerRepository{
+    private fun provideMediaPlayerRepository(): MediaPlayerRepository {
         return MediaPlayerRepositoryImpl()
     }
 
-    fun provideTrackHistoryInteractor(): TrackHistoryInteractor {
-        return TracksHistoryInteractorImpl(provideTracksHistoryRepository())
+    fun provideTracksHistoryInteractor(context: Context): TrackHistoryInteractor {
+        return TracksHistoryInteractorImpl(provideTracksHistoryRepository(context))
     }
 
-    fun provideTracksHistoryRepository(): TracksHistoryRepository{
-        return TracksHistoryRepositoryImpl()
+    private fun provideTracksHistoryRepository(context: Context): TracksHistoryRepository {
+        return TracksHistoryRepositoryImpl(context)
+    }
+
+    fun provideITunesInteractor(context: Context): ITunesInteractor {
+        return ITunesInteractorImpl(provideITunesRepository(context))
+    }
+
+    private fun provideITunesRepository(context: Context): ITunesRepository {
+        return ITunesRepositoryImpl(context)
+    }
+
+    fun provideExternalNavigatorInteractor(context: Context): ExternalNavigatorInteractor {
+        return ExternalNavigatorInteractorImpl(provideExternalNavigatorRepository(context))
+    }
+
+    private fun provideExternalNavigatorRepository(context: Context): ExternalNavigatorRepository {
+        return ExternalNavigatorRepositoryImpl(context)
+    }
+
+    fun provideAppSettingsInteractor(context: Context): AppSettingsInteractor {
+        return AppSettingsInteractorImpl(provideAppSettingsRepository(context))
+    }
+
+    private fun provideAppSettingsRepository(context: Context): AppSettingsRepository {
+        return AppSettingsRepositoryImpl(context)
     }
 }
