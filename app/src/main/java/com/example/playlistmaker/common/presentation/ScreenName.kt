@@ -6,7 +6,7 @@ import com.example.playlistmaker.player.ui.PlayerScreenActivity
 import com.example.playlistmaker.search.ui.SearchActivity
 import com.example.playlistmaker.settings.ui.SettingsActivity
 
-enum class SCREEN_NAME(val className: Class<out Activity>) {
+enum class ScreenName(val className: Class<out Activity>) {
     SEARCH(SearchActivity::class.java),
     PLAYLIST(PlayListActivity::class.java),
     PLAYER(PlayerScreenActivity::class.java),

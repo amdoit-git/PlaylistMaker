@@ -4,7 +4,7 @@ import com.example.playlistmaker.common.domain.models.Track
 
 //Состояние нашего списка треков
 
-enum class TRACK_LIST_STATE(val num: Int, var tracks: List<Track>? = null) {
+enum class TrackListState(val num: Int, var tracks: List<Track>? = null) {
     FIRST_VISIT(1),//пустой экран
     HISTORY_VISIBLE(2),//история прослушивания на экране и ее ведно
     HISTORY_GONE(3),//история прослушивания на экране, но она скрыта

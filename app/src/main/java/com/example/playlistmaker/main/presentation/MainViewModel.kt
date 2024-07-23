@@ -4,11 +4,11 @@ import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.common.presentation.SCREEN_NAME
+import com.example.playlistmaker.common.presentation.ScreenName
 
 class MainViewModel(private val application: Application) : ViewModel() {
 
-    fun openScreen(screen: SCREEN_NAME) {
+    fun openScreen(screen: ScreenName) {
 
         val intent = Intent(application.applicationContext, screen.className)
 

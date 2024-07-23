@@ -14,7 +14,7 @@ import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.search.presentation.SearchData
 import com.example.playlistmaker.search.presentation.SearchViewModel
-import com.example.playlistmaker.search.presentation.TRACK_LIST_STATE
+import com.example.playlistmaker.search.presentation.TrackListState
 
 class SearchActivity : AppCompatActivity() {
 
@@ -84,29 +84,29 @@ class SearchActivity : AppCompatActivity() {
                     }
 
                     when (STATE) {
-                        TRACK_LIST_STATE.FIRST_VISIT -> {}
-                        TRACK_LIST_STATE.HISTORY_EMPTY -> {}
-                        TRACK_LIST_STATE.HISTORY_GONE -> {}
-                        TRACK_LIST_STATE.HISTORY_VISIBLE -> {
+                        TrackListState.FIRST_VISIT -> {}
+                        TrackListState.HISTORY_EMPTY -> {}
+                        TrackListState.HISTORY_GONE -> {}
+                        TrackListState.HISTORY_VISIBLE -> {
                             binding.tracksListTitle.visibility = View.VISIBLE
                             tracksList.visibility = View.VISIBLE
                         }
 
-                        TRACK_LIST_STATE.SEARCH_VISIBLE -> {
+                        TrackListState.SEARCH_VISIBLE -> {
                             tracksList.visibility = View.VISIBLE
                         }
 
-                        TRACK_LIST_STATE.SEARCH_EMPTY -> {
+                        TrackListState.SEARCH_EMPTY -> {
                             binding.noTracks.visibility = View.VISIBLE
                         }
 
-                        TRACK_LIST_STATE.SEARCH_FAIL -> {
+                        TrackListState.SEARCH_FAIL -> {
                             binding.noInternet.visibility = View.VISIBLE
                         }
                     }
 
                     STATE.tracks?.let { tracks ->
-                        showTracksList(tracks, STATE == TRACK_LIST_STATE.HISTORY_VISIBLE)
+                        showTracksList(tracks, STATE == TrackListState.HISTORY_VISIBLE)
                     } ?: run {
                         clearTracksList()
                     }
