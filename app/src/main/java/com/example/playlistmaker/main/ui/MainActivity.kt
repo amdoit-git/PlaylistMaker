@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.main.presentation.MainViewModel
-import com.example.playlistmaker.common.presentation.SCREEN_NAME
+import com.example.playlistmaker.common.presentation.ScreenName
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,15 +24,15 @@ class MainActivity : AppCompatActivity() {
             ViewModelProvider(this, MainViewModel.Factory(application))[MainViewModel::class.java]
 
         binding.buttonSearch.setOnClickListener {
-            viewModel.openScreen(SCREEN_NAME.SEARCH)
+            viewModel.openScreen(ScreenName.SEARCH)
         }
 
         binding.buttonPlayList.setOnClickListener {
-            viewModel.openScreen(SCREEN_NAME.PLAYLIST)
+            viewModel.openScreen(ScreenName.PLAYLIST)
         }
 
         binding.buttonSettings.setOnClickListener {
-            viewModel.openScreen(SCREEN_NAME.SETTINGS)
+            viewModel.openScreen(ScreenName.SETTINGS)
         }
     }
 }

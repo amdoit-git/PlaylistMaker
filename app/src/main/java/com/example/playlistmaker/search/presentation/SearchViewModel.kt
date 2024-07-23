@@ -12,7 +12,7 @@ import com.example.playlistmaker.common.domain.consumer.Consumer
 import com.example.playlistmaker.common.domain.consumer.ConsumerData
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.common.presentation.LiveDataWithStartDataSet
-import com.example.playlistmaker.common.presentation.SCREEN_NAME
+import com.example.playlistmaker.common.presentation.ScreenName
 import com.example.playlistmaker.creator.Creator
 
 class SearchViewModel(private val application: Application) : ViewModel() {
@@ -27,7 +27,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
 
     private var searchText: String = ""
     private var textInFocus: Boolean = false
-    private var STATE = TRACK_LIST_STATE.FIRST_VISIT
+    private var STATE = TrackListState.FIRST_VISIT
     private var tracksInHistory: List<Track>? = null
 
     private var trackClickAllowed = true
@@ -70,13 +70,13 @@ class SearchViewModel(private val application: Application) : ViewModel() {
 
             showHistory()
 
-        } else if (STATE == TRACK_LIST_STATE.HISTORY_VISIBLE) {
+        } else if (STATE == TrackListState.HISTORY_VISIBLE) {
 
-            changeState(TRACK_LIST_STATE.HISTORY_GONE)
+            changeState(TrackListState.HISTORY_GONE)
         }
     }
 
-    private fun changeState(newSTATE: TRACK_LIST_STATE, tracks: List<Track>? = null) {
+    private fun changeState(newSTATE: TrackListState, tracks: List<Track>? = null) {
 
         STATE = newSTATE
 
@@ -84,7 +84,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
             STATE.tracks = tracks
         }
 
-        if (STATE == TRACK_LIST_STATE.SEARCH_VISIBLE) {
+        if (STATE == TrackListState.SEARCH_VISIBLE) {
             //история просмотров будет не актуальна, потому очищаем ее
             tracksInHistory = null
         }
@@ -99,9 +99,9 @@ class SearchViewModel(private val application: Application) : ViewModel() {
         }
 
         if (tracksInHistory.isNullOrEmpty()) {
-            changeState(TRACK_LIST_STATE.HISTORY_EMPTY)
+            changeState(TrackListState.HISTORY_EMPTY)
         } else {
-            changeState(TRACK_LIST_STATE.HISTORY_VISIBLE, tracksInHistory)
+            changeState(TrackListState.HISTORY_VISIBLE, tracksInHistory)
         }
 
         cancelSearch()
@@ -118,7 +118,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
 
         history.save(track)
 
-        val intent = Intent(application.applicationContext, SCREEN_NAME.PLAYER.className)
+        val intent = Intent(application.applicationContext, ScreenName.PLAYER.className)
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
@@ -128,7 +128,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
 
         tracksInHistory = null
 
-        if (STATE == TRACK_LIST_STATE.HISTORY_VISIBLE) {
+        if (STATE == TrackListState.HISTORY_VISIBLE) {
             liveData.setSingleEventValue(SearchData.MoveToTop(track))
             //showHistory()
         }
@@ -148,7 +148,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
     fun clearHistory() {
         tracksInHistory = null
         history.clear()
-        changeState(TRACK_LIST_STATE.HISTORY_EMPTY)
+        changeState(TrackListState.HISTORY_EMPTY)
     }
 
     fun searchOnITunes() {
@@ -161,12 +161,12 @@ class SearchViewModel(private val application: Application) : ViewModel() {
             override fun consume(data: ConsumerData<List<Track>>) {
 
                 when (data) {
-                    is ConsumerData.Data -> changeState(TRACK_LIST_STATE.SEARCH_VISIBLE, data.value)
+                    is ConsumerData.Data -> changeState(TrackListState.SEARCH_VISIBLE, data.value)
 
                     is ConsumerData.Error -> {
                         when (data.code) {
-                            404 -> changeState(TRACK_LIST_STATE.SEARCH_EMPTY)
-                            else -> changeState(TRACK_LIST_STATE.SEARCH_FAIL)
+                            404 -> changeState(TrackListState.SEARCH_EMPTY)
+                            else -> changeState(TrackListState.SEARCH_FAIL)
                         }
                     }
                 }
