@@ -64,7 +64,7 @@ class SearchActivity : AppCompatActivity() {
 
                 is SearchData.SearchText -> {
                     binding.editText.setText(it.text)
-                    binding.editTextDelete.isVisible = it.text.isEmpty()
+                    binding.editTextDelete.isVisible = it.text.isNotEmpty()
                 }
 
                 is SearchData.TrackList -> {
