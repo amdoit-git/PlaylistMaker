@@ -2,16 +2,17 @@ package com.example.playlistmaker.common.data.impl
 
 import android.app.Application.MODE_PRIVATE
 import android.content.Context
+import android.content.SharedPreferences
 import com.example.playlistmaker.common.data.APP_SETTINGS_PREFERENCES
 import com.example.playlistmaker.common.data.SearchHistory
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.common.domain.repository.TracksHistoryRepository
 
-class TracksHistoryRepositoryImpl(context: Context) : TracksHistoryRepository {
+class TracksHistoryRepositoryImpl(sharedPreferences: SharedPreferences) : TracksHistoryRepository {
 
     init {
         SearchHistory.setSharedPreferences(
-            sharedPrefs = context.getSharedPreferences(APP_SETTINGS_PREFERENCES, MODE_PRIVATE)
+            sharedPrefs = sharedPreferences
         )
     }
 

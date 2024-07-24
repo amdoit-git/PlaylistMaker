@@ -1,6 +1,10 @@
 package com.example.playlistmaker.creator
 
+import android.app.Application.MODE_PRIVATE
 import android.content.Context
+import android.content.SharedPreferences
+import android.media.MediaPlayer
+import com.example.playlistmaker.common.data.APP_SETTINGS_PREFERENCES
 import com.example.playlistmaker.common.data.impl.AppSettingsRepositoryImpl
 import com.example.playlistmaker.common.data.impl.ExternalNavigatorRepositoryImpl
 import com.example.playlistmaker.common.data.impl.TracksHistoryRepositoryImpl
@@ -25,23 +29,37 @@ import com.example.playlistmaker.search.domain.repository.ITunesRepository
 object Creator {
 
     fun provideMediaPlayerInteractor(): MediaPlayerInteractor {
-        return MediaPlayerInteractorImpl(provideMediaPlayerRepository())
+        return MediaPlayerInteractorImpl(
+            repository = provideMediaPlayerRepository()
+        )
     }
 
     private fun provideMediaPlayerRepository(): MediaPlayerRepository {
-        return MediaPlayerRepositoryImpl()
+        return MediaPlayerRepositoryImpl(
+            mediaPlayer = MediaPlayer()
+        )
     }
 
     fun provideTracksHistoryInteractor(context: Context): TrackHistoryInteractor {
-        return TracksHistoryInteractorImpl(provideTracksHistoryRepository(context))
+        return TracksHistoryInteractorImpl(
+            repository = provideTracksHistoryRepository(
+                sharedPreferences = context.getSharedPreferences(
+                    APP_SETTINGS_PREFERENCES, MODE_PRIVATE
+                )
+            )
+        )
     }
 
-    private fun provideTracksHistoryRepository(context: Context): TracksHistoryRepository {
-        return TracksHistoryRepositoryImpl(context)
+    private fun provideTracksHistoryRepository(sharedPreferences: SharedPreferences): TracksHistoryRepository {
+        return TracksHistoryRepositoryImpl(
+            sharedPreferences = sharedPreferences
+        )
     }
 
     fun provideITunesInteractor(context: Context): ITunesInteractor {
-        return ITunesInteractorImpl(provideITunesRepository(context))
+        return ITunesInteractorImpl(
+            repository = provideITunesRepository(context)
+        )
     }
 
     private fun provideITunesRepository(context: Context): ITunesRepository {
@@ -49,7 +67,11 @@ object Creator {
     }
 
     fun provideExternalNavigatorInteractor(context: Context): ExternalNavigatorInteractor {
-        return ExternalNavigatorInteractorImpl(provideExternalNavigatorRepository(context))
+        return ExternalNavigatorInteractorImpl(
+            repository = provideExternalNavigatorRepository(
+                context
+            )
+        )
     }
 
     private fun provideExternalNavigatorRepository(context: Context): ExternalNavigatorRepository {
@@ -57,10 +79,17 @@ object Creator {
     }
 
     fun provideAppSettingsInteractor(context: Context): AppSettingsInteractor {
-        return AppSettingsInteractorImpl(provideAppSettingsRepository(context))
+        return AppSettingsInteractorImpl(
+            repository = provideAppSettingsRepository(context)
+        )
     }
 
     private fun provideAppSettingsRepository(context: Context): AppSettingsRepository {
-        return AppSettingsRepositoryImpl(context)
+        return AppSettingsRepositoryImpl(
+            sharedPreferences = context.getSharedPreferences(
+                APP_SETTINGS_PREFERENCES,
+                MODE_PRIVATE
+            )
+        )
     }
 }

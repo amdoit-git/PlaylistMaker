@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.common.domain.models.Track
@@ -23,6 +24,8 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var viewModel: SearchViewModel
     private lateinit var binding: ActivitySearchBinding
+
+    private var fieldIsInitialized = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,16 +59,12 @@ class SearchActivity : AppCompatActivity() {
             when (it) {
 
                 is SearchData.ProgressBar -> {
-                    binding.progressBar.visibility = if (it.visible) View.VISIBLE else View.GONE
+                    binding.progressBar.isVisible = it.visible
                 }
 
                 is SearchData.SearchText -> {
                     binding.editText.setText(it.text)
-                    binding.editTextDelete.visibility = if (it.text.isEmpty()) {
-                        View.GONE
-                    } else {
-                        View.VISIBLE
-                    }
+                    binding.editTextDelete.isVisible = it.text.isEmpty()
                 }
 
                 is SearchData.TrackList -> {
@@ -117,7 +116,10 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         initTextField(binding.editText)
     }
 
@@ -189,6 +191,8 @@ class SearchActivity : AppCompatActivity() {
             editText.setText("")
             closeKeyboard()
         }
+
+        fieldIsInitialized = true
     }
 
     private fun closeKeyboard() {

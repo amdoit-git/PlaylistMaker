@@ -107,7 +107,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
         cancelSearch()
     }
 
-    private fun cancelSearch(){
+    private fun cancelSearch() {
         iTunes.cancelSearch()
         liveData.setValue(SearchData.ProgressBar(false))
     }
@@ -157,7 +157,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
 
         liveData.setValue(SearchData.ProgressBar(true))
 
-        iTunes.search(searchText, object : Consumer<List<Track>> {
+        iTunes.search(searchText.trim(), object : Consumer<List<Track>> {
             override fun consume(data: ConsumerData<List<Track>>) {
 
                 when (data) {
@@ -177,7 +177,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
     }
 
     override fun onCleared() {
-        iTunes.cancelSearch()
+        iTunes.destroy()
         super.onCleared()
     }
 

@@ -1,6 +1,7 @@
 package com.example.playlistmaker.player.presentation
 
 import android.app.Application
+import android.app.Application.MODE_PRIVATE
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -8,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
+import com.example.playlistmaker.common.data.APP_SETTINGS_PREFERENCES
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.common.presentation.LiveDataWithStartDataSet
 import com.example.playlistmaker.creator.Creator

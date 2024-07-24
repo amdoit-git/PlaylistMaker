@@ -20,7 +20,7 @@ object MediaPlayerService {
         }
     }
 
-    private var mediaPlayer: MediaPlayer = MediaPlayer()
+    private lateinit var mediaPlayer: MediaPlayer
     private var isPrepared = false
     private var isError = false
     private var onPLay: ((Int) -> Unit)? = null
@@ -32,6 +32,10 @@ object MediaPlayerService {
     private var STATE = State.STOPPED
     private val handler = Handler(Looper.getMainLooper())
     private val obj = Any()
+
+    fun setMediaPlayer(mediaPlayer: MediaPlayer){
+        this.mediaPlayer = mediaPlayer
+    }
 
     fun setDisplayPorts(
         forTime: ((Int) -> Unit)?,

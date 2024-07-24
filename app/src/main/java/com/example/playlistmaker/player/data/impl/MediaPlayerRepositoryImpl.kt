@@ -1,9 +1,14 @@
 package com.example.playlistmaker.player.data.impl
 
+import android.media.MediaPlayer
 import com.example.playlistmaker.player.data.MediaPlayerService
 import com.example.playlistmaker.player.domain.repository.MediaPlayerRepository
 
-class MediaPlayerRepositoryImpl : MediaPlayerRepository {
+class MediaPlayerRepositoryImpl(mediaPlayer: MediaPlayer) : MediaPlayerRepository {
+
+    init {
+        MediaPlayerService.setMediaPlayer(mediaPlayer)
+    }
 
     override fun setDisplayPorts(
         forTime: ((Int) -> Unit)?,

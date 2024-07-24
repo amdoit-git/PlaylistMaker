@@ -7,4 +7,6 @@ interface ITunesInteractor {
     fun search(text: String, consumer: Consumer<List<Track>>)
 
     fun cancelSearch()
+
+    fun destroy()
 }
