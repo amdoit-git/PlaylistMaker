@@ -9,40 +9,38 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.search.presentation.SearchData
 import com.example.playlistmaker.search.presentation.SearchViewModel
 import com.example.playlistmaker.search.presentation.TrackListState
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var tracksList: RecyclerView
-    private lateinit var adapter: TrackAdapter
-
-    private lateinit var viewModel: SearchViewModel
-    private lateinit var binding: ActivitySearchBinding
 
     private var fieldIsInitialized = false
+
+    private val vModel: SearchViewModel by viewModel()
+
+    private val adapter: TrackAdapter by inject {
+        parametersOf(vModel::onTrackClicked, vModel::clearHistory, ::scrollListToTop)
+    }
+
+    private val binding: ActivitySearchBinding by inject {
+        parametersOf(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModel.Factory(application)
-        )[SearchViewModel::class.java]
-
         tracksList = binding.tracksList
-
-        adapter =
-            TrackAdapter(viewModel::onTrackClicked, viewModel::clearHistory, ::scrollListToTop)
 
         tracksList.adapter = adapter
 
@@ -51,10 +49,10 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.noInternetButton.setOnClickListener {
-            viewModel.searchOnITunes()
+            vModel.searchOnITunes()
         }
 
-        viewModel.getLiveData().observe(this) {
+        vModel.getLiveData().observe(this) {
 
             when (it) {
 
@@ -129,11 +127,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showTracksList(tracks: List<Track>, showClearButton: Boolean = false) {
 
-        adapter.tracks.clear()
-
-        tracks.forEach {
-            adapter.tracks.add(it)
-        }
+        adapter.setNewTracksList(tracks)
 
         adapter.showClearButton(showClearButton)
 
@@ -143,7 +137,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun clearTracksList() {
-        adapter.tracks.clear()
+        adapter.clearTracks()
         adapter.showClearButton(false)
         adapter.notifyDataSetChanged()
     }
@@ -163,19 +157,15 @@ class SearchActivity : AppCompatActivity() {
 
                 val text = editText.text.toString()
 
-                binding.editTextDelete.visibility = if (text.isEmpty()) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
-                }
+                binding.editTextDelete.isVisible = text.isNotEmpty()
 
-                viewModel.onTextChanged(text)
+                vModel.onTextChanged(text)
             }
         })
 
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                viewModel.onActionButton()
+                vModel.onActionButton()
                 closeKeyboard()
                 true
             } else {
@@ -184,7 +174,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         editText.setOnFocusChangeListener { _, hasFocus ->
-            viewModel.onFocusChanged(hasFocus)
+            vModel.onFocusChanged(hasFocus)
         }
 
         binding.editTextDelete.setOnClickListener {

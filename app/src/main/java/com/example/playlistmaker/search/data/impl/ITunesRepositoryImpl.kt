@@ -11,18 +11,11 @@ import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.search.data.Itunes
 import com.example.playlistmaker.search.data.dto.ITunesTrackToTrackMapper
 import com.example.playlistmaker.search.domain.repository.ITunesRepository
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
-class ITunesRepositoryImpl(private val context: Context) : Thread(), ITunesRepository {
-
-    private val baseUrl: String = "https://itunes.apple.com"
-    private val retrofit: Retrofit =
-        Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create())
-            .build()
-    private val api: Itunes = retrofit.create(Itunes::class.java)
+class ITunesRepositoryImpl(private val context: Context, private val api: Itunes) :
+    Thread(), ITunesRepository {
 
     private val isTerminated = AtomicBoolean(false)
     private val lock = Object()
@@ -82,38 +75,32 @@ class ITunesRepositoryImpl(private val context: Context) : Thread(), ITunesRepos
                 200 -> {
                     response.body()?.let {
                         if (it.results.isNotEmpty()) {
-                            handler.post {
-                                consumer?.consume(
-                                    ConsumerData.Data(
-                                        value = ITunesTrackToTrackMapper.map(
-                                            itunesTracks = it.results,
-                                            context = context
-                                        )
+                            postResultsToMainThread(
+                                ConsumerData.Data(
+                                    value = ITunesTrackToTrackMapper.map(
+                                        itunesTracks = it.results,
+                                        context = context
                                     )
                                 )
-                            }
+                            )
                             return SearchState.SEARCH_COMPLETE
                         }
                     }
 
-                    handler.post {
-                        consumer?.consume(
-                            ConsumerData.Error(
-                                code = 404, message = "No tracks found for\"$searchText\""
-                            )
+                    postResultsToMainThread(
+                        ConsumerData.Error(
+                            code = 404, message = "No tracks found for\"$searchText\""
                         )
-                    }
+                    )
                 }
 
                 else -> {
-                    handler.post {
-                        consumer?.consume(
-                            ConsumerData.Error(
-                                code = response.code(),
-                                message = "The server rejected our request with an error. One search for \"$searchText\""
-                            )
+                    postResultsToMainThread(
+                        ConsumerData.Error(
+                            code = response.code(),
+                            message = "The server rejected our request with an error. One search for \"$searchText\""
                         )
-                    }
+                    )
                 }
             }
 
@@ -123,17 +110,21 @@ class ITunesRepositoryImpl(private val context: Context) : Thread(), ITunesRepos
                 return SearchState.NEW_SEARCH_NEEDED
             }
 
-            handler.post {
-                consumer?.consume(
-                    ConsumerData.Error(
-                        code = 502,
-                        message = "Some error occurred when search for \"$searchText\""
-                    )
+            postResultsToMainThread(
+                ConsumerData.Error(
+                    code = 502,
+                    message = "Some error occurred when search for \"$searchText\""
                 )
-            }
+            )
         }
 
         return SearchState.SEARCH_COMPLETE
+    }
+
+    private fun postResultsToMainThread(data: ConsumerData<List<Track>>) {
+        handler.post {
+            consumer?.consume(data)
+        }
     }
 
     private fun getSearchText(): String {

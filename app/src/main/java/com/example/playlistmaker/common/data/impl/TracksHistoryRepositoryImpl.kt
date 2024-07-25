@@ -1,19 +1,20 @@
 package com.example.playlistmaker.common.data.impl
 
-import android.app.Application.MODE_PRIVATE
-import android.content.Context
 import android.content.SharedPreferences
-import com.example.playlistmaker.common.data.APP_SETTINGS_PREFERENCES
 import com.example.playlistmaker.common.data.SearchHistory
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.common.domain.repository.TracksHistoryRepository
+import com.google.gson.Gson
 
-class TracksHistoryRepositoryImpl(sharedPreferences: SharedPreferences) : TracksHistoryRepository {
+class TracksHistoryRepositoryImpl(sharedPreferences: SharedPreferences, gson: Gson) :
+    TracksHistoryRepository {
 
     init {
         SearchHistory.setSharedPreferences(
             sharedPrefs = sharedPreferences
         )
+
+        SearchHistory.setGson(gson = gson)
     }
 
     override fun save(track: Track) {

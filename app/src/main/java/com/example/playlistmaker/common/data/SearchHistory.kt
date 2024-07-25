@@ -11,11 +11,15 @@ object SearchHistory {
 
     private const val LAST_VIEWED_TRACKS = "LAST_VIEWED_TRACKS"
     private const val MAX_TRACKS_IN_LIST: Int = 10
-    private var sharedPrefs: SharedPreferences? = null
-    private val gson = Gson()
+    private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var gson: Gson
 
     fun setSharedPreferences(sharedPrefs: SharedPreferences) {
         this.sharedPrefs = sharedPrefs
+    }
+
+    fun setGson(gson: Gson) {
+        this.gson = gson
     }
 
     fun jsonToTracks(json: String): List<Track>? {
@@ -50,9 +54,8 @@ object SearchHistory {
 
     fun loadTracksList(): List<Track>? {
 
-        sharedPrefs?.let { it ->
-
-            it.getString(LAST_VIEWED_TRACKS, null)?.let { json -> return jsonToTracks(json) }
+        sharedPrefs.getString(LAST_VIEWED_TRACKS, null)?.let { json ->
+            return jsonToTracks(json)
         }
 
         return null
@@ -72,15 +75,11 @@ object SearchHistory {
             }
         }
 
-        sharedPrefs?.let {
-            it.edit().putString(LAST_VIEWED_TRACKS, toJson(tracks)).apply()
-        }
+        sharedPrefs.edit().putString(LAST_VIEWED_TRACKS, toJson(tracks)).apply()
     }
 
     fun clearHistory() {
-        sharedPrefs?.let {
-            it.edit().remove(LAST_VIEWED_TRACKS).apply()
-        }
+        sharedPrefs.edit().remove(LAST_VIEWED_TRACKS).apply()
     }
 
     fun toJson(tracks: List<Track>): String {

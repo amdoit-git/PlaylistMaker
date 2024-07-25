@@ -8,10 +8,21 @@ class TrackAdapter(
     private val onTrackClick: (Track) -> Unit,
     private val onButtonClick: () -> Unit,
     private val scrollListToTop: () -> Unit,
-    val tracks: MutableList<Track> = mutableListOf()
+    private val tracks: MutableList<Track>
 ) : RecyclerView.Adapter<SearchActivityHolder>() {
 
     private var hasClearButton: Boolean = false
+
+    fun setNewTracksList(tracks: List<Track>) {
+        this.tracks.clear()
+        tracks.forEach {
+            this.tracks.add(it)
+        }
+    }
+
+    fun clearTracks(){
+        this.tracks.clear()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchActivityHolder {
         return when (viewType) {
