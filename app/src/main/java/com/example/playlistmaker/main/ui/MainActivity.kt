@@ -2,14 +2,16 @@ package com.example.playlistmaker.main.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import com.example.playlistmaker.common.presentation.ScreenName
 import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.main.presentation.MainViewModel
-import com.example.playlistmaker.common.presentation.ScreenName
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
+    private val vModel: MainViewModel by viewModel()
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,19 +22,16 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        viewModel =
-            ViewModelProvider(this, MainViewModel.Factory(application))[MainViewModel::class.java]
-
         binding.buttonSearch.setOnClickListener {
-            viewModel.openScreen(ScreenName.SEARCH)
+            vModel.openScreen(ScreenName.SEARCH)
         }
 
         binding.buttonPlayList.setOnClickListener {
-            viewModel.openScreen(ScreenName.PLAYLIST)
+            vModel.openScreen(ScreenName.PLAYLIST)
         }
 
         binding.buttonSettings.setOnClickListener {
-            viewModel.openScreen(ScreenName.SETTINGS)
+            vModel.openScreen(ScreenName.SETTINGS)
         }
     }
 }

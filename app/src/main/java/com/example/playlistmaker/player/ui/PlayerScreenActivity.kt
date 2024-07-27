@@ -6,7 +6,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -15,12 +14,20 @@ import com.example.playlistmaker.common.ui.DpToPx
 import com.example.playlistmaker.databinding.ActivityPlayerScreenBinding
 import com.example.playlistmaker.player.presentation.PlayerScreenData
 import com.example.playlistmaker.player.presentation.PlayerScreenViewModel
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
     data class TrackData(val keyId: Int, val valueId: Int, val value: String)
 
-    private lateinit var viewModel: PlayerScreenViewModel
+    private lateinit var json: String
+
+    private val vModel: PlayerScreenViewModel by viewModel {
+        parametersOf(json)
+    }
+
     private lateinit var binding: ActivityPlayerScreenBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,12 +40,9 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
         intent.getStringExtra("track")?.let { json ->
 
-            viewModel = ViewModelProvider(
-                this,
-                PlayerScreenViewModel.Factory(application, json)
-            )[PlayerScreenViewModel::class.java]
+            this.json = json
 
-            viewModel.getLiveData().observe(this) {
+            vModel.getLiveData().observe(this) {
 
                 when (it) {
 
@@ -66,9 +70,9 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
             binding.playPauseBt.setOnCheckedChangeListener { _, isChecked ->
 
                 if (isChecked) {
-                    viewModel.play()
+                    vModel.play()
                 } else {
-                    viewModel.pause()
+                    vModel.pause()
                 }
             }
 
@@ -81,9 +85,9 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
                 if (button.isPressed) {
 
                     if (isChecked) {
-                        viewModel.addToFavorite()
+                        vModel.addToFavorite()
                     } else {
-                        viewModel.removeFromFavorite()
+                        vModel.removeFromFavorite()
                     }
                 }
             }
@@ -93,7 +97,7 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
     override fun onStop() {
         super.onStop()
         if (!isChangingConfigurations) {
-            viewModel.pause()
+            vModel.pause()
         }
     }
 

@@ -1,24 +1,25 @@
 package com.example.playlistmaker.search.presentation
 
-import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.common.domain.consumer.Consumer
 import com.example.playlistmaker.common.domain.consumer.ConsumerData
 import com.example.playlistmaker.common.domain.models.Track
+import com.example.playlistmaker.common.domain.repository.TracksHistoryInteractor
 import com.example.playlistmaker.common.presentation.LiveDataWithStartDataSet
 import com.example.playlistmaker.common.presentation.ScreenName
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.search.domain.repository.ITunesInteractor
 
-class SearchViewModel(private val application: Application) : ViewModel() {
-
-    private val history = Creator.provideTracksHistoryInteractor(application.applicationContext)
-    private val iTunes = Creator.provideITunesInteractor(application.applicationContext)
+class SearchViewModel(
+    private val context: Context,
+    private val history: TracksHistoryInteractor,
+    private val iTunes: ITunesInteractor
+) : ViewModel() {
 
     private val liveData = LiveDataWithStartDataSet<SearchData>()
 
@@ -107,7 +108,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
         cancelSearch()
     }
 
-    private fun cancelSearch(){
+    private fun cancelSearch() {
         iTunes.cancelSearch()
         liveData.setValue(SearchData.ProgressBar(false))
     }
@@ -118,13 +119,13 @@ class SearchViewModel(private val application: Application) : ViewModel() {
 
         history.save(track)
 
-        val intent = Intent(application.applicationContext, ScreenName.PLAYER.className)
+        val intent = Intent(context, ScreenName.PLAYER.className)
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         intent.putExtra("track", history.toJson(track));
 
-        application.applicationContext.startActivity(intent)
+        context.startActivity(intent)
 
         tracksInHistory = null
 
@@ -157,7 +158,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
 
         liveData.setValue(SearchData.ProgressBar(true))
 
-        iTunes.search(searchText, object : Consumer<List<Track>> {
+        iTunes.search(searchText.trim(), object : Consumer<List<Track>> {
             override fun consume(data: ConsumerData<List<Track>>) {
 
                 when (data) {
@@ -177,15 +178,7 @@ class SearchViewModel(private val application: Application) : ViewModel() {
     }
 
     override fun onCleared() {
-        iTunes.cancelSearch()
+        iTunes.destroy()
         super.onCleared()
-    }
-
-    class Factory(private val application: Application) :
-        ViewModelProvider.AndroidViewModelFactory(application) {
-
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return SearchViewModel(application) as T
-        }
     }
 }

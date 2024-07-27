@@ -8,4 +8,6 @@ interface ITunesRepository {
     fun search(text: String, consumer: Consumer<List<Track>>)
 
     fun cancel()
+
+    fun destroy()
 }

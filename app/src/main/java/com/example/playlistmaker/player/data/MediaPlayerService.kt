@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 
-object MediaPlayerService {
+class MediaPlayerService(private val mediaPlayer: MediaPlayer) {
 
 
     enum class State(val num: Int) {
@@ -20,7 +20,6 @@ object MediaPlayerService {
         }
     }
 
-    private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var isPrepared = false
     private var isError = false
     private var onPLay: ((Int) -> Unit)? = null
