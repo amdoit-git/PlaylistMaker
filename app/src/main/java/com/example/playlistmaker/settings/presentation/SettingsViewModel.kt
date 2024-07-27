@@ -28,12 +28,4 @@ class SettingsViewModel(
         settings.setTheme(AppTheme(isDarkTheme))
         settings.saveTheme(AppTheme(isDarkTheme))
     }
-
-//    class Factory(private val application: Application) :
-//        ViewModelProvider.AndroidViewModelFactory(application) {
-//
-//        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//            return SettingsViewModel(application) as T
-//        }
-//    }
 }

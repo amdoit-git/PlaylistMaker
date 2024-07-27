@@ -31,12 +31,12 @@ class SearchActivity : AppCompatActivity() {
         parametersOf(vModel::onTrackClicked, vModel::clearHistory, ::scrollListToTop)
     }
 
-    private val binding: ActivitySearchBinding by inject {
-        parametersOf(layoutInflater)
-    }
+    private lateinit var binding: ActivitySearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding = ActivitySearchBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 

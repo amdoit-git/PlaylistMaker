@@ -17,12 +17,4 @@ class MainViewModel(private val context: Context) : ViewModel() {
 
         context.startActivity(intent)
     }
-
-//    class Factory(private val application: Application) :
-//        ViewModelProvider.AndroidViewModelFactory(application) {
-//
-//        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//            return MainViewModel(application) as T
-//        }
-//    }
 }

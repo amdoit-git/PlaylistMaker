@@ -11,27 +11,7 @@ import org.koin.dsl.module
 
 val uiModule = module {
 
-    factory<ActivityPlayerScreenBinding> { (layoutInflater: LayoutInflater) ->
-        ActivityPlayerScreenBinding.inflate(layoutInflater)
-    }
-
-    factory<ActivitySettingsBinding> { (layoutInflater: LayoutInflater) ->
-        ActivitySettingsBinding.inflate(layoutInflater)
-    }
-
-    factory<ActivitySearchBinding> { (layoutInflater: LayoutInflater) ->
-        ActivitySearchBinding.inflate(layoutInflater)
-    }
-
-    factory<ActivityMainBinding> { (layoutInflater: LayoutInflater) ->
-        ActivityMainBinding.inflate(layoutInflater)
-    }
-
     factory<TrackAdapter> { (onTrackClick: (Track) -> Unit, onButtonClick: () -> Unit, scrollListToTop: () -> Unit) ->
-        TrackAdapter(onTrackClick, onButtonClick, scrollListToTop, get())
-    }
-
-    factory<MutableList<Track>> {
-        mutableListOf()
+        TrackAdapter(onTrackClick, onButtonClick, scrollListToTop, tracks = mutableListOf())
     }
 }

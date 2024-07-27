@@ -112,12 +112,4 @@ class PlayerScreenViewModel(
         player.resetDisplayPorts()
         handlerToast.removeCallbacksAndMessages(obj)
     }
-
-//    class Factory(private val application: Application, private val json: String) :
-//        ViewModelProvider.AndroidViewModelFactory(application) {
-//
-//        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//            return PlayerScreenViewModel(application, json) as T
-//        }
-//    }
 }

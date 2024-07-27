@@ -6,7 +6,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -23,19 +22,19 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
     data class TrackData(val keyId: Int, val valueId: Int, val value: String)
 
-    private lateinit var json:String
+    private lateinit var json: String
 
-    private val vModel: PlayerScreenViewModel by viewModel{
+    private val vModel: PlayerScreenViewModel by viewModel {
         parametersOf(json)
     }
 
-    private val binding: ActivityPlayerScreenBinding by inject{
-        parametersOf(layoutInflater)
-    }
+    private lateinit var binding: ActivityPlayerScreenBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
+        binding = ActivityPlayerScreenBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 

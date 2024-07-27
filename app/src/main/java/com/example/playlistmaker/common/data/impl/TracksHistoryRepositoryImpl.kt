@@ -1,47 +1,85 @@
 package com.example.playlistmaker.common.data.impl
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.common.data.SearchHistory
+import android.util.Log
 import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.common.domain.repository.TracksHistoryRepository
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
 
-class TracksHistoryRepositoryImpl(sharedPreferences: SharedPreferences, gson: Gson) :
+class TracksHistoryRepositoryImpl(
+    private val sharedPrefs: SharedPreferences,
+    private val gson: Gson
+) :
     TracksHistoryRepository {
 
-    init {
-        SearchHistory.setSharedPreferences(
-            sharedPrefs = sharedPreferences
-        )
+    private val LAST_VIEWED_TRACKS = "LAST_VIEWED_TRACKS"
+    private val MAX_TRACKS_IN_LIST: Int = 10
 
-        SearchHistory.setGson(gson = gson)
+    override fun jsonToTracks(json: String): List<Track>? {
+
+        try {
+            val type = object : TypeToken<MutableList<Track>>() {}.type
+            val tracks: MutableList<Track> = gson.fromJson(json, type)
+            tracks.forEachIndexed { index, track ->
+                tracks[index] = track.getTrack()
+            }
+            return tracks
+        } catch (er: JsonSyntaxException) {
+            er.message?.let {
+                Log.d("PM_ERROR", it)
+            } ?: run {
+                Log.d("PM_ERROR", "jsonToTracks")
+            }
+        }
+
+        return null
     }
 
     override fun save(track: Track) {
-        SearchHistory.saveTrackInList(track)
+        val tracks: MutableList<Track> =
+            mutableListOf(track.copy(isPlaying = false, inFavorite = false, isLiked = false))
+
+        getList()?.let {
+            val loadedTracks = it.filter { t -> t.trackId != track.trackId }
+
+            for (i in 0 until minOf(MAX_TRACKS_IN_LIST - 1, loadedTracks.size)) {
+
+                tracks.add(loadedTracks[i])
+            }
+        }
+
+        sharedPrefs.edit().putString(LAST_VIEWED_TRACKS, toJson(tracks)).apply()
     }
 
     override fun getList(): List<Track>? {
-        return SearchHistory.loadTracksList()
+        sharedPrefs.getString(LAST_VIEWED_TRACKS, null)?.let { json ->
+            return jsonToTracks(json)
+        }
+
+        return null
     }
 
     override fun clear() {
-        SearchHistory.clearHistory()
+        sharedPrefs.edit().remove(LAST_VIEWED_TRACKS).apply()
     }
 
     override fun jsonToTrack(json: String): Track? {
-        return SearchHistory.jsonToTrack(json)
-    }
+        try {
+            val track: Track = gson.fromJson(json, Track::class.java)
+            return track.getTrack()
+        } catch (_: JsonSyntaxException) {
 
-    override fun jsonToTracks(json: String): List<Track>? {
-        return SearchHistory.jsonToTracks(json)
+        }
+        return null;
     }
 
     override fun toJson(tracks: List<Track>): String {
-        return SearchHistory.toJson(tracks)
+        return gson.toJson(tracks)
     }
 
     override fun toJson(track: Track): String {
-        return SearchHistory.toJson(track)
+        return gson.toJson(track)
     }
 }

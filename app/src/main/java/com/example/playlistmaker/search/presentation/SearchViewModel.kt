@@ -181,12 +181,4 @@ class SearchViewModel(
         iTunes.destroy()
         super.onCleared()
     }
-
-//    class Factory(private val application: Application) :
-//        ViewModelProvider.AndroidViewModelFactory(application) {
-//
-//        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//            return SearchViewModel(application) as T
-//        }
-//    }
 }

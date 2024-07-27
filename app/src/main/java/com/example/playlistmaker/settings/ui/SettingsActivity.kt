@@ -6,21 +6,18 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.common.domain.models.EmailData
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.settings.presentation.SettingsViewModel
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
-import org.koin.java.KoinJavaComponent.inject
 
 class SettingsActivity : AppCompatActivity() {
 
-    private val binding: ActivitySettingsBinding by inject{
-        parametersOf(layoutInflater)
-    }
+    private lateinit var binding: ActivitySettingsBinding
     private val vModel: SettingsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
