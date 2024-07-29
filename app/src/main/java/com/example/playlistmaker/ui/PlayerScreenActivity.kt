@@ -114,7 +114,9 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
     override fun onStop() {
         super.onStop()
-        player.pause()
+        if (!isChangingConfigurations) {
+            player.pause()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
