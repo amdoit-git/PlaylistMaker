@@ -3,6 +3,7 @@ package com.example.playlistmaker.di
 import com.example.playlistmaker.common.domain.impl.AppSettingsInteractorImpl
 import com.example.playlistmaker.common.domain.impl.ExternalNavigatorInteractorImpl
 import com.example.playlistmaker.common.domain.impl.TracksHistoryInteractorImpl
+import com.example.playlistmaker.common.domain.models.Track
 import com.example.playlistmaker.common.domain.repository.AppSettingsInteractor
 import com.example.playlistmaker.common.domain.repository.ExternalNavigatorInteractor
 import com.example.playlistmaker.common.domain.repository.TracksHistoryInteractor
@@ -32,5 +33,9 @@ val interactorModule = module {
 
     factory<AppSettingsInteractor> {
         AppSettingsInteractorImpl(repository = get())
+    }
+
+    factory<MutableList<Track>>{
+        mutableListOf()
     }
 }
