@@ -29,4 +29,10 @@
     <string name="player_screen_add_to_favorite">Трек \"%s\" добавлен в избранное</string>
     <string name="player_screen_remove_from_favorite">Трек \"%s\" удален из избранного</string>
     <string name="unknown_country">Неизвестная страна</string>
+    <string name="play_list_new_list">Новый плейлист</string>
+    <string name="play_list_empty">Ваша медиатека пуста</string>
+    <string name="play_list_no_lists">Вы не создали\nни одного плейлиста</string>
+    <string name="play_list_favorite_tracks">Избранные треки</string>
+    <string name="play_list_playlists">Плейлисты</string>
+    <string name="play_list_mediateka">Медиатека</string>
 </resources>

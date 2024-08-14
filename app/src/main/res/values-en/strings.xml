@@ -26,4 +26,10 @@
     <string name="player_screen_add_to_favorite">Track \"%s\" was saved in favorites</string>
     <string name="player_screen_remove_from_favorite">Track \"%s\" has been removed from favorites</string>
     <string name="unknown_country">Unknown country</string>
+    <string name="play_list_new_list">New Playlist</string>
+    <string name="play_list_empty">Your media library is empty</string>
+    <string name="play_list_no_lists">You haven\'t created any playlists</string>
+    <string name="play_list_favorite_tracks">Favorite tracks</string>
+    <string name="play_list_playlists">Playlists</string>
+    <string name="play_list_mediateka">Media Library</string>
 </resources>

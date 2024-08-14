@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".favorite.ui.PlayListActivity">
+    tools:context=".favorite.ui.MediaLibraryActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                     android:fontFamily="@font/ys_display_medium"
                     android:gravity="center_vertical"
                     android:minHeight="26dp"
-                    android:text="@string/search"
+                    android:text="@string/play_list_mediateka"
                     android:textColor="@color/arrow_back_title"
                     android:textSize="@dimen/header_text_size" />
             </FrameLayout>
@@ -53,10 +53,11 @@
     </FrameLayout>
 
     <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
         style="@style/MyCustomTabLayout"
         android:layout_width="match_parent"
         android:layout_height="48dp">
-
+<!--
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,7 +67,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Плейлисты" />
-
+-->
     </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
 
 </LinearLayout>
