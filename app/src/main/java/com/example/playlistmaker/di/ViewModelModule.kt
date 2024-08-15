@@ -1,9 +1,9 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.main.presentation.MainViewModel
-import com.example.playlistmaker.player.presentation.PlayerScreenViewModel
-import com.example.playlistmaker.search.presentation.SearchViewModel
-import com.example.playlistmaker.settings.presentation.SettingsViewModel
+import com.example.playlistmaker.viewModels.main.MainViewModel
+import com.example.playlistmaker.viewModels.player.PlayerScreenViewModel
+import com.example.playlistmaker.viewModels.search.SearchViewModel
+import com.example.playlistmaker.viewModels.settings.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
