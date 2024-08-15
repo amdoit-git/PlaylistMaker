@@ -17,4 +17,6 @@
     <color name="player_screen_buttons">#FFFFFF</color>
     <color name="player_screen_info_bg">#FFF</color>
     <color name="player_screen_info_text">#1A1B22</color>
+    <color name="play_list_text_color_main">#FFFFFF</color>
+    <color name="play_list_text_color_black">#FFFFFF</color>
 </resources>
