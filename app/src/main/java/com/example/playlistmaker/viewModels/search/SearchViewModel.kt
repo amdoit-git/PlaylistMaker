@@ -12,8 +12,8 @@ import com.example.playlistmaker.domain.consumer.ConsumerData
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.TracksHistoryInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
-import com.example.playlistmaker.viewModels.common.ScreenName
 import com.example.playlistmaker.domain.repository.search.ITunesInteractor
+import com.example.playlistmaker.ui.search.SearchFragmentDirections
 
 class SearchViewModel(
     private val context: Context,
@@ -119,13 +119,7 @@ class SearchViewModel(
 
         history.save(track)
 
-        val intent = Intent(context, ScreenName.PLAYER.className)
-
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-        intent.putExtra("track", history.toJson(track));
-
-        context.startActivity(intent)
+        liveData.setSingleEventValue(SearchData.OpenPlayerScreen(history.toJson(track)))
 
         tracksInHistory = null
 

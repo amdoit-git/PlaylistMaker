@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.favorite.MediaLibraryActivity">
+    tools:context=".ui.favorite.MediaLibraryFragment">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -21,22 +20,8 @@
             android:layout_marginTop="4dp">
 
             <FrameLayout
-                android:layout_width="48dp"
-                android:layout_height="48dp">
-
-                <FrameLayout
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/arrow_back_bg"
-                    android:backgroundTint="@color/arrow_back_icon_bg" />
-
-            </FrameLayout>
-
-            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="48dp">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -57,23 +42,23 @@
         style="@style/MyCustomTabLayout"
         android:layout_width="match_parent"
         android:layout_height="48dp">
-<!--
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Избранные треки" />
+        <!--
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Избранные треки" />
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Плейлисты" />
--->
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Плейлисты" />
+        -->
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
-        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="0dp" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 </LinearLayout>

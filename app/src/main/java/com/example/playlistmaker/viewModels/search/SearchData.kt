@@ -7,4 +7,5 @@ sealed interface SearchData {
     data class SearchText(val text: String) : SearchData
     data class ProgressBar(val visible: Boolean) : SearchData
     data class MoveToTop(val track: Track) : SearchData
+    data class OpenPlayerScreen(val track: String) : SearchData
 }

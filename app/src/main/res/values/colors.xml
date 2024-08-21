@@ -29,4 +29,7 @@
     <color name="player_screen_info_text">#FFF</color>
     <color name="play_list_text_color_main">#1A1B22</color>
     <color name="play_list_text_color_black">#000000</color>
+    <color name="BottomNavigation_bg">#FFFFFF</color>
+    <color name="BottomNavigation_text">#1A1B22</color>
+    <color name="BottomNavigation_text_checked">#3772E7</color>
 </resources>
