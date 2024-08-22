@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.consumer.Consumer
@@ -37,7 +38,6 @@ class SearchViewModel(
         return liveData
     }
 
-
     fun onTextChanged(text: String) {
 
         searchText = text
@@ -50,7 +50,7 @@ class SearchViewModel(
 
         switchHistoryVisibility()
 
-        liveData.setStartValue(SearchData.SearchText(searchText))
+        liveData.setStartValue(SearchData.SearchText(searchText, textInFocus))
     }
 
     fun onActionButton() {
@@ -63,6 +63,10 @@ class SearchViewModel(
         textInFocus = hasFocus
 
         switchHistoryVisibility()
+
+        liveData.setStartValue(SearchData.SearchText(searchText, textInFocus))
+
+        Log.d("WWW", "onFocusChanged textInFocus = $textInFocus")
     }
 
     private fun switchHistoryVisibility() {

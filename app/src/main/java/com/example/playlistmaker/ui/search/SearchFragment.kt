@@ -4,12 +4,14 @@ import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -23,11 +25,14 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
+
 class SearchFragment : Fragment() {
 
     private lateinit var tracksList: RecyclerView
 
     private var fieldIsInitialized = false
+
+    private var textInFocus = false
 
     private val vModel: SearchViewModel by viewModel()
 
@@ -51,10 +56,13 @@ class SearchFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        Log.d("WWW", "onDestroyView()")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        fieldIsInitialized = false
 
         tracksList = binding.tracksList
 
@@ -75,6 +83,9 @@ class SearchFragment : Fragment() {
                 is SearchData.SearchText -> {
                     binding.editText.setText(it.text)
                     binding.editTextDelete.isVisible = it.text.isNotEmpty()
+                    textInFocus = it.textInFocus
+
+                    Log.d("WWW", "text = ${it.text}, textInFocus = ${it.textInFocus}")
                 }
 
                 is SearchData.TrackList -> {
@@ -130,6 +141,8 @@ class SearchFragment : Fragment() {
                     val direction = SearchFragmentDirections.actionSearchFragmentToPlayerScreenFragment(it.track)
 
                     findNavController().navigate(direction)
+
+                    //isNewBinding = false
                 }
             }
         }
@@ -162,6 +175,12 @@ class SearchFragment : Fragment() {
     }
 
     private fun initTextField(editText: EditText) {
+
+        if(fieldIsInitialized){
+            return
+        }
+
+        fieldIsInitialized = true
 
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -201,7 +220,11 @@ class SearchFragment : Fragment() {
             closeKeyboard()
         }
 
-        fieldIsInitialized = true
+        if(textInFocus){
+            binding.editText.requestFocus()
+        }
+
+        //binding.editText.requestFocus()
     }
 
     private fun closeKeyboard() {
