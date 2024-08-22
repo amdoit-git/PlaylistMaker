@@ -65,8 +65,6 @@ class SearchViewModel(
         switchHistoryVisibility()
 
         liveData.setStartValue(SearchData.SearchText(searchText, textInFocus))
-
-        Log.d("WWW", "onFocusChanged textInFocus = $textInFocus")
     }
 
     private fun switchHistoryVisibility() {
@@ -95,6 +93,10 @@ class SearchViewModel(
         }
 
         liveData.setValue(SearchData.TrackList(STATE))
+
+        tracks?.let {
+            liveData.setSingleEventValue(SearchData.ScrollTracksList(0))
+        }
     }
 
     private fun showHistory() {
@@ -125,11 +127,17 @@ class SearchViewModel(
 
         liveData.setSingleEventValue(SearchData.OpenPlayerScreen(history.toJson(track)))
 
-        tracksInHistory = null
+        tracksInHistory?.let { list ->
+            tracksInHistory = list.partition { it.trackId == track.trackId }.let { it.first + it.second }
+        }
 
         if (STATE == TrackListState.HISTORY_VISIBLE) {
-            liveData.setSingleEventValue(SearchData.MoveToTop(track))
-            //showHistory()
+
+            liveData.setSingleEventValue(SearchData.MoveToTop(track))//showHistory()
+
+            STATE.tracks = tracksInHistory
+
+            liveData.setStartValue(SearchData.TrackList(STATE))
         }
     }
 
