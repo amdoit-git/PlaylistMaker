@@ -1,6 +1,5 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.viewModels.main.MainViewModel
 import com.example.playlistmaker.viewModels.player.PlayerScreenViewModel
 import com.example.playlistmaker.viewModels.search.SearchViewModel
 import com.example.playlistmaker.viewModels.settings.SettingsViewModel
@@ -20,9 +19,5 @@ val viewModelModule = module {
 
     viewModel {
         SettingsViewModel(navigator = get(), settings = get())
-    }
-
-    viewModel {
-        MainViewModel(context = androidContext())
     }
 }

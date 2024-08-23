@@ -16,21 +16,8 @@
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".ui.player.PlayerScreenActivity"
-            android:exported="false"
-             />
-        <activity
-            android:name=".ui.search.SearchActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.favorite.MediaLibraryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.main.MainActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,29 +1,41 @@
 package com.example.playlistmaker.ui.settings
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.models.EmailData
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.viewModels.settings.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
 
-    private lateinit var binding: ActivitySettingsBinding
+    private var _binding: ActivitySettingsBinding? = null
     private val vModel: SettingsViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    private val binding get() = _binding!!
 
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = ActivitySettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-        setContentView(binding.root)
-
-        binding.buttonToMainScreen.setOnClickListener {
-            this.finish()
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.buttonShare.setOnClickListener {
             vModel.share(

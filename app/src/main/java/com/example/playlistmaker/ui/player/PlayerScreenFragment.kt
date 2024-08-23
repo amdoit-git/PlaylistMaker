@@ -1,23 +1,28 @@
 package com.example.playlistmaker.ui.player
 
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivityPlayerScreenBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.common.DpToPx
-import com.example.playlistmaker.databinding.ActivityPlayerScreenBinding
 import com.example.playlistmaker.viewModels.player.PlayerScreenData
 import com.example.playlistmaker.viewModels.player.PlayerScreenViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PlayerScreenActivity : AppCompatActivity(), DpToPx {
+class PlayerScreenFragment : Fragment(), DpToPx {
 
     data class TrackData(val keyId: Int, val valueId: Int, val value: String)
 
@@ -27,66 +32,80 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
         parametersOf(json)
     }
 
-    private lateinit var binding: ActivityPlayerScreenBinding
+    private var _binding: ActivityPlayerScreenBinding? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    private val binding get() = _binding!!
 
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = ActivityPlayerScreenBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding = ActivityPlayerScreenBinding.inflate(layoutInflater)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        intent.getStringExtra("track")?.let { json ->
+        arguments?.let { args ->
 
-            this.json = json
+            args.getString(TRACK)?.let { json ->
 
-            vModel.getLiveData().observe(this) {
+                this.json = json
 
-                when (it) {
+                vModel.getLiveData().observe(viewLifecycleOwner) {
 
-                    is PlayerScreenData.TrackData -> fillTrackInfo(it.track)
+                    when (it) {
 
-                    is PlayerScreenData.TrackProgress -> {
-                        it.time?.let { time ->
-                            binding.playTime.text = time
+                        is PlayerScreenData.TrackData -> fillTrackInfo(it.track)
+
+                        is PlayerScreenData.TrackProgress -> {
+                            it.time?.let { time ->
+                                binding.playTime.text = time
+                            }
+
+                            it.stopped?.let { stopped ->
+                                binding.playPauseBt.isChecked = !stopped
+                            }
                         }
 
-                        it.stopped?.let { stopped ->
-                            binding.playPauseBt.isChecked = !stopped
+                        is PlayerScreenData.ToastMessage -> {
+
+                            binding.infoText.text = it.message
+
+                            binding.info.isVisible = it.isVisible
                         }
                     }
-
-                    is PlayerScreenData.ToastMessage -> {
-
-                        binding.infoText.text = it.message
-
-                        binding.info.isVisible = it.isVisible
-                    }
                 }
-            }
 
-            binding.playPauseBt.setOnCheckedChangeListener { _, isChecked ->
-
-                if (isChecked) {
-                    vModel.play()
-                } else {
-                    vModel.pause()
-                }
-            }
-
-            binding.backButton.setOnClickListener {
-                this.finish()
-            }
-
-            binding.favoriteBt.setOnCheckedChangeListener { button, isChecked ->
-
-                if (button.isPressed) {
+                binding.playPauseBt.setOnCheckedChangeListener { _, isChecked ->
 
                     if (isChecked) {
-                        vModel.addToFavorite()
+                        vModel.play()
                     } else {
-                        vModel.removeFromFavorite()
+                        vModel.pause()
+                    }
+                }
+
+                binding.backButton.setOnClickListener {
+                    findNavController().popBackStack()
+                }
+
+                binding.favoriteBt.setOnCheckedChangeListener { button, isChecked ->
+
+                    if (button.isPressed) {
+
+                        if (isChecked) {
+                            vModel.addToFavorite()
+                        } else {
+                            vModel.removeFromFavorite()
+                        }
                     }
                 }
             }
@@ -95,8 +114,10 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
 
     override fun onStop() {
         super.onStop()
-        if (!isChangingConfigurations) {
-            vModel.pause()
+        activity?.let {
+            if (!it.isChangingConfigurations) {
+                vModel.pause()
+            }
         }
     }
 
@@ -146,7 +167,9 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
                 )
 
                 //выставляем значения непустых полей
-                findViewById<TextView>(item.valueId).text = item.value
+                view?.let {
+                    it.findViewById<TextView>(item.valueId).text = item.value
+                }
 
                 topId = item.keyId
             }
@@ -157,5 +180,9 @@ class PlayerScreenActivity : AppCompatActivity(), DpToPx {
         )
 
         constraintSet.applyTo(constraintLayout)
+    }
+
+    companion object {
+        const val TRACK = "track"
     }
 }

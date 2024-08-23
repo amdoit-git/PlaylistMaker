@@ -1,17 +1,24 @@
 package com.example.playlistmaker.ui.search
 
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.media3.common.text.TextAnnotation.Position
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.viewModels.search.SearchData
 import com.example.playlistmaker.viewModels.search.SearchViewModel
 import com.example.playlistmaker.viewModels.search.TrackListState
@@ -19,11 +26,10 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class SearchActivity : AppCompatActivity() {
+
+class SearchFragment : Fragment() {
 
     private lateinit var tracksList: RecyclerView
-
-    private var fieldIsInitialized = false
 
     private val vModel: SearchViewModel by viewModel()
 
@@ -31,28 +37,36 @@ class SearchActivity : AppCompatActivity() {
         parametersOf(vModel::onTrackClicked, vModel::clearHistory, ::scrollListToTop)
     }
 
-    private lateinit var binding: ActivitySearchBinding
+    private var _binding: ActivitySearchBinding? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val binding get() = _binding!!
 
-        binding = ActivitySearchBinding.inflate(layoutInflater)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = ActivitySearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        setContentView(binding.root)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         tracksList = binding.tracksList
 
         tracksList.adapter = adapter
 
-        binding.buttonToMainScreen.setOnClickListener {
-            this.finish()
-        }
-
         binding.noInternetButton.setOnClickListener {
             vModel.searchOnITunes()
         }
 
-        vModel.getLiveData().observe(this) {
+        vModel.getLiveData().observe(viewLifecycleOwner) {
 
             when (it) {
 
@@ -63,6 +77,9 @@ class SearchActivity : AppCompatActivity() {
                 is SearchData.SearchText -> {
                     binding.editText.setText(it.text)
                     binding.editTextDelete.isVisible = it.text.isNotEmpty()
+                    if(it.textInFocus){
+                        binding.editText.requestFocus()
+                    }
                 }
 
                 is SearchData.TrackList -> {
@@ -112,6 +129,17 @@ class SearchActivity : AppCompatActivity() {
                 is SearchData.MoveToTop -> {
                     adapter.moveTrackToTop(it.track)
                 }
+
+                is SearchData.OpenPlayerScreen -> {
+
+                    val direction = SearchFragmentDirections.actionSearchFragmentToPlayerScreenFragment(it.track)
+
+                    findNavController().navigate(direction)
+                }
+
+                is SearchData.ScrollTracksList -> {
+                    scrollTracksList(it.position)
+                }
             }
         }
     }
@@ -119,6 +147,11 @@ class SearchActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         initTextField(binding.editText)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        disableTextField(binding.editText)
     }
 
     private fun scrollListToTop() {
@@ -132,8 +165,10 @@ class SearchActivity : AppCompatActivity() {
         adapter.showClearButton(showClearButton)
 
         adapter.notifyDataSetChanged()
+    }
 
-        tracksList.smoothScrollToPosition(0)
+    private fun scrollTracksList(position: Int){
+        tracksList.smoothScrollToPosition(position)
     }
 
     private fun clearTracksList() {
@@ -181,17 +216,26 @@ class SearchActivity : AppCompatActivity() {
             editText.setText("")
             closeKeyboard()
         }
+    }
 
-        fieldIsInitialized = true
+    private fun disableTextField(editText: EditText){
+
+        editText.addTextChangedListener(null)
+
+        editText.setOnEditorActionListener(null)
+
+        editText.onFocusChangeListener = null
+
+        binding.editTextDelete.setOnClickListener(null)
     }
 
     private fun closeKeyboard() {
 
-        val view = currentFocus
+        val view = activity?.currentFocus
 
-        if (view != null) {
+        if (activity != null && view != null) {
 
-            val manager = baseContext.getSystemService(
+            val manager = requireActivity().baseContext.getSystemService(
                 INPUT_METHOD_SERVICE
             ) as InputMethodManager
             manager.hideSoftInputFromWindow(

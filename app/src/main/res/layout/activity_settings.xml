@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/settings_screen_bg"
+    android:background="@color/windowBackground"
     android:orientation="vertical"
-    tools:context=".ui.settings.SettingsActivity">
+    tools:context=".ui.settings.SettingsFragment">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -20,22 +20,8 @@
             android:layout_marginTop="4dp">
 
             <FrameLayout
-                android:layout_width="48dp"
-                android:layout_height="48dp">
-
-                <FrameLayout
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/arrow_back_bg"
-                    android:backgroundTint="@color/arrow_back_icon_bg" />
-
-            </FrameLayout>
-
-            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="48dp">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -120,60 +106,6 @@
 
         </FrameLayout>
 
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E6E8EB" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <LinearLayout style="@style/SettingsItemBottom">
-
-            <FrameLayout
-                style="@style/SettingsItemBottom_icon"
-                android:background="@drawable/search">
-
-            </FrameLayout>
-
-            <TextView
-                style="@style/SettingsItemBottom_text"
-                android:text="@string/search" />
-        </LinearLayout>
-
-        <LinearLayout style="@style/SettingsItemBottom">
-
-            <FrameLayout
-                style="@style/SettingsItemBottom_icon"
-                android:background="@drawable/play_list">
-
-            </FrameLayout>
-
-            <TextView
-                style="@style/SettingsItemBottom_text"
-                android:text="@string/media_list" />
-        </LinearLayout>
-
-        <LinearLayout style="@style/SettingsItemBottom">
-
-            <FrameLayout
-                style="@style/SettingsItemBottom_icon"
-                android:background="@drawable/settings" />
-
-            <TextView
-                style="@style/SettingsItemBottom_text"
-                android:text="@string/settings" />
-        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

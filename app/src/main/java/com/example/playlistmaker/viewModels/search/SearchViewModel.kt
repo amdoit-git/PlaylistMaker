@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.consumer.Consumer
@@ -12,8 +13,8 @@ import com.example.playlistmaker.domain.consumer.ConsumerData
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.TracksHistoryInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
-import com.example.playlistmaker.viewModels.common.ScreenName
 import com.example.playlistmaker.domain.repository.search.ITunesInteractor
+import com.example.playlistmaker.ui.search.SearchFragmentDirections
 
 class SearchViewModel(
     private val context: Context,
@@ -37,7 +38,6 @@ class SearchViewModel(
         return liveData
     }
 
-
     fun onTextChanged(text: String) {
 
         searchText = text
@@ -50,7 +50,7 @@ class SearchViewModel(
 
         switchHistoryVisibility()
 
-        liveData.setStartValue(SearchData.SearchText(searchText))
+        liveData.setStartValue(SearchData.SearchText(searchText, textInFocus))
     }
 
     fun onActionButton() {
@@ -63,6 +63,8 @@ class SearchViewModel(
         textInFocus = hasFocus
 
         switchHistoryVisibility()
+
+        liveData.setStartValue(SearchData.SearchText(searchText, textInFocus))
     }
 
     private fun switchHistoryVisibility() {
@@ -91,6 +93,10 @@ class SearchViewModel(
         }
 
         liveData.setValue(SearchData.TrackList(STATE))
+
+        tracks?.let {
+            liveData.setSingleEventValue(SearchData.ScrollTracksList(0))
+        }
     }
 
     private fun showHistory() {
@@ -119,19 +125,19 @@ class SearchViewModel(
 
         history.save(track)
 
-        val intent = Intent(context, ScreenName.PLAYER.className)
+        liveData.setSingleEventValue(SearchData.OpenPlayerScreen(history.toJson(track)))
 
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-        intent.putExtra("track", history.toJson(track));
-
-        context.startActivity(intent)
-
-        tracksInHistory = null
+        tracksInHistory?.let { list ->
+            tracksInHistory = list.partition { it.trackId == track.trackId }.let { it.first + it.second }
+        }
 
         if (STATE == TrackListState.HISTORY_VISIBLE) {
-            liveData.setSingleEventValue(SearchData.MoveToTop(track))
-            //showHistory()
+
+            liveData.setSingleEventValue(SearchData.MoveToTop(track))//showHistory()
+
+            STATE.tracks = tracksInHistory
+
+            liveData.setStartValue(SearchData.TrackList(STATE))
         }
     }
 
