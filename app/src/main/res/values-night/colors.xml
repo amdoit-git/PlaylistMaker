@@ -22,4 +22,5 @@
     <color name="BottomNavigation_bg">#1A1B22</color>
     <color name="BottomNavigation_text">#FFFFFF</color>
     <color name="BottomNavigation_text_checked">#3772E7</color>
+    <color name="windowBackground">#1A1B22</color>
 </resources>
