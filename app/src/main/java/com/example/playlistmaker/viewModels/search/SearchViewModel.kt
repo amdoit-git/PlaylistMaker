@@ -1,31 +1,26 @@
 package com.example.playlistmaker.viewModels.search
 
-import android.content.Context
-import android.content.Intent
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.consumer.Consumer
 import com.example.playlistmaker.domain.consumer.ConsumerData
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.TracksHistoryInteractor
-import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import com.example.playlistmaker.domain.repository.search.ITunesInteractor
-import com.example.playlistmaker.ui.search.SearchFragmentDirections
+import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val context: Context,
     private val history: TracksHistoryInteractor,
     private val iTunes: ITunesInteractor
 ) : ViewModel() {
 
     private val liveData = LiveDataWithStartDataSet<SearchData>()
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val obj = Any()
+    private var searchDelayJob: Job? = null
 
     private var searchText: String = ""
     private var textInFocus: Boolean = false
@@ -42,11 +37,12 @@ class SearchViewModel(
 
         searchText = text
 
-        handler.removeCallbacksAndMessages(obj)
+        searchDelayJob?.cancel()
 
-        handler.postAtTime({
+        searchDelayJob = viewModelScope.launch {
+            delay(2000L)
             searchOnITunes()
-        }, obj, 2000L + SystemClock.uptimeMillis())
+        }
 
         switchHistoryVisibility()
 
@@ -55,7 +51,7 @@ class SearchViewModel(
 
     fun onActionButton() {
         searchOnITunes()
-        handler.removeCallbacksAndMessages(obj)
+        searchDelayJob?.cancel()
     }
 
     fun onFocusChanged(hasFocus: Boolean) {
@@ -128,7 +124,8 @@ class SearchViewModel(
         liveData.setSingleEventValue(SearchData.OpenPlayerScreen(history.toJson(track)))
 
         tracksInHistory?.let { list ->
-            tracksInHistory = list.partition { it.trackId == track.trackId }.let { it.first + it.second }
+            tracksInHistory =
+                list.partition { it.trackId == track.trackId }.let { it.first + it.second }
         }
 
         if (STATE == TrackListState.HISTORY_VISIBLE) {
@@ -144,9 +141,10 @@ class SearchViewModel(
     private fun isClickAllowed(): Boolean {
         if (trackClickAllowed) {
             trackClickAllowed = false
-            handler.postDelayed({
+            viewModelScope.launch {
+                delay(1000L)
                 trackClickAllowed = true
-            }, 1000L)
+            }
             return true
         }
         return false
