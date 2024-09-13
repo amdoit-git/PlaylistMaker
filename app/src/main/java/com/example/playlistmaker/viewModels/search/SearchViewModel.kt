@@ -3,12 +3,12 @@ package com.example.playlistmaker.viewModels.search
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.domain.consumer.Consumer
 import com.example.playlistmaker.domain.consumer.ConsumerData
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.TracksHistoryInteractor
 import com.example.playlistmaker.domain.repository.search.ITunesInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -28,6 +28,8 @@ class SearchViewModel(
     private var tracksInHistory: List<Track>? = null
 
     private var trackClickAllowed = true
+
+    private var iTunesSearchJob: Job? = null
 
     fun getLiveData(): LiveData<SearchData> {
         return liveData
@@ -111,7 +113,7 @@ class SearchViewModel(
     }
 
     private fun cancelSearch() {
-        iTunes.cancelSearch()
+        iTunesSearchJob?.cancel()
         liveData.setValue(SearchData.ProgressBar(false))
     }
 
@@ -162,27 +164,29 @@ class SearchViewModel(
 
         liveData.setValue(SearchData.ProgressBar(true))
 
-        iTunes.search(searchText.trim(), object : Consumer<List<Track>> {
-            override fun consume(data: ConsumerData<List<Track>>) {
+        iTunesSearchJob = viewModelScope.launch(Dispatchers.Main) {
 
-                when (data) {
-                    is ConsumerData.Data -> changeState(TrackListState.SEARCH_VISIBLE, data.value)
+            iTunes.search(searchText.trim())
+                .collect { data ->
 
-                    is ConsumerData.Error -> {
-                        when (data.code) {
-                            404 -> changeState(TrackListState.SEARCH_EMPTY)
-                            else -> changeState(TrackListState.SEARCH_FAIL)
+                    when (data) {
+                        is ConsumerData.Data -> changeState(
+                            TrackListState.SEARCH_VISIBLE,
+                            data.value
+                        )
+
+                        is ConsumerData.Error -> {
+                            when (data.code) {
+                                404 -> changeState(TrackListState.SEARCH_EMPTY)
+                                else -> changeState(TrackListState.SEARCH_FAIL)
+                            }
                         }
+
+                        is ConsumerData.CanceledRequest -> {}
                     }
+
+                    liveData.setValue(SearchData.ProgressBar(false))
                 }
-
-                liveData.setValue(SearchData.ProgressBar(false))
-            }
-        })
-    }
-
-    override fun onCleared() {
-        iTunes.destroy()
-        super.onCleared()
+        }
     }
 }
