@@ -7,16 +7,16 @@ import com.example.playlistmaker.domain.repository.TracksHistoryRepository
 class TracksHistoryInteractorImpl(private val repository: TracksHistoryRepository) :
     TracksHistoryInteractor {
 
-    override fun save(track: Track) {
+    override suspend fun save(track: Track) {
         repository.save(track)
     }
 
-    override fun getList(): List<Track> {
+    override suspend fun getList(): List<Track> {
         val list: List<Track> = repository.getList() ?: emptyList()
         return list
     }
 
-    override fun clear() {
+    override suspend fun clear() {
         repository.clear()
     }
 

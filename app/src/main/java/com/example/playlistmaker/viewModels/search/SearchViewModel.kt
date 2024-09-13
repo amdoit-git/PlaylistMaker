@@ -41,7 +41,7 @@ class SearchViewModel(
 
         searchDelayJob?.cancel()
 
-        searchDelayJob = viewModelScope.launch {
+        searchDelayJob = viewModelScope.launch(Dispatchers.Main) {
             delay(2000L)
             searchOnITunes()
         }
@@ -69,7 +69,9 @@ class SearchViewModel(
 
         if (textInFocus && searchText.isEmpty()) {
 
-            showHistory()
+            viewModelScope.launch(Dispatchers.Main) {
+                showHistory()
+            }
 
         } else if (STATE == TrackListState.HISTORY_VISIBLE) {
 
@@ -97,7 +99,7 @@ class SearchViewModel(
         }
     }
 
-    private fun showHistory() {
+    private suspend fun showHistory() {
 
         if (tracksInHistory == null) {
             tracksInHistory = history.getList()
@@ -121,7 +123,9 @@ class SearchViewModel(
 
         if (!isClickAllowed()) return Unit;
 
-        history.save(track)
+        viewModelScope.launch(Dispatchers.Main) {
+            history.save(track)
+        }
 
         liveData.setSingleEventValue(SearchData.OpenPlayerScreen(history.toJson(track)))
 
@@ -143,7 +147,7 @@ class SearchViewModel(
     private fun isClickAllowed(): Boolean {
         if (trackClickAllowed) {
             trackClickAllowed = false
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.Main) {
                 delay(1000L)
                 trackClickAllowed = true
             }
@@ -154,7 +158,9 @@ class SearchViewModel(
 
     fun clearHistory() {
         tracksInHistory = null
-        history.clear()
+        viewModelScope.launch(Dispatchers.Main) {
+            history.clear()
+        }
         changeState(TrackListState.HISTORY_EMPTY)
     }
 

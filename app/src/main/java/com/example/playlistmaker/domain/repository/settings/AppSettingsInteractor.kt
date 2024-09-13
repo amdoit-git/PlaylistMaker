@@ -6,9 +6,9 @@ interface AppSettingsInteractor {
 
     fun setTheme(theme: AppTheme)
 
-    fun saveTheme(theme: AppTheme)
+    suspend fun saveTheme(theme: AppTheme)
 
-    fun getTheme(): AppTheme?
+    suspend fun getTheme(): AppTheme?
 
-    fun restoreTheme()
+    suspend fun restoreTheme()
 }

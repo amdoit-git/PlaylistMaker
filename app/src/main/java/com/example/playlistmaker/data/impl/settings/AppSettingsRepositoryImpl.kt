@@ -1,9 +1,12 @@
 package com.example.playlistmaker.data.impl.settings
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.domain.models.AppTheme
 import com.example.playlistmaker.domain.repository.settings.AppSettingsRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AppSettingsRepositoryImpl(sharedPreferences: SharedPreferences) : AppSettingsRepository {
 
@@ -21,24 +24,30 @@ class AppSettingsRepositoryImpl(sharedPreferences: SharedPreferences) : AppSetti
         )
     }
 
-    override fun saveTheme(theme: AppTheme) {
-        sharedPrefs.edit().putBoolean(DARK_THEME_KEY, theme.dark).apply()
-    }
-
-    override fun getTheme(): AppTheme? {
-
-        if (sharedPrefs.contains(DARK_THEME_KEY)) {
-            return AppTheme(
-                dark = sharedPrefs.getBoolean(DARK_THEME_KEY, false)
-            )
+    override suspend fun saveTheme(theme: AppTheme) {
+        withContext(Dispatchers.IO) {
+            sharedPrefs.edit().putBoolean(DARK_THEME_KEY, theme.dark).commit()
         }
-
-        return null
     }
 
-    override fun restoreTheme() {
+    override suspend fun getTheme(): AppTheme? {
 
+        return withContext(Dispatchers.IO) {
+
+            if (sharedPrefs.contains(DARK_THEME_KEY)) {
+                AppTheme(
+                    dark = sharedPrefs.getBoolean(DARK_THEME_KEY, false)
+                )
+            } else {
+                null
+            }
+        }
+    }
+
+    override suspend fun restoreTheme() {
+        Log.d("WWW", "restoreTheme()")
         getTheme()?.let {
+            Log.d("WWW", it.toString())
             setTheme(it)
         }
     }
