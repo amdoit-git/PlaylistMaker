@@ -1,7 +1,6 @@
 package com.example.playlistmaker.data.impl.settings
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.domain.models.AppTheme
 import com.example.playlistmaker.domain.repository.settings.AppSettingsRepository
@@ -45,9 +44,8 @@ class AppSettingsRepositoryImpl(sharedPreferences: SharedPreferences) : AppSetti
     }
 
     override suspend fun restoreTheme() {
-        Log.d("WWW", "restoreTheme()")
+
         getTheme()?.let {
-            Log.d("WWW", it.toString())
             setTheme(it)
         }
     }
