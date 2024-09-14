@@ -5,11 +5,12 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.search.ITunesInteractor
 import com.example.playlistmaker.domain.repository.search.ITunesRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class ITunesInteractorImpl(private val repository: ITunesRepository) : ITunesInteractor {
 
-    override suspend fun search(text: String): Flow<ConsumerData<List<Track>>> {
+    override suspend fun search(text: String): Flow<ConsumerData<List<Track>>> = flow {
 
-        return repository.search(text)
+        repository.search(text).collect { data -> emit(data) }
     }
 }
