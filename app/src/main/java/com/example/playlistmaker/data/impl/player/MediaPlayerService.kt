@@ -139,7 +139,7 @@ class MediaPlayerService(private val mediaPlayer: MediaPlayer) {
             timerJob = GlobalScope.launch(Dispatchers.Main) {
                 while (true) {
                     displayPlayProgress()
-                    delay(1000L)
+                    delay(300L)
                 }
             }
         }

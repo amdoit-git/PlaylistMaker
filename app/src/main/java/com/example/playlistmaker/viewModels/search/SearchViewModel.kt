@@ -1,5 +1,6 @@
 package com.example.playlistmaker.viewModels.search
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,9 +9,11 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.TracksHistoryInteractor
 import com.example.playlistmaker.domain.repository.search.ITunesInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -116,7 +119,6 @@ class SearchViewModel(
 
     private fun cancelSearch() {
         iTunesSearchJob?.cancel()
-        liveData.setValue(SearchData.ProgressBar(false))
     }
 
     fun onTrackClicked(track: Track) {
@@ -172,27 +174,31 @@ class SearchViewModel(
 
         iTunesSearchJob = viewModelScope.launch(Dispatchers.Main) {
 
-            iTunes.search(searchText.trim())
-                .collect { data ->
+            try {
 
-                    when (data) {
-                        is ConsumerData.Data -> changeState(
-                            TrackListState.SEARCH_VISIBLE,
-                            data.value
-                        )
+                iTunes.search(searchText.trim())
+                    .flowOn(Dispatchers.Main)
+                    .collect { data ->
 
-                        is ConsumerData.Error -> {
-                            when (data.code) {
-                                404 -> changeState(TrackListState.SEARCH_EMPTY)
-                                else -> changeState(TrackListState.SEARCH_FAIL)
+                        when (data) {
+                            is ConsumerData.Data -> changeState(
+                                TrackListState.SEARCH_VISIBLE,
+                                data.value
+                            )
+
+                            is ConsumerData.Error -> {
+                                when (data.code) {
+                                    404 -> changeState(TrackListState.SEARCH_EMPTY)
+                                    else -> changeState(TrackListState.SEARCH_FAIL)
+                                }
                             }
                         }
 
-                        is ConsumerData.CanceledRequest -> {}
+                        liveData.setValue(SearchData.ProgressBar(false))
                     }
-
-                    liveData.setValue(SearchData.ProgressBar(false))
-                }
+            } catch (error: CancellationException) {
+                liveData.setValue(SearchData.ProgressBar(false))
+            }
         }
     }
 }

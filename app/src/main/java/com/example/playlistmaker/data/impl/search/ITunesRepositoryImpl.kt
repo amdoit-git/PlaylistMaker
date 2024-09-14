@@ -10,13 +10,20 @@ import com.example.playlistmaker.domain.consumer.ConsumerData
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.search.ITunesRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
 class ITunesRepositoryImpl(private val context: Context, private val api: Itunes) :
     ITunesRepository {
 
-    override suspend fun search(text: String): ConsumerData<List<Track>> {
+    override suspend fun search(text: String): Flow<ConsumerData<List<Track>>> = flow {
+
+        emit(doSearch(text))
+    }
+
+    private suspend fun doSearch(text: String): ConsumerData<List<Track>> {
 
         if (!isConnected()) {
             return ConsumerData.Error(code = -1, message = "No internet connection")
@@ -41,18 +48,18 @@ class ITunesRepositoryImpl(private val context: Context, private val api: Itunes
                     )
                 }
 
-            } catch (error: CancellationException) {
+            }
+            catch (error: Throwable) {
 
-                ConsumerData.Error(
-                    code = -2,
-                    message = "The search was terminated"
-                )
-            } catch (error: Throwable) {
-
-                ConsumerData.Error(
-                    code = 502,
-                    message = "Some error occurred when search for \"$text\""
-                )
+                if(error is CancellationException){
+                    throw error
+                }
+                else{
+                    ConsumerData.Error(
+                        code = 502,
+                        message = "Some error occurred when search for \"$text\""
+                    )
+                }
             }
         }
     }
