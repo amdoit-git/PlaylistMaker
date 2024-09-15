@@ -1,13 +1,10 @@
 package com.example.playlistmaker.domain.repository.search
 
-import com.example.playlistmaker.domain.consumer.Consumer
+import com.example.playlistmaker.domain.consumer.ConsumerData
 import com.example.playlistmaker.domain.models.Track
+import kotlinx.coroutines.flow.Flow
 
 interface ITunesRepository {
 
-    fun search(text: String, consumer: Consumer<List<Track>>)
-
-    fun cancel()
-
-    fun destroy()
+    suspend fun search(text: String): Flow<ConsumerData<List<Track>>>
 }

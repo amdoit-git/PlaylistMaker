@@ -11,15 +11,15 @@ class AppSettingsInteractorImpl(private val repository: AppSettingsRepository) :
         repository.setTheme(theme)
     }
 
-    override fun saveTheme(theme: AppTheme) {
+    override suspend fun saveTheme(theme: AppTheme) {
         repository.saveTheme(theme)
     }
 
-    override fun getTheme(): AppTheme? {
+    override suspend fun getTheme(): AppTheme? {
         return repository.getTheme()
     }
 
-    override fun restoreTheme() {
+    override suspend fun restoreTheme() {
         repository.restoreTheme()
     }
 }

@@ -3,153 +3,60 @@ package com.example.playlistmaker.data.impl.search
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Handler
-import android.os.Looper
-import com.example.playlistmaker.domain.consumer.Consumer
-import com.example.playlistmaker.domain.consumer.ConsumerData
-import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.data.api.search.Itunes
 import com.example.playlistmaker.data.dto.search.ITunesTrackToTrackMapper
+import com.example.playlistmaker.data.dto.search.ItunesTrackList
+import com.example.playlistmaker.domain.consumer.ConsumerData
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.search.ITunesRepository
-import java.io.IOException
-import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.cancellation.CancellationException
 
 class ITunesRepositoryImpl(private val context: Context, private val api: Itunes) :
-    Thread(), ITunesRepository {
+    ITunesRepository {
 
-    private val isTerminated = AtomicBoolean(false)
-    private val lock = Object()
-    private var searchText = ""
-    private val handler = Handler(Looper.getMainLooper())
-    private var consumer: Consumer<List<Track>>? = null
+    override suspend fun search(text: String): Flow<ConsumerData<List<Track>>> = flow {
 
-    init {
-        this.start()
+        emit(doSearch(text))
     }
 
-    override fun search(text: String, consumer: Consumer<List<Track>>) {
+    private suspend fun doSearch(text: String): ConsumerData<List<Track>> {
 
         if (!isConnected()) {
-            consumer.consume(ConsumerData.Error(code = -1, message = "No internet connection"))
-            return
+            return ConsumerData.Error(code = -1, message = "No internet connection")
         }
 
-        this.doSearch(text, consumer)
-    }
+        return withContext(Dispatchers.IO) {
 
-    override fun cancel() {
-        synchronized(searchText) {
-            if (searchText.isEmpty()) return
-        }
-        doSearch(text = "", null)
-    }
+            try {
 
-    override fun destroy() {
-        isTerminated.set(true)
-        this.interrupt()
-    }
+                val iTunesTracks: ItunesTrackList = api.search(text)
 
-    private fun doSearch(text: String, consumer: Consumer<List<Track>>?) {
-        synchronized(searchText) {
-            this.searchText = text
-            this.consumer = consumer
-        }
-        synchronized(lock) {
-            lock.notify();
-        }
-    }
-
-    private fun runSearch(text: String): SearchState {
-
-        if (text.isBlank()) return SearchState.SEARCH_COMPLETE
-
-        try {
-
-            val response = api.search(text).execute()
-
-            if (text != getSearchText()) {
-                return SearchState.NEW_SEARCH_NEEDED
-            }
-
-            when (response.code()) {
-                200 -> {
-                    response.body()?.let {
-                        if (it.results.isNotEmpty()) {
-                            postResultsToMainThread(
-                                ConsumerData.Data(
-                                    value = ITunesTrackToTrackMapper.map(
-                                        itunesTracks = it.results,
-                                        context = context
-                                    )
-                                )
-                            )
-                            return SearchState.SEARCH_COMPLETE
-                        }
-                    }
-
-                    postResultsToMainThread(
-                        ConsumerData.Error(
-                            code = 404, message = "No tracks found for\"$searchText\""
+                if (iTunesTracks.results.isNotEmpty()) {
+                    ConsumerData.Data(
+                        value = ITunesTrackToTrackMapper.map(
+                            itunesTracks = iTunesTracks.results,
+                            context = context
                         )
+                    )
+                } else {
+                    ConsumerData.Error(
+                        code = 404, message = "No tracks found for\"$text\""
                     )
                 }
 
-                else -> {
-                    postResultsToMainThread(
-                        ConsumerData.Error(
-                            code = response.code(),
-                            message = "The server rejected our request with an error. One search for \"$searchText\""
-                        )
-                    )
-                }
-            }
-
-        } catch (error: IOException) {
-
-            if (text != getSearchText()) {
-                return SearchState.NEW_SEARCH_NEEDED
-            }
-
-            postResultsToMainThread(
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
                 ConsumerData.Error(
                     code = 502,
-                    message = "Some error occurred when search for \"$searchText\""
+                    message = "Some error occurred when search for \"$text\""
                 )
-            )
-        }
-
-        return SearchState.SEARCH_COMPLETE
-    }
-
-    private fun postResultsToMainThread(data: ConsumerData<List<Track>>) {
-        handler.post {
-            consumer?.consume(data)
-        }
-    }
-
-    private fun getSearchText(): String {
-        synchronized(searchText) {
-            return searchText
-        }
-    }
-
-    override fun run() {
-        super.run()
-
-        do {
-            synchronized(lock) {
-                try {
-                    lock.wait()
-                } catch (e: InterruptedException) {
-                    isTerminated.set(true)
-                }
             }
-
-            while (!isTerminated.get() && runSearch(text = getSearchText()) == SearchState.NEW_SEARCH_NEEDED) {
-                //запускаем новый поиск если есть новый поисковый запрос
-            }
-
-        } while (!isTerminated.get())
+        }
     }
 
     private fun isConnected(): Boolean {
@@ -166,9 +73,5 @@ class ITunesRepositoryImpl(private val context: Context, private val api: Itunes
             }
         }
         return false
-    }
-
-    enum class SearchState {
-        NEW_SEARCH_NEEDED, SEARCH_COMPLETE;
     }
 }

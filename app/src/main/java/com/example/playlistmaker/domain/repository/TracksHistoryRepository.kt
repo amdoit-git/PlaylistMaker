@@ -4,11 +4,11 @@ import com.example.playlistmaker.domain.models.Track
 
 interface TracksHistoryRepository {
 
-    fun save(track: Track)
+    suspend fun save(track: Track)
 
-    fun getList():List<Track>?
+    suspend fun getList():List<Track>?
 
-    fun clear()
+    suspend fun clear()
 
     fun jsonToTrack(json: String): Track?
 

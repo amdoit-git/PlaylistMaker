@@ -7,6 +7,10 @@ import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule
 import com.example.playlistmaker.di.uiModule
 import com.example.playlistmaker.di.viewModelModule
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
@@ -28,6 +32,8 @@ class App : Application() {
 
         val settings: AppSettingsInteractor by inject()
 
-        settings.restoreTheme()
+        runBlocking {
+            settings.restoreTheme()
+        }
     }
 }

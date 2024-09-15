@@ -5,6 +5,11 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MediaPlayerService(private val mediaPlayer: MediaPlayer) {
 
@@ -29,8 +34,7 @@ class MediaPlayerService(private val mediaPlayer: MediaPlayer) {
     private var url: String? = null
 
     private var STATE = State.STOPPED
-    private val handler = Handler(Looper.getMainLooper())
-    private val obj = Any()
+    private var timerJob: Job? = null
 
     fun setDisplayPorts(
         forTime: ((Int) -> Unit)?,
@@ -94,7 +98,7 @@ class MediaPlayerService(private val mediaPlayer: MediaPlayer) {
         }
         if (isPrepared) {
             mediaPlayer.start()
-            setTimeout()
+            startTimer()
         }
         STATE = State.PLAYING
         return true
@@ -106,7 +110,7 @@ class MediaPlayerService(private val mediaPlayer: MediaPlayer) {
             displayPlayProgress()
         }
         STATE = State.PAUSED
-        handler.removeCallbacksAndMessages(obj)
+        stopTimer()
         onStop?.let { it() }
     }
 
@@ -119,22 +123,31 @@ class MediaPlayerService(private val mediaPlayer: MediaPlayer) {
             displayPlayProgress()
         }
         STATE = State.STOPPED
-        handler.removeCallbacksAndMessages(obj)
+        stopTimer()
         onStop?.let { it() }
     }
 
     fun destroy() {
-        handler.removeCallbacksAndMessages(obj)
+        stopTimer()
         mediaPlayer.release()
         url = null
     }
 
-    private fun setTimeout() {
-        handler.removeCallbacksAndMessages(obj)
-        handler.postAtTime({
-            displayPlayProgress()
-            setTimeout()
-        }, obj, 1000L + SystemClock.uptimeMillis())
+    private fun startTimer() {
+
+        if (timerJob == null) {
+            timerJob = GlobalScope.launch(Dispatchers.Main) {
+                while (true) {
+                    displayPlayProgress()
+                    delay(300L)
+                }
+            }
+        }
+    }
+
+    private fun stopTimer() {
+        timerJob?.cancel()
+        timerJob = null
     }
 
 

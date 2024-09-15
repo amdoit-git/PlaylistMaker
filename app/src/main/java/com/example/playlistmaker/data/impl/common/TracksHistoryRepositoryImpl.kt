@@ -7,6 +7,8 @@ import com.example.playlistmaker.domain.repository.TracksHistoryRepository
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class TracksHistoryRepositoryImpl(
     private val sharedPrefs: SharedPreferences,
@@ -37,7 +39,7 @@ class TracksHistoryRepositoryImpl(
         return null
     }
 
-    override fun save(track: Track) {
+    override suspend fun save(track: Track) {
         val tracks: MutableList<Track> =
             mutableListOf(track.copy(isPlaying = false, inFavorite = false, isLiked = false))
 
@@ -49,20 +51,27 @@ class TracksHistoryRepositoryImpl(
                 tracks.add(loadedTracks[i])
             }
         }
-
-        sharedPrefs.edit().putString(LAST_VIEWED_TRACKS, toJson(tracks)).apply()
-    }
-
-    override fun getList(): List<Track>? {
-        sharedPrefs.getString(LAST_VIEWED_TRACKS, null)?.let { json ->
-            return jsonToTracks(json)
+        withContext(Dispatchers.IO) {
+            sharedPrefs.edit().putString(LAST_VIEWED_TRACKS, toJson(tracks)).commit()
         }
-
-        return null
     }
 
-    override fun clear() {
-        sharedPrefs.edit().remove(LAST_VIEWED_TRACKS).apply()
+    override suspend fun getList(): List<Track>? {
+
+        return withContext(Dispatchers.IO) {
+
+            sharedPrefs.getString(LAST_VIEWED_TRACKS, null)?.let { json ->
+                return@withContext jsonToTracks(json)
+            }
+
+            return@withContext null
+        }
+    }
+
+    override suspend fun clear() {
+        withContext(Dispatchers.IO) {
+            sharedPrefs.edit().remove(LAST_VIEWED_TRACKS).commit()
+        }
     }
 
     override fun jsonToTrack(json: String): Track? {

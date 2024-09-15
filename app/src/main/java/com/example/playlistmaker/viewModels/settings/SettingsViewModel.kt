@@ -1,11 +1,14 @@
 package com.example.playlistmaker.viewModels.settings
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.models.AppTheme
 import com.example.playlistmaker.domain.models.EmailData
 import com.example.playlistmaker.domain.models.ShareData
-import com.example.playlistmaker.domain.repository.settings.AppSettingsInteractor
 import com.example.playlistmaker.domain.repository.ExternalNavigatorInteractor
+import com.example.playlistmaker.domain.repository.settings.AppSettingsInteractor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     private val navigator: ExternalNavigatorInteractor,
@@ -26,6 +29,8 @@ class SettingsViewModel(
 
     fun switchTheme(isDarkTheme: Boolean) {
         settings.setTheme(AppTheme(isDarkTheme))
-        settings.saveTheme(AppTheme(isDarkTheme))
+        viewModelScope.launch(Dispatchers.Main) {
+            settings.saveTheme(AppTheme(isDarkTheme))
+        }
     }
 }

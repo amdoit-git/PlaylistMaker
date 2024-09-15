@@ -1,31 +1,29 @@
 package com.example.playlistmaker.viewModels.search
 
-import android.content.Context
-import android.content.Intent
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.domain.consumer.Consumer
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.consumer.ConsumerData
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.TracksHistoryInteractor
-import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import com.example.playlistmaker.domain.repository.search.ITunesInteractor
-import com.example.playlistmaker.ui.search.SearchFragmentDirections
+import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val context: Context,
     private val history: TracksHistoryInteractor,
     private val iTunes: ITunesInteractor
 ) : ViewModel() {
 
     private val liveData = LiveDataWithStartDataSet<SearchData>()
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val obj = Any()
+    private var searchDelayJob: Job? = null
 
     private var searchText: String = ""
     private var textInFocus: Boolean = false
@@ -33,6 +31,8 @@ class SearchViewModel(
     private var tracksInHistory: List<Track>? = null
 
     private var trackClickAllowed = true
+
+    private var iTunesSearchJob: Job? = null
 
     fun getLiveData(): LiveData<SearchData> {
         return liveData
@@ -42,11 +42,12 @@ class SearchViewModel(
 
         searchText = text
 
-        handler.removeCallbacksAndMessages(obj)
+        searchDelayJob?.cancel()
 
-        handler.postAtTime({
+        searchDelayJob = viewModelScope.launch(Dispatchers.Main) {
+            delay(2000L)
             searchOnITunes()
-        }, obj, 2000L + SystemClock.uptimeMillis())
+        }
 
         switchHistoryVisibility()
 
@@ -55,7 +56,7 @@ class SearchViewModel(
 
     fun onActionButton() {
         searchOnITunes()
-        handler.removeCallbacksAndMessages(obj)
+        searchDelayJob?.cancel()
     }
 
     fun onFocusChanged(hasFocus: Boolean) {
@@ -71,7 +72,9 @@ class SearchViewModel(
 
         if (textInFocus && searchText.isEmpty()) {
 
-            showHistory()
+            viewModelScope.launch(Dispatchers.Main) {
+                showHistory()
+            }
 
         } else if (STATE == TrackListState.HISTORY_VISIBLE) {
 
@@ -99,7 +102,7 @@ class SearchViewModel(
         }
     }
 
-    private fun showHistory() {
+    private suspend fun showHistory() {
 
         if (tracksInHistory == null) {
             tracksInHistory = history.getList()
@@ -115,20 +118,22 @@ class SearchViewModel(
     }
 
     private fun cancelSearch() {
-        iTunes.cancelSearch()
-        liveData.setValue(SearchData.ProgressBar(false))
+        iTunesSearchJob?.cancel()
     }
 
     fun onTrackClicked(track: Track) {
 
         if (!isClickAllowed()) return Unit;
 
-        history.save(track)
+        viewModelScope.launch(Dispatchers.Main) {
+            history.save(track)
+        }
 
         liveData.setSingleEventValue(SearchData.OpenPlayerScreen(history.toJson(track)))
 
         tracksInHistory?.let { list ->
-            tracksInHistory = list.partition { it.trackId == track.trackId }.let { it.first + it.second }
+            tracksInHistory =
+                list.partition { it.trackId == track.trackId }.let { it.first + it.second }
         }
 
         if (STATE == TrackListState.HISTORY_VISIBLE) {
@@ -144,9 +149,10 @@ class SearchViewModel(
     private fun isClickAllowed(): Boolean {
         if (trackClickAllowed) {
             trackClickAllowed = false
-            handler.postDelayed({
+            viewModelScope.launch(Dispatchers.Main) {
+                delay(1000L)
                 trackClickAllowed = true
-            }, 1000L)
+            }
             return true
         }
         return false
@@ -154,7 +160,9 @@ class SearchViewModel(
 
     fun clearHistory() {
         tracksInHistory = null
-        history.clear()
+        viewModelScope.launch(Dispatchers.Main) {
+            history.clear()
+        }
         changeState(TrackListState.HISTORY_EMPTY)
     }
 
@@ -164,27 +172,33 @@ class SearchViewModel(
 
         liveData.setValue(SearchData.ProgressBar(true))
 
-        iTunes.search(searchText.trim(), object : Consumer<List<Track>> {
-            override fun consume(data: ConsumerData<List<Track>>) {
+        iTunesSearchJob = viewModelScope.launch(Dispatchers.Main) {
 
-                when (data) {
-                    is ConsumerData.Data -> changeState(TrackListState.SEARCH_VISIBLE, data.value)
+            try {
 
-                    is ConsumerData.Error -> {
-                        when (data.code) {
-                            404 -> changeState(TrackListState.SEARCH_EMPTY)
-                            else -> changeState(TrackListState.SEARCH_FAIL)
+                iTunes.search(searchText.trim())
+                    .flowOn(Dispatchers.Main)
+                    .collect { data ->
+
+                        when (data) {
+                            is ConsumerData.Data -> changeState(
+                                TrackListState.SEARCH_VISIBLE,
+                                data.value
+                            )
+
+                            is ConsumerData.Error -> {
+                                when (data.code) {
+                                    404 -> changeState(TrackListState.SEARCH_EMPTY)
+                                    else -> changeState(TrackListState.SEARCH_FAIL)
+                                }
+                            }
                         }
-                    }
-                }
 
+                        liveData.setValue(SearchData.ProgressBar(false))
+                    }
+            } catch (error: CancellationException) {
                 liveData.setValue(SearchData.ProgressBar(false))
             }
-        })
-    }
-
-    override fun onCleared() {
-        iTunes.destroy()
-        super.onCleared()
+        }
     }
 }
