@@ -48,18 +48,13 @@ class ITunesRepositoryImpl(private val context: Context, private val api: Itunes
                     )
                 }
 
-            }
-            catch (error: Throwable) {
-
-                if(error is CancellationException){
-                    throw error
-                }
-                else{
-                    ConsumerData.Error(
-                        code = 502,
-                        message = "Some error occurred when search for \"$text\""
-                    )
-                }
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                ConsumerData.Error(
+                    code = 502,
+                    message = "Some error occurred when search for \"$text\""
+                )
             }
         }
     }
