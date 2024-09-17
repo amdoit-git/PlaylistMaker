@@ -2,17 +2,16 @@ package com.example.playlistmaker.ui.favorite
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.playlistmaker.R
-import com.example.playlistmaker.viewModels.favorite.PlayListViewModel
+import com.example.playlistmaker.viewModels.favorite.MlPlayListsTabViewModel
 
-class PlayListFragment : Fragment() {
+class MlPlayListsTabFragment : Fragment() {
 
-    private val viewModel: PlayListViewModel by viewModels()
+    private val viewModel: MlPlayListsTabViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +27,6 @@ class PlayListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = PlayListFragment()
+        fun newInstance() = MlPlayListsTabFragment()
     }
 }
