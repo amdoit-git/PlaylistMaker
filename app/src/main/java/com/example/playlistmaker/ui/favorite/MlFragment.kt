@@ -6,12 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaLibraryBinding
+import com.example.playlistmaker.domain.repository.TracksHistoryInteractor
 import com.example.playlistmaker.viewModels.favorite.MlViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
-class MlFragment : Fragment() {
+class MlFragment() : Fragment() {
 
     private var _binding: ActivityMediaLibraryBinding? = null
 
@@ -20,6 +27,8 @@ class MlFragment : Fragment() {
     private var tabMediator: TabLayoutMediator? = null
 
     private val viewModel: MlViewModel by viewModels()
+
+    private val history: TracksHistoryInteractor by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,5 +69,15 @@ class MlFragment : Fragment() {
         }
 
         tabMediator?.attach()
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            delay(3000L)
+
+            val track = history.getList().get(0)
+
+            val direction = MlFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(history.toJson(track))
+
+            findNavController().navigate(direction)
+        }
     }
 }
