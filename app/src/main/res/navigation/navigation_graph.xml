@@ -6,7 +6,7 @@
     app:startDestination="@id/mediaLibraryFragment">
     <fragment
         android:id="@+id/mediaLibraryFragment"
-        android:name="com.example.playlistmaker.ui.favorite.MediaLibraryFragment"
+        android:name="com.example.playlistmaker.ui.favorite.MlFragment"
         android:label="activity_media_library"
         tools:layout="@layout/activity_media_library" />
     <fragment

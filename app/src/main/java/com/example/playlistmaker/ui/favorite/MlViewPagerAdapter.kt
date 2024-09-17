@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class PlayListViewPagerAdapter(
+class MlViewPagerAdapter(
     private val tabs: List<TabType>,
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle
