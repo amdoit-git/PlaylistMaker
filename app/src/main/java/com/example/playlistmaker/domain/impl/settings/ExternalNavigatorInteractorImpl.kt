@@ -1,9 +1,9 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.domain.impl.settings
 
 import com.example.playlistmaker.domain.models.EmailData
 import com.example.playlistmaker.domain.models.ShareData
-import com.example.playlistmaker.domain.repository.ExternalNavigatorInteractor
-import com.example.playlistmaker.domain.repository.ExternalNavigatorRepository
+import com.example.playlistmaker.domain.repository.settings.ExternalNavigatorInteractor
+import com.example.playlistmaker.domain.repository.settings.ExternalNavigatorRepository
 
 class ExternalNavigatorInteractorImpl(private val repository: ExternalNavigatorRepository) :
     ExternalNavigatorInteractor {

@@ -4,20 +4,30 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
+import com.example.playlistmaker.data.db.models.TrackInFavorite
+import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.TracksHistoryInteractor
+import com.example.playlistmaker.domain.repository.favorite.FavoriteTracksInteractor
+import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import com.example.playlistmaker.domain.repository.player.MediaPlayerInteractor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.time.measureTime
 
 class PlayerScreenViewModel(
     private val context: Context,
     private val player: MediaPlayerInteractor,
     history: TracksHistoryInteractor,
+    private val favorite: FavoriteTracksInteractor,
     jsonTrack: String
 ) :
     ViewModel() {
@@ -33,7 +43,23 @@ class PlayerScreenViewModel(
     init {
 
         history.jsonToTrack(jsonTrack)?.let {
+
             track = it
+
+            val time = measureTime {
+
+                runBlocking(Dispatchers.IO) {
+
+                    favorite.containsTracks(track.trackId).collect { list ->
+                        if (list.isNotEmpty()) track.inFavorite = true
+
+                        //Log.d("WWW", "time = " + (System.currentTimeMillis() - time).toString())
+                    }
+                }
+            }
+
+            Log.d("WWW", "read time = $time")
+
             liveData.setValue(PlayerScreenData.TrackData(track = track))
             player.setDataSource(track.previewUrl)
             player.setDisplayPorts(::showPlayProgress, null, ::onPlayingStopped, ::onPlayerError)
@@ -68,7 +94,7 @@ class PlayerScreenViewModel(
         showToast(getString(R.string.player_screen_track_error))
     }
 
-    fun showToast(message: String, seconds: Int = 3) {
+    private fun showToast(message: String, seconds: Int = 3) {
 
         handlerToast.removeCallbacksAndMessages(obj)
 
@@ -97,6 +123,16 @@ class PlayerScreenViewModel(
                 getString(R.string.player_screen_add_to_favorite), track.trackName
             )
         )
+
+        var time = System.currentTimeMillis()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            favorite.saveTrack(track)
+
+            time = System.currentTimeMillis() - time
+
+            Log.d("WWW", "write time = $time ms")
+        }
     }
 
     fun removeFromFavorite() {

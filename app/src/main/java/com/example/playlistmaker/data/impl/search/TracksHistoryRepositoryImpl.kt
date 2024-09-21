@@ -1,9 +1,9 @@
-package com.example.playlistmaker.data.impl.common
+package com.example.playlistmaker.data.impl.search
 
 import android.content.SharedPreferences
 import android.util.Log
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.TracksHistoryRepository
+import com.example.playlistmaker.domain.repository.search.TracksHistoryRepository
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -43,7 +43,7 @@ class TracksHistoryRepositoryImpl(
         val tracks: MutableList<Track> =
             mutableListOf(track.copy(isPlaying = false, inFavorite = false, isLiked = false))
 
-        getList()?.let {
+        getAll()?.let {
             val loadedTracks = it.filter { t -> t.trackId != track.trackId }
 
             for (i in 0 until minOf(MAX_TRACKS_IN_LIST - 1, loadedTracks.size)) {
@@ -56,7 +56,7 @@ class TracksHistoryRepositoryImpl(
         }
     }
 
-    override suspend fun getList(): List<Track>? {
+    override suspend fun getAll(): List<Track>? {
 
         return withContext(Dispatchers.IO) {
 

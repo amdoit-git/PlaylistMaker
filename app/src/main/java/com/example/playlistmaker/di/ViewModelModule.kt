@@ -13,7 +13,7 @@ val viewModelModule = module {
     }
 
     viewModel { (jsonTrack: String) ->
-        PlayerScreenViewModel(context = get(), player = get(), history = get(), jsonTrack)
+        PlayerScreenViewModel(context = get(), player = get(), history = get(), favorite = get(), jsonTrack)
     }
 
     viewModel {
