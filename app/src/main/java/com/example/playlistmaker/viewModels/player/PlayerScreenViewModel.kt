@@ -16,12 +16,9 @@ import com.example.playlistmaker.domain.repository.search.TracksHistoryInteracto
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.subscribeOn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlin.time.measureTime
 
 class PlayerScreenViewModel(
     private val context: Context,
@@ -52,9 +49,9 @@ class PlayerScreenViewModel(
 
                 favorite.findTrackIds(track.trackId).flowOn(Dispatchers.IO).collect { ids ->
 
-                    track.inFavorite = ids.isNotEmpty()
+                    track.isFavorite = ids.isNotEmpty()
 
-                    liveData.setValue(PlayerScreenData.TrackData(track = track))
+                    liveData.setValue(PlayerScreenData.FavoriteStatus(isFavorite = ids.isNotEmpty()))
 
                     time = System.currentTimeMillis() - time
 
@@ -64,6 +61,7 @@ class PlayerScreenViewModel(
 
             player.setDataSource(track.previewUrl)
             player.setDisplayPorts(::showPlayProgress, null, ::onPlayingStopped, ::onPlayerError)
+            liveData.setValue(PlayerScreenData.TrackData(track = track))
         }
     }
 
@@ -122,12 +120,16 @@ class PlayerScreenViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             favorite.saveTrack(track)
         }
+
+        liveData.setStartValue(PlayerScreenData.FavoriteStatus(isFavorite = true))
     }
 
     fun removeFromFavorite() {
         viewModelScope.launch(Dispatchers.IO) {
             favorite.deleteTrack(track.trackId)
         }
+
+        liveData.setStartValue(PlayerScreenData.FavoriteStatus(isFavorite = false))
     }
 
     override fun onCleared() {

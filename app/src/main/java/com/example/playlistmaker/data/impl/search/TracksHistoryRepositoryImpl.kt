@@ -41,7 +41,7 @@ class TracksHistoryRepositoryImpl(
 
     override suspend fun save(track: Track) {
         val tracks: MutableList<Track> =
-            mutableListOf(track.copy(isPlaying = false, inFavorite = false, isLiked = false))
+            mutableListOf(track.copy(isPlaying = false, isFavorite = false, isLiked = false))
 
         getAll()?.let {
             val loadedTracks = it.filter { t -> t.trackId != track.trackId }

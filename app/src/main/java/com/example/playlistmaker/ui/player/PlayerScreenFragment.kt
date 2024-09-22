@@ -81,6 +81,10 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
                             binding.info.isVisible = it.isVisible
                         }
+
+                        is PlayerScreenData.FavoriteStatus -> {
+                            binding.favoriteBt.isChecked = it.isFavorite
+                        }
                     }
                 }
 
@@ -180,8 +184,6 @@ class PlayerScreenFragment : Fragment(), DpToPx {
         )
 
         constraintSet.applyTo(constraintLayout)
-
-        binding.favoriteBt.isChecked = track.inFavorite
     }
 
     companion object {
