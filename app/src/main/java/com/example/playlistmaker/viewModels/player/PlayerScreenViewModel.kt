@@ -9,14 +9,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.db.models.TrackInFavorite
-import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.favorite.FavoriteTracksInteractor
+import com.example.playlistmaker.domain.repository.player.MediaPlayerInteractor
 import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
-import com.example.playlistmaker.domain.repository.player.MediaPlayerInteractor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.subscribeOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
@@ -46,21 +46,22 @@ class PlayerScreenViewModel(
 
             track = it
 
-            val time = measureTime {
+            viewModelScope.launch(Dispatchers.Main) {
 
-                runBlocking(Dispatchers.IO) {
+                var time = System.currentTimeMillis();
 
-                    favorite.containsTracks(track.trackId).collect { list ->
-                        if (list.isNotEmpty()) track.inFavorite = true
+                favorite.findTrackIds(track.trackId).flowOn(Dispatchers.IO).collect { ids ->
 
-                        //Log.d("WWW", "time = " + (System.currentTimeMillis() - time).toString())
-                    }
+                    track.inFavorite = ids.isNotEmpty()
+
+                    liveData.setValue(PlayerScreenData.TrackData(track = track))
+
+                    time = System.currentTimeMillis() - time
+
+                    Log.d("WWW", "read time: $time ms")
                 }
             }
 
-            Log.d("WWW", "read time = $time")
-
-            liveData.setValue(PlayerScreenData.TrackData(track = track))
             player.setDataSource(track.previewUrl)
             player.setDisplayPorts(::showPlayProgress, null, ::onPlayingStopped, ::onPlayerError)
         }
@@ -118,29 +119,15 @@ class PlayerScreenViewModel(
     }
 
     fun addToFavorite() {
-        showToast(
-            String.format(
-                getString(R.string.player_screen_add_to_favorite), track.trackName
-            )
-        )
-
-        var time = System.currentTimeMillis()
-
         viewModelScope.launch(Dispatchers.IO) {
             favorite.saveTrack(track)
-
-            time = System.currentTimeMillis() - time
-
-            Log.d("WWW", "write time = $time ms")
         }
     }
 
     fun removeFromFavorite() {
-        showToast(
-            String.format(
-                getString(R.string.player_screen_remove_from_favorite), track.trackName
-            )
-        )
+        viewModelScope.launch(Dispatchers.IO) {
+            favorite.deleteTrack(track.trackId)
+        }
     }
 
     override fun onCleared() {

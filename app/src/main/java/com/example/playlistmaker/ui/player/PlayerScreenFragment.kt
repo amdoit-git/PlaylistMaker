@@ -180,6 +180,8 @@ class PlayerScreenFragment : Fragment(), DpToPx {
         )
 
         constraintSet.applyTo(constraintLayout)
+
+        binding.favoriteBt.isChecked = track.inFavorite
     }
 
     companion object {

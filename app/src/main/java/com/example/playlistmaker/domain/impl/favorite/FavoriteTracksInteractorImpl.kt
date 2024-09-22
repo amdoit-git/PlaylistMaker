@@ -7,6 +7,10 @@ import kotlinx.coroutines.flow.Flow
 
 class FavoriteTracksInteractorImpl(private val repository: FavoriteTracksRepository) :
     FavoriteTracksInteractor {
+    override fun containsInCache(trackId: Int): Boolean {
+        return repository.containsInCache(trackId)
+    }
+
     override suspend fun saveTrack(track: Track) {
         repository.saveTrack(track)
     }
@@ -19,8 +23,8 @@ class FavoriteTracksInteractorImpl(private val repository: FavoriteTracksReposit
         return repository.findTracksById(*trackId)
     }
 
-    override suspend fun containsTracks(vararg trackId: Int): Flow<List<Int>> {
-        return repository.containsTracks(*trackId)
+    override suspend fun findTrackIds(vararg trackId: Int): Flow<List<Int>> {
+        return repository.findTrackIds(*trackId)
     }
 
     override suspend fun getAllTracks(): Flow<List<Track>> {

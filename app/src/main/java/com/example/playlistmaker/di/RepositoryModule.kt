@@ -37,7 +37,7 @@ val repositoryModule = module {
         AppSettingsRepositoryImpl(sharedPreferences = get())
     }
 
-    factory<FavoriteTracksRepository>{
+    single <FavoriteTracksRepository>{
         FavoriteTracksRepositoryImpl(database = get())
     }
 }
