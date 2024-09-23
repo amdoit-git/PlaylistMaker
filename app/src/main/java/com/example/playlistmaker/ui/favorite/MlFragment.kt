@@ -5,19 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaLibraryBinding
 import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
 import com.example.playlistmaker.viewModels.favorite.MlViewModel
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MlFragment() : Fragment() {
 
@@ -27,7 +22,7 @@ class MlFragment() : Fragment() {
 
     private var tabMediator: TabLayoutMediator? = null
 
-    private val viewModel: MlViewModel by viewModels()
+    private val vModel: MlViewModel by viewModel()
 
     private val history: TracksHistoryInteractor by inject()
 

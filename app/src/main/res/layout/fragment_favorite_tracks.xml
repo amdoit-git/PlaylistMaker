@@ -3,12 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.favorite.MlFavoriteTracksTabFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:id="@+id/no_tracks"
+        android:visibility="gone"
         android:layout_marginTop="106dp"
         android:layout_marginEnd="24dp"
         android:gravity="center"
@@ -29,10 +32,17 @@
             android:textColor="@color/play_list_text_color_black"
             android:textSize="19sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="200dp"/>
-
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tracksList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
 
 </ScrollView>
