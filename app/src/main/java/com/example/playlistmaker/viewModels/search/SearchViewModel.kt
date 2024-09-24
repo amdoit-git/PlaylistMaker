@@ -34,10 +34,6 @@ class SearchViewModel(
 
     private var iTunesSearchJob: Job? = null
 
-    init {
-        Log.d("WWW", "SearchViewModel created")
-    }
-
     fun getLiveData(): LiveData<SearchData> {
         return liveData
     }

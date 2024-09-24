@@ -19,13 +19,7 @@ import org.koin.core.parameter.parametersOf
 
 class MlPlayListsTabFragment : Fragment() {
 
-    private lateinit var tracksList: RecyclerView
-
     private val vModel: MlPlayListsTabViewModel by viewModel()
-
-    private val adapter: TrackAdapter by inject {
-        parametersOf(vModel::onTrackClicked, vModel::clearHistory, ::scrollListToTop)
-    }
 
     private var _binding: FragmentFavoriteTracksBinding? = null
 
@@ -47,60 +41,6 @@ class MlPlayListsTabFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        tracksList = binding.tracksList
-
-        tracksList.adapter = adapter
-
-        vModel.getLiveData().observe(viewLifecycleOwner) {
-
-            when (it) {
-
-                is FavoriteData.TrackList -> {
-
-
-                }
-
-                is FavoriteData.MoveToTop -> {
-                    adapter.moveTrackToTop(it.track)
-                }
-
-                is FavoriteData.OpenPlayerScreen -> {
-
-                    val direction =
-                        MlFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(it.track)
-
-                    findNavController().navigate(direction)
-                }
-
-                is FavoriteData.ScrollTracksList -> {
-                    scrollTracksList(it.position)
-                }
-            }
-        }
-    }
-
-    private fun scrollListToTop() {
-        tracksList.scrollToPosition(0)
-    }
-
-    private fun showTracksList(tracks: List<Track>, showClearButton: Boolean = false) {
-
-        adapter.setNewTracksList(tracks)
-
-        adapter.showClearButton(showClearButton)
-
-        adapter.notifyDataSetChanged()
-    }
-
-    private fun scrollTracksList(position: Int) {
-        tracksList.smoothScrollToPosition(position)
-    }
-
-    private fun clearTracksList() {
-        adapter.clearTracks()
-        adapter.showClearButton(false)
-        adapter.notifyDataSetChanged()
     }
 
     companion object {

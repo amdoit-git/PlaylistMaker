@@ -16,7 +16,11 @@ object TrackToTrackInDBMapper {
     }
 
     private fun timeToInt(time: String): Int {
-        return time.split(":").let { it[0].toInt() + it[1].toInt() * 60 }
+        try {
+            return time.split(":").let { it[0].toInt() * 60 + it[1].toInt() }
+        } catch (er: IndexOutOfBoundsException) {
+            return 0
+        }
     }
 
     private fun timeToString(time: Int): String {
@@ -43,7 +47,7 @@ object TrackToTrackInDBMapper {
         trackId = track.trackId,
         trackName = track.trackName,
         artistName = track.artistName,
-        trackTime = yearToString(track.trackTime),
+        trackTime = timeToString(track.trackTime),
         trackCover = track.trackCover,
         previewUrl = track.previewUrl,
         albumName = track.albumName,

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.example.playlistmaker.data.db.models.TrackInDB
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteTracksDao : TrackDao {
@@ -23,17 +24,17 @@ interface FavoriteTracksDao : TrackDao {
     @Query("DELETE FROM tracks_in_favorite WHERE trackId=:trackId")
     suspend fun deleteTrack(trackId: Int)
 
-    @Query("SELECT t.* FROM tracks t INNER JOIN tracks_in_favorite x WHERE x.trackId IN(:trackId) ORDER BY x.addedDate DESC")
+    @Query("SELECT t.* FROM tracks t INNER JOIN tracks_in_favorite x ON t.trackId=x.trackId WHERE x.trackId IN(:trackId) ORDER BY x.addedDate DESC")
     suspend fun findTracksById(vararg trackId: Int): List<TrackInDB>
 
     @Query("SELECT trackId FROM tracks_in_favorite WHERE trackId IN(:trackId)")
     suspend fun containsTracks(vararg trackId: Int): List<Int>
 
-    @Query("SELECT t.* FROM tracks t INNER JOIN tracks_in_favorite x ORDER BY x.addedDate DESC")
-    suspend fun getAllTracks(): List<TrackInDB>
+    @Query("SELECT t.* FROM tracks t INNER JOIN tracks_in_favorite x ON t.trackId=x.trackId ORDER BY x.addedDate DESC")
+    fun getAllTracks(): Flow<List<TrackInDB>>
 
     @Query("SELECT trackId FROM tracks_in_favorite")
-    suspend fun getAllTracksIds(): List<Int>
+    fun getAllTracksIds(): Flow<List<Int>>
 
     @Query("SELECT COUNT(*) FROM tracks_in_favorite")
     suspend fun countTracks(): Int

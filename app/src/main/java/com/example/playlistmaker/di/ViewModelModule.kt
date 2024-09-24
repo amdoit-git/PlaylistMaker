@@ -34,7 +34,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        MlFavoriteTracksTabViewModel(favorite = get())
+        MlFavoriteTracksTabViewModel(favorite = get(), history = get())
     }
 
     viewModel {

@@ -4,43 +4,114 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentFavoriteTracksBinding
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.search.TrackAdapter
+import com.example.playlistmaker.viewModels.favorite.FavoriteData
 import com.example.playlistmaker.viewModels.favorite.MlFavoriteTracksTabViewModel
+import com.example.playlistmaker.viewModels.favorite.MlPlayListsTabViewModel
+import com.example.playlistmaker.viewModels.search.TrackListState
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class MlFavoriteTracksTabFragment : Fragment() {
 
+    private lateinit var tracksList: RecyclerView
+
     private val vModel: MlFavoriteTracksTabViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // TODO: Use the ViewModel
+    private val adapter: TrackAdapter by inject {
+        parametersOf(vModel::onTrackClicked, vModel::clearHistory, ::scrollListToTop)
     }
 
+    private var _binding: FragmentFavoriteTracksBinding? = null
+
+    private val binding get() = _binding!!
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_favorite_tracks, container, false)
+    ): View? {
+        _binding = FragmentFavoriteTracksBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        vModel.log("MlFavoriteTracksTabFragment view created")
+        tracksList = binding.tracksList
 
+        tracksList.adapter = adapter
 
-//        lifecycleScope.launch(Dispatchers.Main) {
-//            delay(3000L)
-//
-//            val track = history.getAll().get(0)
-//
-//            val direction = MlFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(history.toJson(track))
-//
-//            findNavController().navigate(direction)
-//        }
+        vModel.getLiveData().observe(viewLifecycleOwner) {
+
+            when (it) {
+
+                is FavoriteData.TrackList -> {
+
+                    if (it.tracks.isNotEmpty()) {
+                        binding.tracksList.isVisible = true
+                        binding.noTracks.isVisible = false
+                        showTracksList(it.tracks)
+                    } else {
+                        binding.tracksList.isVisible = false
+                        binding.noTracks.isVisible = true
+                        clearTracksList()
+                    }
+                }
+
+                is FavoriteData.MoveToTop -> {
+                    adapter.moveTrackToTop(it.track)
+                }
+
+                is FavoriteData.OpenPlayerScreen -> {
+
+                    val direction =
+                        MlFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(it.track)
+
+                    findNavController().navigate(direction)
+                }
+
+                is FavoriteData.ScrollTracksList -> {
+                    scrollTracksList(it.position)
+                }
+            }
+        }
+    }
+
+    private fun scrollListToTop() {
+        tracksList.scrollToPosition(0)
+    }
+
+    private fun showTracksList(tracks: List<Track>, showClearButton: Boolean = false) {
+
+        adapter.setNewTracksList(tracks)
+
+        adapter.showClearButton(showClearButton)
+
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun scrollTracksList(position: Int) {
+        tracksList.smoothScrollToPosition(position)
+    }
+
+    private fun clearTracksList() {
+        adapter.clearTracks()
+        adapter.showClearButton(false)
+        adapter.notifyDataSetChanged()
     }
 
     companion object {

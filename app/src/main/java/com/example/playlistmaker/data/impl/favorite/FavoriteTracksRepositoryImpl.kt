@@ -1,11 +1,15 @@
 package com.example.playlistmaker.data.impl.favorite
 
+import android.util.Log
 import com.example.playlistmaker.data.db.TracksDB
 import com.example.playlistmaker.data.db.converters.TrackToTrackInDBMapper
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.favorite.FavoriteTracksRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 
 class FavoriteTracksRepositoryImpl(database: TracksDB) : FavoriteTracksRepository {
 
@@ -29,37 +33,29 @@ class FavoriteTracksRepositoryImpl(database: TracksDB) : FavoriteTracksRepositor
     }
 
     override suspend fun saveTrack(track: Track) {
-        loadToCache(track.trackId)
         dao.saveTrack(TrackToTrackInDBMapper.map(track))
     }
 
     override suspend fun deleteTrack(trackId: Int) {
-        tracksCache.remove(trackId)
         dao.deleteTrack(trackId)
     }
 
     override suspend fun findTracksById(vararg trackId: Int): Flow<List<Track>> = flow {
         val list = TrackToTrackInDBMapper.map(dao.findTracksById(*trackId))
-        loadToCache(list)
         emit(list)
     }
 
     override suspend fun findTrackIds(vararg trackId: Int): Flow<List<Int>> = flow {
         val list = dao.containsTracks(*trackId)
-        loadToCache(*list.toIntArray())
         emit(list)
     }
 
-    override suspend fun getAllTracks(): Flow<List<Track>> = flow {
-        val list = TrackToTrackInDBMapper.map(dao.getAllTracks())
-        loadToCache(list)
-        emit(list)
+    override suspend fun getAllTracks(): Flow<List<Track>> {
+        return dao.getAllTracks().flowOn(Dispatchers.IO).map { TrackToTrackInDBMapper.map(it) }
     }
 
-    override suspend fun getAllTracksIds(): Flow<List<Int>> = flow {
-        val list = dao.getAllTracksIds()
-        loadToCache(*list.toIntArray())
-        emit(list)
+    override suspend fun getAllTracksIds(): Flow<List<Int>> {
+        return dao.getAllTracksIds().flowOn(Dispatchers.IO)
     }
 
     override suspend fun countTracks(): Int {
