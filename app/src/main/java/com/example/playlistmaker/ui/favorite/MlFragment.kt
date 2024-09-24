@@ -67,16 +67,6 @@ class MlFragment() : Fragment() {
         }
 
         tabMediator?.attach()
-//
-//        job = lifecycleScope.launch(Dispatchers.Main) {
-//            delay(3000L)
-//
-//            val track = history.getAll().get(0)
-//
-//            val direction = MlFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(history.toJson(track))
-//
-//            findNavController().navigate(direction)
-//        }
     }
 
     override fun onPause() {
