@@ -21,7 +21,7 @@ class MlPlayListsTabFragment : Fragment() {
 
     private val vModel: MlPlayListsTabViewModel by viewModel()
 
-    private var _binding: FragmentFavoriteTracksBinding? = null
+    private var _binding: FragmentPlayListBinding? = null
 
     private val binding get() = _binding!!
 
@@ -30,7 +30,7 @@ class MlPlayListsTabFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentFavoriteTracksBinding.inflate(inflater, container, false)
+        _binding = FragmentPlayListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
