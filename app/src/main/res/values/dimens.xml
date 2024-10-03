@@ -2,10 +2,6 @@
 <resources>
     <dimen name="bold">500</dimen>
     <dimen name="normal">400</dimen>
-    <dimen name="header_height">56dp</dimen>
-    <dimen name="header_active_width">304dp</dimen>
-    <dimen name="header_margin_bottom">0dp</dimen>
-    <dimen name="header_text_size">22sp</dimen>
     <dimen name="no_internet_no_tracks_top">102dp</dimen>
     <dimen name="no_internet_no_tracks_bottom">0dp</dimen>
 </resources>
