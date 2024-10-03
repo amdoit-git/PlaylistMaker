@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.repository
+package com.example.playlistmaker.domain.repository.settings
 
 import com.example.playlistmaker.domain.models.EmailData
 import com.example.playlistmaker.domain.models.ShareData

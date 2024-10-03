@@ -1,8 +1,8 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.domain.impl.search
 
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.TracksHistoryInteractor
-import com.example.playlistmaker.domain.repository.TracksHistoryRepository
+import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
+import com.example.playlistmaker.domain.repository.search.TracksHistoryRepository
 
 class TracksHistoryInteractorImpl(private val repository: TracksHistoryRepository) :
     TracksHistoryInteractor {
@@ -11,8 +11,8 @@ class TracksHistoryInteractorImpl(private val repository: TracksHistoryRepositor
         repository.save(track)
     }
 
-    override suspend fun getList(): List<Track> {
-        val list: List<Track> = repository.getList() ?: emptyList()
+    override suspend fun getAll(): List<Track> {
+        val list: List<Track> = repository.getAll() ?: emptyList()
         return list
     }
 

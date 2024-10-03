@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.impl.common
+package com.example.playlistmaker.data.impl.settings
 
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import com.example.playlistmaker.domain.models.EmailData
 import com.example.playlistmaker.domain.models.ShareData
-import com.example.playlistmaker.domain.repository.ExternalNavigatorRepository
+import com.example.playlistmaker.domain.repository.settings.ExternalNavigatorRepository
 
 class ExternalNavigatorRepositoryImpl(private val context: Context) :
     ExternalNavigatorRepository {

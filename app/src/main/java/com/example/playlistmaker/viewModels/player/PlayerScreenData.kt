@@ -12,4 +12,6 @@ sealed interface PlayerScreenData {
     ) : PlayerScreenData
 
     data class ToastMessage(val message: String, val isVisible: Boolean) : PlayerScreenData
+
+    data class FavoriteStatus(val isFavorite: Boolean) : PlayerScreenData
 }

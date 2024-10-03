@@ -5,8 +5,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class MlViewPagerAdapter(
-    private val tabs: List<TabType>,
+class MediaLibraryViewPagerAdapter(
+    private val tabs: List<MediaLibraryTabsType>,
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {

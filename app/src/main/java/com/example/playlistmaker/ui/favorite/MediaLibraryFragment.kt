@@ -5,13 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaLibraryBinding
+import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
+import com.example.playlistmaker.ui.favorite.playlists.PlayListsTabFragment
+import com.example.playlistmaker.ui.favorite.tracks.FavoriteTracksTabFragment
 import com.example.playlistmaker.viewModels.favorite.MlViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.Job
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MlFragment : Fragment() {
+class MediaLibraryFragment() : Fragment() {
 
     private var _binding: ActivityMediaLibraryBinding? = null
 
@@ -19,7 +24,11 @@ class MlFragment : Fragment() {
 
     private var tabMediator: TabLayoutMediator? = null
 
-    private val viewModel: MlViewModel by viewModels()
+    private val vModel: MlViewModel by viewModel()
+
+    private val history: TracksHistoryInteractor by inject()
+
+    private var job: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,24 +50,29 @@ class MlFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        val tabs: List<TabType> = listOf(
-            TabType(
+        val tabs: List<MediaLibraryTabsType> = listOf(
+            MediaLibraryTabsType(
                 getString(R.string.play_list_favorite_tracks),
-                MlFavoriteTracksTabFragment::class.java
+                FavoriteTracksTabFragment::class.java
             ),
-            TabType(
+            MediaLibraryTabsType(
                 getString(R.string.play_list_playlists),
-                MlPlayListsTabFragment::class.java
+                PlayListsTabFragment::class.java
             )
         )
 
         binding.viewPager.adapter =
-            MlViewPagerAdapter(tabs, childFragmentManager, lifecycle)
+            MediaLibraryViewPagerAdapter(tabs, childFragmentManager, lifecycle)
 
         tabMediator = TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
             tab.text = tabs[position].title
         }
 
         tabMediator?.attach()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        job?.cancel()
     }
 }

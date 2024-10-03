@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.repository
+package com.example.playlistmaker.domain.repository.search
 
 import com.example.playlistmaker.domain.models.Track
 
@@ -6,7 +6,7 @@ interface TracksHistoryRepository {
 
     suspend fun save(track: Track)
 
-    suspend fun getList():List<Track>?
+    suspend fun getAll():List<Track>?
 
     suspend fun clear()
 
