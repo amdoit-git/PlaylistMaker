@@ -8,13 +8,15 @@ import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaLibraryBinding
 import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
+import com.example.playlistmaker.ui.favorite.playlists.PlayListsTabFragment
+import com.example.playlistmaker.ui.favorite.tracks.FavoriteTracksTabFragment
 import com.example.playlistmaker.viewModels.favorite.MlViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Job
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MlFragment() : Fragment() {
+class MediaLibraryFragment() : Fragment() {
 
     private var _binding: ActivityMediaLibraryBinding? = null
 
@@ -48,19 +50,19 @@ class MlFragment() : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        val tabs: List<TabType> = listOf(
-            TabType(
+        val tabs: List<MediaLibraryTabsType> = listOf(
+            MediaLibraryTabsType(
                 getString(R.string.play_list_favorite_tracks),
-                MlFavoriteTracksTabFragment::class.java
+                FavoriteTracksTabFragment::class.java
             ),
-            TabType(
+            MediaLibraryTabsType(
                 getString(R.string.play_list_playlists),
-                MlPlayListsTabFragment::class.java
+                PlayListsTabFragment::class.java
             )
         )
 
         binding.viewPager.adapter =
-            MlViewPagerAdapter(tabs, childFragmentManager, lifecycle)
+            MediaLibraryViewPagerAdapter(tabs, childFragmentManager, lifecycle)
 
         tabMediator = TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
             tab.text = tabs[position].title

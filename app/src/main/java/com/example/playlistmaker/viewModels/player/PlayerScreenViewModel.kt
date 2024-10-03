@@ -43,9 +43,11 @@ class PlayerScreenViewModel(
 
             track = it
 
+            Log.d("WWW", "VM = " + Thread.currentThread().id)
+
             viewModelScope.launch(Dispatchers.Main) {
 
-                var time = System.currentTimeMillis();
+                Log.d("WWW", "Dispatchers.Main = " + Thread.currentThread().id)
 
                 favorite.findTrackIds(track.trackId).flowOn(Dispatchers.IO).collect { ids ->
 
@@ -53,9 +55,7 @@ class PlayerScreenViewModel(
 
                     liveData.setValue(PlayerScreenData.FavoriteStatus(isFavorite = ids.isNotEmpty()))
 
-                    time = System.currentTimeMillis() - time
-
-                    Log.d("WWW", "read time: $time ms")
+                    Log.d("WWW", "collect = " + Thread.currentThread().id)
                 }
             }
 
@@ -117,6 +117,7 @@ class PlayerScreenViewModel(
     }
 
     fun addToFavorite() {
+
         viewModelScope.launch(Dispatchers.IO) {
             favorite.saveTrack(track)
         }

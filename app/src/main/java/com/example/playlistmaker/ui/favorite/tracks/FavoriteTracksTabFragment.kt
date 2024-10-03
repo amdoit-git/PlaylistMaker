@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.favorite
+package com.example.playlistmaker.ui.favorite.tracks
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,19 +8,17 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoriteTracksBinding
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.favorite.MediaLibraryFragmentDirections
 import com.example.playlistmaker.ui.search.TrackAdapter
 import com.example.playlistmaker.viewModels.favorite.FavoriteData
 import com.example.playlistmaker.viewModels.favorite.MlFavoriteTracksTabViewModel
-import com.example.playlistmaker.viewModels.favorite.MlPlayListsTabViewModel
-import com.example.playlistmaker.viewModels.search.TrackListState
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class MlFavoriteTracksTabFragment : Fragment() {
+class FavoriteTracksTabFragment : Fragment() {
 
     private lateinit var tracksList: RecyclerView
 
@@ -79,7 +77,7 @@ class MlFavoriteTracksTabFragment : Fragment() {
                 is FavoriteData.OpenPlayerScreen -> {
 
                     val direction =
-                        MlFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(it.track)
+                        MediaLibraryFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(it.track)
 
                     findNavController().navigate(direction)
                 }
@@ -115,6 +113,6 @@ class MlFavoriteTracksTabFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = MlFavoriteTracksTabFragment()
+        fun newInstance() = FavoriteTracksTabFragment()
     }
 }

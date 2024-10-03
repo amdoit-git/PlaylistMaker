@@ -33,7 +33,7 @@ class App : Application() {
 
         val settings: AppSettingsInteractor by inject()
 
-        runBlocking {
+        runBlocking(Dispatchers.IO) {
             settings.restoreTheme()
         }
 
