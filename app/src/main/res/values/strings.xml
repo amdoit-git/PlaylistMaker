@@ -35,4 +35,9 @@
     <string name="play_list_favorite_tracks">Избранные треки</string>
     <string name="play_list_playlists">Плейлисты</string>
     <string name="play_list_mediateka">Медиатека</string>
+    <string name="play_list_add_new_screen_title">Новый плейлист</string>
+    <string name="play_list_add_new_button">Создать</string>
+    <string name="play_list_add_to_list">Добавить в плейлист</string>
+    <string name="play_list_name_placeholder">Название*</string>
+    <string name="play_list_description_placeholder">Описание</string>
 </resources>

@@ -32,4 +32,9 @@
     <string name="play_list_favorite_tracks">Favorite tracks</string>
     <string name="play_list_playlists">Playlists</string>
     <string name="play_list_mediateka">Media Library</string>
+    <string name="play_list_add_new_screen_title">New playlist</string>
+    <string name="play_list_add_new_button">Create playlist</string>
+    <string name="play_list_add_to_list">Add to Playlist</string>
+    <string name="play_list_name_placeholder">Playlist title*</string>
+    <string name="play_list_description_placeholder">Description</string>
 </resources>

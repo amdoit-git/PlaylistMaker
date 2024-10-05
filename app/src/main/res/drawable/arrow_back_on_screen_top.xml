@@ -8,7 +8,6 @@
     <item
         android:width="24dp"
         android:height="24dp"
-        android:backgroundTint="@color/arrow_back_icon_bg"
         android:drawable="@drawable/arrow_back_bg"
         android:gravity="start|center"
         android:left="12dp" />
