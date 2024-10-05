@@ -1,66 +1,115 @@
 package com.example.playlistmaker.ui.favorite.playlists
 
-import android.content.res.Resources
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.EditText
 import androidx.fragment.app.Fragment
-import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentAddNewPlayListBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AddNewPlayListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddNewPlayListFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentAddNewPlayListBinding? = null
+
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_new_play_list, container, false)
+    ): View {
+        _binding = FragmentAddNewPlayListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    private fun getScreenHeight(): Int {
-        //Resources.getSystem().getDisplayMetrics().widthPixels;
-        return Resources.getSystem().displayMetrics.heightPixels
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddNewPlayListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddNewPlayListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        binding.root.getViewTreeObserver().addOnGlobalLayoutListener(
+            object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    //Remove the listener before proceeding
+                    binding.root.getViewTreeObserver().removeOnGlobalLayoutListener(this)
+
+                    // measure your views here
+
+                    switchButtonsVisibility()
                 }
             }
+        )
+    }
+
+    override fun onResume() {
+
+        super.onResume()
+
+        enableEditText(binding.etPlaylistName) { text ->
+            switchButtonsVisibility()
+            buttonsSetEnabled(text.isNotEmpty())
+        }
+
+        enableEditText(binding.etPlaylistDescription) { text ->
+            switchButtonsVisibility()
+        }
+    }
+
+    override fun onStop() {
+        disableEditText(binding.etPlaylistName)
+        disableEditText(binding.etPlaylistDescription)
+        super.onStop()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun enableEditText(elem: EditText, callback: (String) -> Unit) {
+
+        elem.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+
+                callback(elem.text.toString())
+            }
+        })
+    }
+
+    private fun disableEditText(elem: EditText) {
+        elem.addTextChangedListener(null)
+    }
+
+    private fun buttonsSetEnabled(isEnabled: Boolean) {
+        binding.fixedButton.isEnabled = isEnabled
+        binding.scrolledButton.isEnabled = isEnabled
+    }
+
+    private fun getYPosition(elem: View): Int {
+        val xy = intArrayOf(0, 0)
+        elem.getLocationOnScreen(xy)
+        return xy[1]
+    }
+
+    private fun switchButtonsVisibility() {
+
+        val fixed = binding.fixedButton
+        val scrolled = binding.scrolledButton
+
+        Log.d("WWW", "fixed = ${getYPosition(fixed)}, scrolled = ${getYPosition(scrolled)}")
+
+        if (getYPosition(fixed) > getYPosition(scrolled)) {
+            fixed.visibility = View.VISIBLE
+            scrolled.visibility = View.INVISIBLE
+        } else {
+            fixed.visibility = View.INVISIBLE
+            scrolled.visibility = View.VISIBLE
+        }
     }
 }

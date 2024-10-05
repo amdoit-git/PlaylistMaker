@@ -24,21 +24,32 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragments_container) as NavHostFragment
         val navController = navHostFragment.navController
 
-        val bottomNavigationView = binding.bottomNavigation
-        bottomNavigationView.setupWithNavController(navController)
+        binding.bottomNavigation.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.playerScreenFragment -> {
-                    bottomNavigationView.visibility = View.GONE
-                    binding.bottomNavigationBorder.visibility = View.GONE
+                    hideBottomNavigation()
+                }
+
+                R.id.addNewPlayListFragment -> {
+                    hideBottomNavigation()
                 }
 
                 else -> {
-                    bottomNavigationView.visibility = View.VISIBLE
-                    binding.bottomNavigationBorder.visibility = View.VISIBLE
+                    showBottomNavigation()
                 }
             }
         }
+    }
+
+    private fun showBottomNavigation() {
+        binding.bottomNavigation.visibility = View.VISIBLE
+        binding.bottomNavigationBorder.visibility = View.VISIBLE
+    }
+
+    private fun hideBottomNavigation() {
+        binding.bottomNavigation.visibility = View.GONE
+        binding.bottomNavigationBorder.visibility = View.GONE
     }
 }
