@@ -243,4 +243,11 @@
         <item name="android:textSize">22sp</item>
     </style>
 
+    <style name="CustomOutlineBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">#3772E7</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="android:textColorHint">@color/arrow_back_title</item>
+        <item name="hintTextColor">#3772E7</item>
+    </style>
+
 </resources>

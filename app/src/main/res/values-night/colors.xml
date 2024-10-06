@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#FFFFFF</color>
     <color name="main_bg">#1A1B22</color>
     <color name="settings_screen_bg">#1A1B22</color>
     <color name="arrow_back_title">#FFF</color>

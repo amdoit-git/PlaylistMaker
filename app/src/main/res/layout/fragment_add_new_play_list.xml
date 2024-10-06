@@ -40,7 +40,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/playlistName"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/CustomOutlineBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
@@ -53,13 +53,15 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPlaylistName"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/arrow_back_title"
+                    app:hintTextColor="@color/arrow_back_title" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/playlistDescription"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/CustomOutlineBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
@@ -72,11 +74,13 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPlaylistDescription"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/arrow_back_title"
+                    app:hintTextColor="@color/arrow_back_title" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/scrolledButton"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
@@ -100,7 +104,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/fixedButton"
         android:layout_width="match_parent"
         android:layout_height="44dp"
