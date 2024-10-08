@@ -52,6 +52,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPlaylistName"
+                    style="@style/CustomOutlineEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/arrow_back_title"
@@ -73,6 +74,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPlaylistDescription"
+                    style="@style/CustomOutlineEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/arrow_back_title"
@@ -115,6 +117,7 @@
         android:enabled="false"
         android:text="@string/play_list_add_new_button"
         android:textAllCaps="false"
-        android:textColor="#FFF" />
+        android:textColor="#FFF"
+        android:visibility="invisible" />
 
 </FrameLayout>

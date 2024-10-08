@@ -34,4 +34,7 @@
     <color name="BottomNavigation_text">#1A1B22</color>
     <color name="BottomNavigation_text_checked">#3772E7</color>
     <color name="windowBackground">#FFFFFF</color>
+    <color name="boxStrokeColor">#3772E7</color>
+    <color name="boxStrokeColorEmpty">#AEAFB4</color>
+    <color name="addNewPlaylistInputColor">#1A1B22</color>
 </resources>

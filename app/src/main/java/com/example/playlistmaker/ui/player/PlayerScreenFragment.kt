@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.player
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +8,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerScreenBinding
@@ -37,10 +36,8 @@ class PlayerScreenFragment : Fragment(), DpToPx {
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         _binding = ActivityPlayerScreenBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -134,8 +131,9 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
         val coverUrl = track.trackCover.replaceAfterLast('/', "512x512bb.jpg")
 
-        Glide.with(cover).load(coverUrl).centerCrop().placeholder(R.drawable.track_placeholder)
-            .transform(RoundedCorners(dpToPx(8f, cover.context))).into(cover)
+        Glide.with(cover).load(coverUrl).transform(
+            CenterCrop(), RoundedCorners(dpToPx(8f, cover.context))
+        ).placeholder(R.drawable.track_placeholder).into(cover)
 
 
         val constraintLayout = binding.scrollBody

@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.favorite.playlists
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,8 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.EditText
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAddNewPlayListBinding
+import com.google.android.material.textfield.TextInputLayout
 
 class AddNewPlayListFragment : Fragment() {
 
@@ -47,14 +51,16 @@ class AddNewPlayListFragment : Fragment() {
 
         super.onResume()
 
-        enableEditText(binding.etPlaylistName) { text ->
-            switchButtonsVisibility()
+        enableEditText(binding.playlistName, binding.etPlaylistName) { text ->
+
             buttonsSetEnabled(text.isNotEmpty())
         }
 
-        enableEditText(binding.etPlaylistDescription) { text ->
-            switchButtonsVisibility()
+        enableEditText(binding.playlistDescription, binding.etPlaylistDescription) { text ->
+
         }
+
+
     }
 
     override fun onStop() {
@@ -68,7 +74,22 @@ class AddNewPlayListFragment : Fragment() {
         _binding = null
     }
 
-    private fun enableEditText(elem: EditText, callback: (String) -> Unit) {
+    private fun setBorderColor(layout: TextInputLayout, isBlank: Boolean) {
+
+        if (isBlank) {
+            layout.setDefaultHintTextColor(ContextCompat.getColorStateList(requireContext(), R.color.text_input_layout_stroke_color)!!)
+            layout.setBoxStrokeColorStateList(ContextCompat.getColorStateList(requireContext(), R.color.box_input_layout_stroke_color_empty)!!)
+        } else {
+            layout.setDefaultHintTextColor(ColorStateList.valueOf(resources.getColor(R.color.boxStrokeColor)))
+            layout.setBoxStrokeColorStateList(ContextCompat.getColorStateList(requireContext(), R.color.box_input_layout_stroke_color)!!)
+        }
+    }
+
+    private fun enableEditText(
+        layout: TextInputLayout,
+        elem: EditText,
+        callback: (String) -> Unit
+    ) {
 
         elem.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -76,6 +97,12 @@ class AddNewPlayListFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
+
+                val text = elem.text.toString()
+
+                setBorderColor(layout, text.isBlank())
+
+                switchButtonsVisibility()
 
                 callback(elem.text.toString())
             }
