@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.favorite.playlists
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -45,6 +44,11 @@ class AddNewPlayListFragment : Fragment() {
                 }
             }
         )
+
+        binding.playlistPhoto.setOnClickListener{
+
+            binding.playlistPhoto.setBackgroundColor(requireContext().getColor(R.color.transparent))
+        }
     }
 
     override fun onResume() {
@@ -59,8 +63,6 @@ class AddNewPlayListFragment : Fragment() {
         enableEditText(binding.playlistDescription, binding.etPlaylistDescription) { text ->
 
         }
-
-
     }
 
     override fun onStop() {
@@ -76,13 +78,16 @@ class AddNewPlayListFragment : Fragment() {
 
     private fun setBorderColor(layout: TextInputLayout, isBlank: Boolean) {
 
+        if(context==null) return;
+
         if (isBlank) {
-            layout.setDefaultHintTextColor(ContextCompat.getColorStateList(requireContext(), R.color.text_input_layout_stroke_color)!!)
+            layout.setDefaultHintTextColor(ContextCompat.getColorStateList(requireContext(), R.color.addNewPlaylistEditTextColor))
             layout.setBoxStrokeColorStateList(ContextCompat.getColorStateList(requireContext(), R.color.box_input_layout_stroke_color_empty)!!)
         } else {
-            layout.setDefaultHintTextColor(ColorStateList.valueOf(resources.getColor(R.color.boxStrokeColor)))
+            layout.setDefaultHintTextColor(ContextCompat.getColorStateList(requireContext(), R.color.boxStrokeColor))
             layout.setBoxStrokeColorStateList(ContextCompat.getColorStateList(requireContext(), R.color.box_input_layout_stroke_color)!!)
         }
+
     }
 
     private fun enableEditText(

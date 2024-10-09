@@ -25,5 +25,5 @@
     <color name="BottomNavigation_text_checked">#3772E7</color>
     <color name="windowBackground">#1A1B22</color>
     <color name="boxStrokeColorEmpty">#FFFFFF</color>
-    <color name="addNewPlaylistInputColor">#FFFFFF</color>
+    <color name="addNewPlaylistEditTextColor">#FFFFFF</color>
 </resources>
