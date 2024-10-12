@@ -3,6 +3,7 @@ package com.example.playlistmaker.data.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.playlistmaker.data.db.dao.FavoriteTracksDao
+import com.example.playlistmaker.data.db.dao.PlaylistDao
 import com.example.playlistmaker.data.db.models.TrackInDB
 import com.example.playlistmaker.data.db.models.TrackInFavorite
 
@@ -14,4 +15,5 @@ import com.example.playlistmaker.data.db.models.TrackInFavorite
 )
 abstract class TracksDB : RoomDatabase() {
     abstract fun favoriteTracksDao(): FavoriteTracksDao
+    abstract fun playlistDao(): PlaylistDao
 }

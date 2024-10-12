@@ -1,21 +1,23 @@
 package com.example.playlistmaker.ui.favorite.playlists
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.Companion.isPhotoPickerAvailable
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -78,15 +80,15 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
             )
         }
 
-        binding.backButton.setOnClickListener{
+        binding.backButton.setOnClickListener {
             vModel.onBackPressed()
         }
 
-        binding.fixedButton.setOnClickListener{
+        binding.fixedButton.setOnClickListener {
             vModel.onCreateButtonPressed()
         }
 
-        binding.scrolledButton.setOnClickListener{
+        binding.scrolledButton.setOnClickListener {
             vModel.onCreateButtonPressed()
         }
 

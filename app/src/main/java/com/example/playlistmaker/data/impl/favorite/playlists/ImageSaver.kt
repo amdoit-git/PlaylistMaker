@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -14,7 +15,7 @@ import kotlin.random.Random
 
 class ImageSaver(private val context: Context) {
 
-    suspend fun copy(file: File, fileCopy: File) {
+    private suspend fun copy(file: File, fileCopy: File) {
         withContext(Dispatchers.IO) {
             FileInputStream(file).use { inp ->
                 FileOutputStream(fileCopy).use { out ->
@@ -32,7 +33,7 @@ class ImageSaver(private val context: Context) {
         }
     }
 
-    suspend fun copy(uri: Uri, fileCopy: File) {
+    private suspend fun copy(uri: Uri, fileCopy: File) {
         withContext(Dispatchers.IO) {
             context.contentResolver.openInputStream(uri)?.use { inp ->
                 FileOutputStream(fileCopy).use { out ->
@@ -49,6 +50,19 @@ class ImageSaver(private val context: Context) {
                 inp.close()
             }
         }
+    }
+
+    suspend fun saveCover(uri: Uri, fileName: String) {
+
+        val file = File(context.getDir(PLAYLIST_COVERS, MODE_PRIVATE), fileName)
+
+        copy(uri, file)
+    }
+
+    suspend fun getCoverUri(fileName: String): Uri {
+        val file = File(context.getDir(PLAYLIST_COVERS, MODE_PRIVATE), fileName)
+
+        return Uri.fromFile(file)
     }
 
     private fun createTmpFile(ext: String = "jpg"): File {
@@ -89,5 +103,9 @@ class ImageSaver(private val context: Context) {
             out.close()
         }
         return Uri.fromFile(file)
+    }
+
+    companion object {
+        const val PLAYLIST_COVERS = "playlist_covers"
     }
 }

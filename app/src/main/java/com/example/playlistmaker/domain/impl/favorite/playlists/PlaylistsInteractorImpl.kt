@@ -1,37 +1,35 @@
 package com.example.playlistmaker.domain.impl.favorite.playlists
 
+import android.net.Uri
 import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.favorite.playlists.PlaylistsInteractor
 import com.example.playlistmaker.domain.repository.favorite.playlists.PlaylistsRepository
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistsInteractorImpl(private val repository: PlaylistsRepository) : PlaylistsInteractor {
 
-    override suspend fun <T> saveCoverToTmpDir(cover: T): String {
+    override suspend fun <T> saveCoverToTmpDir(cover: T): Uri {
         return repository.saveCoverToTmpDir(cover)
     }
 
-    override suspend fun createPlaylist(playlist: Playlist): Int {
-        return repository.createPlaylist(playlist)
+    override suspend fun addPlaylist(playlist: Playlist) {
+        return repository.addPlaylist(playlist)
     }
 
-    override suspend fun updatePlaylist(playlist: Playlist) {
-        repository.updatePlaylist(playlist)
+    override suspend fun addTrack(track: Track): Int {
+        return repository.addTrack(track)
     }
 
-    override suspend fun deletePlaylist(id: Int) {
-        repository.deletePlaylist(id)
+    override suspend fun getPlaylists(): Flow<List<Playlist>> {
+        return repository.getPlaylists()
     }
 
-    override suspend fun getAllPlaylists(): Flow<List<Playlist>> {
-        return repository.getAllPlaylists()
+    override suspend fun getTracks(playlistId: Int): Flow<List<Track>> {
+        return repository.getTracks(playlistId)
     }
 
-    override suspend fun countPlaylists(): Int {
-        return repository.countPlaylists()
-    }
-
-    override suspend fun clearPlaylists() {
-        repository.clearPlaylists()
+    override suspend fun containsTrack(playlistId: Int, trackId: Int): Boolean {
+        return repository.containsTrack(playlistId, trackId)
     }
 }

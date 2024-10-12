@@ -1,21 +1,21 @@
 package com.example.playlistmaker.domain.repository.favorite.playlists
 
+import android.net.Uri
 import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface PlaylistsRepository {
 
-    suspend fun <T> saveCoverToTmpDir(cover: T): String
+    suspend fun <T> saveCoverToTmpDir(cover: T): Uri
 
-    suspend fun createPlaylist(playlist: Playlist): Int
+    suspend fun addPlaylist(playlist: Playlist)
 
-    suspend fun updatePlaylist(playlist: Playlist)
+    suspend fun addTrack(track: Track, playlistId: Int):Int
 
-    suspend fun deletePlaylist(id: Int)
+    suspend fun getPlaylists(): Flow<List<Playlist>>
 
-    suspend fun getAllPlaylists(): Flow<List<Playlist>>
+    suspend fun getTracks(playlistId: Int): Flow<List<Track>>
 
-    suspend fun countPlaylists(): Int
-
-    suspend fun clearPlaylists()
+    suspend fun containsTrack(playlistId: Int, trackId: Int): Boolean
 }
