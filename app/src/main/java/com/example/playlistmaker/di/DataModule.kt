@@ -1,11 +1,13 @@
 package com.example.playlistmaker.di
 
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import androidx.room.Room
 import com.example.playlistmaker.data.APP_SETTINGS_PREFERENCES
 import com.example.playlistmaker.data.api.search.Itunes
 import com.example.playlistmaker.data.db.TracksDB
+import com.example.playlistmaker.data.impl.favorite.playlists.ImageSaver
 import com.example.playlistmaker.data.impl.player.MediaPlayerService
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
@@ -29,7 +31,7 @@ val dataModule = module {
         MediaPlayerService(mediaPlayer = get())
     }
 
-    single {
+    single<SharedPreferences> {
         androidContext().getSharedPreferences(
             APP_SETTINGS_PREFERENCES, MODE_PRIVATE
         )
@@ -41,5 +43,9 @@ val dataModule = module {
 
     single<TracksDB> {
         Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks.db").build()
+    }
+
+    factory<ImageSaver> {
+        ImageSaver(context = androidContext())
     }
 }

@@ -1,9 +1,9 @@
-package com.example.playlistmaker.domain.repository.favorite
+package com.example.playlistmaker.domain.repository.favorite.tracks
 
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
-interface FavoriteTracksRepository {
+interface FavoriteTracksInteractor {
 
     fun containsInCache(trackId: Int): Boolean
 
@@ -19,7 +19,7 @@ interface FavoriteTracksRepository {
 
     suspend fun getAllTracksIds(): Flow<List<Int>>
 
-    suspend fun countTracks():Int
+    suspend fun countTracks(): Int
 
     suspend fun clearTracks()
 

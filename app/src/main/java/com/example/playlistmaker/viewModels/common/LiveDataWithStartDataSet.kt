@@ -1,5 +1,6 @@
 package com.example.playlistmaker.viewModels.common
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -23,11 +24,16 @@ class LiveDataWithStartDataSet<T : Any> : MutableLiveData<T>() {
                 }
 
                 getAll = false
+
             } else {
 
-                if(classMap.contains(t::class.java) || pending.compareAndSet(true, false)){
+                if(classMap.contains(t::class.java)){
                     observer.onChanged(t)
                 }
+            }
+
+            if(pending.compareAndSet(true, false)){
+                observer.onChanged(t)
             }
         }
     }

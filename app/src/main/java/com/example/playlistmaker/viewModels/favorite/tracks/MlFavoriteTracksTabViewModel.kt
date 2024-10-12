@@ -1,12 +1,13 @@
-package com.example.playlistmaker.viewModels.favorite
+package com.example.playlistmaker.viewModels.favorite.tracks
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.favorite.FavoriteTracksInteractor
+import com.example.playlistmaker.domain.repository.favorite.tracks.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
+import com.example.playlistmaker.viewModels.favorite.FavoriteData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOn

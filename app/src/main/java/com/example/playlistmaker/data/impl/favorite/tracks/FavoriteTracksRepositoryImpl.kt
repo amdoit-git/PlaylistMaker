@@ -1,10 +1,9 @@
-package com.example.playlistmaker.data.impl.favorite
+package com.example.playlistmaker.data.impl.favorite.tracks
 
-import android.util.Log
 import com.example.playlistmaker.data.db.TracksDB
 import com.example.playlistmaker.data.db.converters.TrackToTrackInDBMapper
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.favorite.FavoriteTracksRepository
+import com.example.playlistmaker.domain.repository.favorite.tracks.FavoriteTracksRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

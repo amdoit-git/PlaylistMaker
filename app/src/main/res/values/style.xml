@@ -256,8 +256,6 @@
     <style name="CustomOutlineEditText">
         <item name="android:layout_marginHorizontal">0dp</item>
         <item name="android:layout_marginVertical">0dp</item>
-        <item name="android:maxLength">3000</item>
-        <item name="android:inputType">text</item>
         <item name="android:textColor">@color/addNewPlaylistEditTextColor</item>
         <item name="android:paddingHorizontal">16dp</item>
         <item name="android:textSize">16sp</item>

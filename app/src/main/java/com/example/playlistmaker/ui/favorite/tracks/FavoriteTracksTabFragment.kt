@@ -13,7 +13,7 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.favorite.MediaLibraryFragmentDirections
 import com.example.playlistmaker.ui.search.TrackAdapter
 import com.example.playlistmaker.viewModels.favorite.FavoriteData
-import com.example.playlistmaker.viewModels.favorite.MlFavoriteTracksTabViewModel
+import com.example.playlistmaker.viewModels.favorite.tracks.MlFavoriteTracksTabViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf

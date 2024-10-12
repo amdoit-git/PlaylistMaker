@@ -40,4 +40,8 @@
     <string name="play_list_add_to_list">Добавить в плейлист</string>
     <string name="play_list_name_placeholder">Название*</string>
     <string name="play_list_description_placeholder">Описание</string>
+    <string name="play_list_go_back_title">Завершить создание плейлиста?</string>
+    <string name="play_list_go_back_description">Все несохраненные данные будут потеряны</string>
+    <string name="play_list_go_back_confirm">Завершить</string>
+    <string name="play_list_go_back_cancel">Отмена</string>
 </resources>

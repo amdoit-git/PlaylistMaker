@@ -37,4 +37,8 @@
     <string name="play_list_add_to_list">Add to Playlist</string>
     <string name="play_list_name_placeholder">Playlist title*</string>
     <string name="play_list_description_placeholder">Description</string>
+    <string name="play_list_go_back_title">Close the playlist creation dialog?</string>
+    <string name="play_list_go_back_description">All unsaved data will be lost</string>
+    <string name="play_list_go_back_confirm">Close</string>
+    <string name="play_list_go_back_cancel">Cancel</string>
 </resources>

@@ -8,12 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.databinding.FragmentPlayListBinding
 import com.example.playlistmaker.ui.favorite.MediaLibraryFragmentDirections
-import com.example.playlistmaker.viewModels.favorite.MlPlayListsTabViewModel
+import com.example.playlistmaker.viewModels.favorite.playlists.PlayListsTabViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayListsTabFragment : Fragment() {
 
-    private val vModel: MlPlayListsTabViewModel by viewModel()
+    private val vModel: PlayListsTabViewModel by viewModel()
 
     private var _binding: FragmentPlayListBinding? = null
 
