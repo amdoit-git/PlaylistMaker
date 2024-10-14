@@ -3,13 +3,13 @@ package com.example.playlistmaker.data.db.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.playlistmaker.data.db.models.TrackInDB
+import com.example.playlistmaker.data.db.models.RoomTrack
 
 @Dao
 interface HistoryTracksDao : TrackDao {
 
     @Transaction
-    suspend fun saveTrack(track: TrackInDB) {
+    suspend fun saveTrack(track: RoomTrack) {
         insertTrackInfo(track)
         insertTrack(trackId = track.trackId)
         deleteTracksOverLimit()
@@ -28,13 +28,13 @@ interface HistoryTracksDao : TrackDao {
     suspend fun deleteTrack(trackId: Int)
 
     @Query("SELECT t.* FROM tracks t INNER JOIN tracks_in_history x WHERE x.trackId IN(:trackId) ORDER BY x.addedDate DESC")
-    suspend fun findTracksById(vararg trackId: Int): List<TrackInDB>
+    suspend fun findTracksById(vararg trackId: Int): List<RoomTrack>
 
     @Query("SELECT trackId FROM tracks_in_history WHERE trackId IN(:trackId)")
     suspend fun containsTracks(vararg trackId: Int): List<Int>
 
     @Query("SELECT t.* FROM tracks t INNER JOIN tracks_in_history x ORDER BY x.addedDate DESC")
-    suspend fun getAllTracks(): List<TrackInDB>
+    suspend fun getAllTracks(): List<RoomTrack>
 
     @Query("SELECT trackId FROM tracks_in_history")
     suspend fun getAllTracksIds(): List<Int>

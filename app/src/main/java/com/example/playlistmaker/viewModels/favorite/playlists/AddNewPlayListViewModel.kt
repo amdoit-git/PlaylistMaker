@@ -2,12 +2,16 @@ package com.example.playlistmaker.viewModels.favorite.playlists
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.repository.favorite.playlists.PlaylistsInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AddNewPlayListViewModel(private val playlists: PlaylistsInteractor) : ViewModel() {
@@ -15,7 +19,8 @@ class AddNewPlayListViewModel(private val playlists: PlaylistsInteractor) : View
     private val liveData = LiveDataWithStartDataSet<NewPlaylistData>()
     private var title = ""
     private var description = ""
-    private var cover: Uri? = null
+    private var coverUri: Uri? = null
+    private var playlistCreated = false
 
     fun getLiveData(): LiveData<NewPlaylistData> {
         return liveData
@@ -26,15 +31,15 @@ class AddNewPlayListViewModel(private val playlists: PlaylistsInteractor) : View
         if (bitmap != null) {
             viewModelScope.launch(Dispatchers.Main) {
 
-                cover = Uri.parse(playlists.saveCoverToTmpDir(bitmap))
+                coverUri = playlists.saveCoverToTmpDir(bitmap)
 
-                liveData.postValue(NewPlaylistData.Cover(uri = cover))
+                liveData.postValue(NewPlaylistData.Cover(uri = coverUri))
             }
         } else {
 
-            cover = null
+            coverUri = null
 
-            liveData.postValue(NewPlaylistData.Cover(uri = cover))
+            liveData.postValue(NewPlaylistData.Cover(uri = coverUri))
         }
     }
 
@@ -60,16 +65,29 @@ class AddNewPlayListViewModel(private val playlists: PlaylistsInteractor) : View
 
     fun onCreateButtonPressed() {
 
+        if(playlistCreated) return
+
+        GlobalScope.launch(Dispatchers.IO) {
+
+           playlists.addPlaylist(Playlist(
+               id = 0,
+               title = title,
+               description = description,
+               coverUri = coverUri
+           ))
+        }
 
         liveData.setSingleEventValue(
             NewPlaylistData.Close(allowed = true)
         )
+
+        playlistCreated = true
     }
 
     fun onBackPressed() {
-        liveData.setSingleEventValue(
+         liveData.setSingleEventValue(
             NewPlaylistData.Close(
-                allowed = title.isBlank() && description.isBlank() && (cover == null)
+                allowed = title.isBlank() && description.isBlank() && (coverUri == null)
             )
         )
     }

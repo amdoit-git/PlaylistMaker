@@ -1,12 +1,10 @@
 package com.example.playlistmaker.data.db.models
 
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 
-//можно было их тоже хранить в TrackInDB, но по требования задания надо под них завесит отдельную таблицу
-@Entity(tableName = "tracks_in_playlists", indices = [Index(value = ["addedDate"])])
-data class TrackInPlaylist @JvmOverloads constructor(
+@Entity(tableName = "tracks")
+data class RoomTrack @JvmOverloads constructor(
     @PrimaryKey val trackId: Int, //id трека
     val trackName: String, // Название композиции
     val artistName: String, // Имя исполнителя

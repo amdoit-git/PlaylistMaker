@@ -5,19 +5,19 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.playlistmaker.data.db.models.TrackInDB
+import com.example.playlistmaker.data.db.models.RoomTrack
 
 @Dao
 interface TrackDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertTrackInfo(track: TrackInDB)
+    suspend fun insertTrackInfo(track: RoomTrack)
 
-    @Query("DELETE FROM tracks WHERE  trackId IN(SELECT t.trackId FROM tracks t LEFT JOIN tracks_in_favorite f ON t.trackId=f.trackId WHERE f.trackId IS NULL)")
+    @Query("DELETE FROM tracks WHERE trackId NOT IN(SELECT trackId FROM tracks_in_favorite UNION SELECT trackId FROM tracks_in_history)")
     suspend fun deleteUnusedTrackInfo()
 
-//    @Query("DELETE FROM tracks_in_playlists WHERE  trackId IN(SELECT t.trackId FROM tracks_in_playlists t LEFT JOIN playlist_track_map m ON t.trackId=m.trackId WHERE m.trackId IS NULL)")
-//    suspend fun deleteUnusedTrackInPlaylist()
+    @Query("DELETE FROM tracks_in_playlists WHERE trackId NOT IN(SELECT DISTINCT trackId FROM playlist_track_map)")
+    suspend fun deleteUnusedTrackInPlaylist()
 
     @Query("SELECT sqlite_version()")
     suspend fun getDBVersion():String
@@ -25,6 +25,6 @@ interface TrackDao {
     @Transaction
     suspend fun doOnConnect(){
         deleteUnusedTrackInfo()
-        //deleteUnusedTrackInPlaylist()
+        deleteUnusedTrackInPlaylist()
     }
 }

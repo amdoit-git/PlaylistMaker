@@ -5,9 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.playlistmaker.data.db.models.PlaylistInDB
+import com.example.playlistmaker.data.db.models.RoomPlaylist
 import com.example.playlistmaker.data.db.models.PlaylistTrackMap
-import com.example.playlistmaker.data.db.models.TrackInPlaylist
+import com.example.playlistmaker.data.db.models.RoomTrackPlaylist
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -18,21 +18,21 @@ interface PlaylistDao : TrackDao {
     }
 
     @Transaction
-    suspend fun addPlaylist(playlist: PlaylistInDB): String {
-        val playlistId = insertPlaylist(playlist)
+    suspend fun addPlaylist(playlist: RoomPlaylist): String {
+        val playlistId = insertPlaylist(playlist).toInt()
         val cover = "$playlistId.jpg"
         renameCover(playlistId, cover)
         return cover
     }
 
     @Insert
-    suspend fun insertPlaylist(playlist: PlaylistInDB): Int
+    suspend fun insertPlaylist(playlist: RoomPlaylist): Long
 
-    @Query("UPDATE playlists SET cover=:cover WHERE playlistId=:playlistId")
+    @Query("UPDATE playlists SET coverFileName=:cover WHERE playlistId=:playlistId")
     suspend fun renameCover(playlistId: Int, cover: String)
 
     @Transaction
-    suspend fun addTrack(track: TrackInPlaylist, playlistId: Int): Int {
+    suspend fun addTrack(track: RoomTrackPlaylist, playlistId: Int): Int {
         val addedDate = timestamp()
         saveTrackInfo(track)
         addToMap(
@@ -66,7 +66,7 @@ interface PlaylistDao : TrackDao {
     suspend fun updatePlaylistLength(playlistId: Int, tracksTotal: Int)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun saveTrackInfo(track: TrackInPlaylist)
+    suspend fun saveTrackInfo(track: RoomTrackPlaylist)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addToMap(index: PlaylistTrackMap)
@@ -78,10 +78,10 @@ interface PlaylistDao : TrackDao {
     suspend fun containsTrack(playlistId: Int, trackId: Int): Int
 
     @Query("SELECT t.* FROM tracks_in_playlists t INNER JOIN playlist_track_map m ON t.trackId=m.trackId WHERE m.playlistId=:playlistId ORDER BY m.addedDate DESC")
-    fun getTracks(playlistId: Int): Flow<List<TrackInPlaylist>>
+    fun getTracks(playlistId: Int): Flow<List<RoomTrackPlaylist>>
 
     @Query("SELECT * FROM playlists ORDER BY lastMod DESC")
-    suspend fun getPlaylists(): Flow<List<PlaylistInDB>>
+    fun getPlaylists(): Flow<List<RoomPlaylist>>
 
     @Query("SELECT COUNT(*) FROM playlist_track_map WHERE playlistId=:playlistId")
     suspend fun countTracks(playlistId: Int): Int

@@ -1,10 +1,11 @@
 package com.example.playlistmaker.data.db.models
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "tracks")
-data class TrackInDB @JvmOverloads constructor(
+@Entity(tableName = "tracks_in_playlists")
+data class RoomTrackPlaylist @JvmOverloads constructor(
     @PrimaryKey val trackId: Int, //id трека
     val trackName: String, // Название композиции
     val artistName: String, // Имя исполнителя

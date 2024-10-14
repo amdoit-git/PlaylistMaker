@@ -17,8 +17,8 @@ class PlaylistsInteractorImpl(private val repository: PlaylistsRepository) : Pla
         return repository.addPlaylist(playlist)
     }
 
-    override suspend fun addTrack(track: Track): Int {
-        return repository.addTrack(track)
+    override suspend fun addTrack(track: Track, playlistId: Int): Int {
+        return repository.addTrack(track, playlistId)
     }
 
     override suspend fun getPlaylists(): Flow<List<Playlist>> {

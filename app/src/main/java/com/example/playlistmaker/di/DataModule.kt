@@ -42,7 +42,7 @@ val dataModule = module {
     }
 
     single<TracksDB> {
-        Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks_x.db").build()
+        Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks_y.db").build()
     }
 
     factory<ImageSaver> {

@@ -1,23 +1,20 @@
 package com.example.playlistmaker.ui.favorite.playlists
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.Companion.isPhotoPickerAvailable
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -111,7 +108,7 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
                     if (it.allowed) {
                         goBack()
                     } else {
-                        MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.play_list_go_back_title)
+                        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme).setTitle(R.string.play_list_go_back_title)
                             .setMessage(R.string.play_list_go_back_description)
                             .setNegativeButton(R.string.play_list_go_back_cancel) { _, _ ->
                                 // Действия, выполняемые при нажатии на кнопку «Нет»
@@ -121,6 +118,14 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
                     }
                 }
             }
+        }
+
+        enableEditText(binding.playlistTitle, binding.etPlaylistTitle) { text ->
+            vModel.onTitleChanged(text)
+        }
+
+        enableEditText(binding.playlistDescription, binding.etPlaylistDescription) { text ->
+            vModel.onDescriptionChanged(text)
         }
     }
 
@@ -138,31 +143,13 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    override fun onResume() {
-
-        super.onResume()
-
-        enableEditText(binding.playlistTitle, binding.etPlaylistTitle) { text ->
-            vModel.onTitleChanged(text)
-        }
-
-        enableEditText(binding.playlistDescription, binding.etPlaylistDescription) { text ->
-            vModel.onDescriptionChanged(text)
-        }
-    }
-
-    override fun onStop() {
-        disableEditText(binding.etPlaylistTitle)
-        disableEditText(binding.etPlaylistDescription)
-        super.onStop()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
     private fun goBack() {
+        Log.d("WWW", "goBack")
         findNavController().popBackStack()
     }
 
@@ -281,10 +268,6 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
                 callback(elem.text.toString())
             }
         })
-    }
-
-    private fun disableEditText(elem: EditText) {
-        elem.addTextChangedListener(null)
     }
 
     private fun buttonsSetEnabled(isEnabled: Boolean) {

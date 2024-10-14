@@ -15,6 +15,66 @@ import kotlin.random.Random
 
 class ImageSaver(private val context: Context) {
 
+    fun coverUriFromFile(fileName: String): Uri? {
+
+        if (fileName.isBlank()) return null
+
+        val file = File(context.getDir(PLAYLIST_COVERS, MODE_PRIVATE), fileName)
+
+        return if (file.exists()) {
+            Uri.fromFile(file)
+        } else {
+            null
+        }
+    }
+
+    suspend fun saveCover(uri: Uri, fileName: String) {
+
+        val file = File(context.getDir(PLAYLIST_COVERS, MODE_PRIVATE), fileName)
+
+        copy(uri, file)
+    }
+
+    suspend fun saveToTmpStorage(imageFile: File): Uri {
+        val file = createTmpFile()
+        copy(imageFile, file)
+        return Uri.fromFile(file)
+    }
+
+    suspend fun saveToTmpStorage(imageUri: Uri): Uri {
+        val file = createTmpFile()
+        withContext(Dispatchers.IO) {
+            val inputStream = context.contentResolver.openInputStream(imageUri)
+            val outputStream = FileOutputStream(file)
+            BitmapFactory.decodeStream(inputStream)
+                .compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+        }
+        return Uri.fromFile(file)
+    }
+
+    suspend fun saveToTmpStorage(bitmap: Bitmap): Uri {
+
+        val file = createTmpFile("jpg")
+        withContext(Dispatchers.IO) {
+            val bas = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bas)
+
+            val out = FileOutputStream(file)
+            out.write(bas.toByteArray())
+            out.flush()
+            out.close()
+        }
+        return Uri.fromFile(file)
+    }
+
+    private fun createTmpFile(ext: String = "jpg"): File {
+        val rnd = Random.nextInt(1, 100)
+        val fileName = "tmp_$rnd.$ext"
+        val file = File(context.cacheDir, fileName)
+        file.createNewFile()
+        return file
+    }
+
     private suspend fun copy(file: File, fileCopy: File) {
         withContext(Dispatchers.IO) {
             FileInputStream(file).use { inp ->
@@ -50,59 +110,6 @@ class ImageSaver(private val context: Context) {
                 inp.close()
             }
         }
-    }
-
-    suspend fun saveCover(uri: Uri, fileName: String) {
-
-        val file = File(context.getDir(PLAYLIST_COVERS, MODE_PRIVATE), fileName)
-
-        copy(uri, file)
-    }
-
-    suspend fun getCoverUri(fileName: String): Uri {
-        val file = File(context.getDir(PLAYLIST_COVERS, MODE_PRIVATE), fileName)
-
-        return Uri.fromFile(file)
-    }
-
-    private fun createTmpFile(ext: String = "jpg"): File {
-        val rnd = Random.nextInt(1, 100)
-        val fileName = "tmp_$rnd.$ext"
-        val file = File(context.cacheDir, fileName)
-        file.createNewFile()
-        return file
-    }
-
-    suspend fun saveToTmpStorage(imageFile: File): Uri {
-        val file = createTmpFile()
-        copy(imageFile, file)
-        return Uri.fromFile(file)
-    }
-
-    suspend fun saveToTmpStorage(imageUri: Uri): Uri {
-        val file = createTmpFile()
-        withContext(Dispatchers.IO) {
-            val inputStream = context.contentResolver.openInputStream(imageUri)
-            val outputStream = FileOutputStream(file)
-            BitmapFactory.decodeStream(inputStream)
-                .compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
-        }
-        return Uri.fromFile(file)
-    }
-
-    suspend fun saveToTmpStorage(bitmap: Bitmap): Uri {
-
-        val file = createTmpFile("jpg")
-        withContext(Dispatchers.IO) {
-            val bas = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bas)
-
-            val out = FileOutputStream(file)
-            out.write(bas.toByteArray())
-            out.flush()
-            out.close()
-        }
-        return Uri.fromFile(file)
     }
 
     companion object {
