@@ -38,4 +38,7 @@
     <color name="boxStrokeColor">#3772E7</color>
     <color name="boxStrokeColorEmpty">#AEAFB4</color>
     <color name="addNewPlaylistEditTextColor">#1A1B22</color>
+    <color name="playlistGridTextColor">#1A1B22</color>
+    <color name="playlistListTitleColor">#000000</color>
+    <color name="playlistListTextColor">#AEAFB4</color>
 </resources>

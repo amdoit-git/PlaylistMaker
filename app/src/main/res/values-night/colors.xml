@@ -26,4 +26,7 @@
     <color name="windowBackground">#1A1B22</color>
     <color name="boxStrokeColorEmpty">#FFFFFF</color>
     <color name="addNewPlaylistEditTextColor">#FFFFFF</color>
+    <color name="playlistGridTextColor">#FFFFFF</color>
+    <color name="playlistListTitleColor">#FFFFFF</color>
+    <color name="playlistListTextColor">#FFFFFF</color>
 </resources>
