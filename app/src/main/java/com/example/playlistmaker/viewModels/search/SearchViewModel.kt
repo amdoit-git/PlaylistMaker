@@ -61,6 +61,8 @@ class SearchViewModel(
 
     fun onFocusChanged(hasFocus: Boolean) {
 
+        Log.d("WWW", "onFocusChanged -> $hasFocus $searchText")
+
         textInFocus = hasFocus
 
         switchHistoryVisibility()

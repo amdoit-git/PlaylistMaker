@@ -82,11 +82,15 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
         }
 
         binding.fixedButton.setOnClickListener {
-            vModel.onCreateButtonPressed()
+            vModel.onCreateButtonPressed(
+                requireContext().getString(R.string.play_list_created_tpl)
+            )
         }
 
         binding.scrolledButton.setOnClickListener {
-            vModel.onCreateButtonPressed()
+            vModel.onCreateButtonPressed(
+                requireContext().getString(R.string.play_list_created_tpl)
+            )
         }
 
         vModel.getLiveData().observe(viewLifecycleOwner) {
@@ -108,10 +112,13 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
                     if (it.allowed) {
                         goBack()
                     } else {
-                        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme).setTitle(R.string.play_list_go_back_title)
+                        MaterialAlertDialogBuilder(
+                            requireContext(),
+                            R.style.AlertDialogTheme
+                        ).setTitle(R.string.play_list_go_back_title)
                             .setMessage(R.string.play_list_go_back_description)
                             .setNegativeButton(R.string.play_list_go_back_cancel) { _, _ ->
-                                // Действия, выполняемые при нажатии на кнопку «Нет»
+                                //Остаемся на экране создания плейлиста
                             }.setPositiveButton(R.string.play_list_go_back_confirm) { _, _ ->
                                 goBack()
                             }.show()
@@ -182,7 +189,6 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
 
                 }).submit()
         }
-
         //.into(cover)
     }
 

@@ -28,11 +28,13 @@ class ImageSaver(private val context: Context) {
         }
     }
 
-    suspend fun saveCover(uri: Uri, fileName: String) {
+    suspend fun moveCoverFile(uri: Uri, fileName: String) {
 
         val file = File(context.getDir(PLAYLIST_COVERS, MODE_PRIVATE), fileName)
 
         copy(uri, file)
+
+        File(uri.toString()).delete()
     }
 
     suspend fun saveToTmpStorage(imageFile: File): Uri {

@@ -36,7 +36,7 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, database: TracksDB)
         )
 
         playlist.coverUri?.let { uri ->
-            saver.saveCover(uri, coverFileName)
+            saver.moveCoverFile(uri, coverFileName)
         }
     }
 

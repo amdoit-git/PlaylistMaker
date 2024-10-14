@@ -72,13 +72,6 @@ class PlayerScreenFragment : Fragment(), DpToPx {
                             }
                         }
 
-                        is PlayerScreenData.ToastMessage -> {
-
-                            binding.infoText.text = it.message
-
-                            binding.info.isVisible = it.isVisible
-                        }
-
                         is PlayerScreenData.FavoriteStatus -> {
                             binding.favoriteBt.isChecked = it.isFavorite
                         }

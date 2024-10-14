@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.common
 
 import android.app.Application
-import android.util.Log
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule
@@ -40,14 +39,7 @@ class App : Application() {
         val favorite: FavoriteTracksInteractor by inject()
 
         GlobalScope.launch(Dispatchers.IO) {
-
-            var time = System.currentTimeMillis();
-
             favorite.connect()
-
-            time = System.currentTimeMillis() - time
-
-            Log.d("WWW", "DB connected in $time ms")
         }
     }
 }

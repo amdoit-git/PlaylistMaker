@@ -41,4 +41,5 @@
     <string name="play_list_go_back_description">All unsaved data will be lost</string>
     <string name="play_list_go_back_confirm">Close</string>
     <string name="play_list_go_back_cancel">Cancel</string>
+    <string name="play_list_created_tpl">Playlist [playlist] created</string>
 </resources>

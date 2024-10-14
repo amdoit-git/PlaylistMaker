@@ -2,19 +2,21 @@ package com.example.playlistmaker.viewModels.favorite.playlists
 
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.domain.repository.common.NoticeInteractor
 import com.example.playlistmaker.domain.repository.favorite.playlists.PlaylistsInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class AddNewPlayListViewModel(private val playlists: PlaylistsInteractor) : ViewModel() {
+class AddNewPlayListViewModel(
+    private val playlists: PlaylistsInteractor,
+    private val notice: NoticeInteractor
+) : ViewModel() {
 
     private val liveData = LiveDataWithStartDataSet<NewPlaylistData>()
     private var title = ""
@@ -63,18 +65,22 @@ class AddNewPlayListViewModel(private val playlists: PlaylistsInteractor) : View
         liveData.setStartValue(NewPlaylistData.Description(text))
     }
 
-    fun onCreateButtonPressed() {
+    fun onCreateButtonPressed(tpl:String) {
 
-        if(playlistCreated) return
+        if (playlistCreated) return
 
         GlobalScope.launch(Dispatchers.IO) {
 
-           playlists.addPlaylist(Playlist(
-               id = 0,
-               title = title,
-               description = description,
-               coverUri = coverUri
-           ))
+            playlists.addPlaylist(
+                Playlist(
+                    id = 0,
+                    title = title,
+                    description = description,
+                    coverUri = coverUri
+                )
+            )
+
+            notice.setMessage(tpl.replace("[playlist]", title))
         }
 
         liveData.setSingleEventValue(
@@ -85,7 +91,7 @@ class AddNewPlayListViewModel(private val playlists: PlaylistsInteractor) : View
     }
 
     fun onBackPressed() {
-         liveData.setSingleEventValue(
+        liveData.setSingleEventValue(
             NewPlaylistData.Close(
                 allowed = title.isBlank() && description.isBlank() && (coverUri == null)
             )

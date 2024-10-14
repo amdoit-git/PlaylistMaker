@@ -6,8 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "playlists", indices = [Index(value = ["lastMod"])])
 data class RoomPlaylist(
-    @PrimaryKey(autoGenerate = true)
-    val playlistId: Int,
+    @PrimaryKey(autoGenerate = true) val playlistId: Int,
     val title: String,
     val description: String,
     val coverFileName: String,//название файла с обложкой (если есть)

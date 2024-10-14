@@ -4,11 +4,11 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.playlistmaker.data.db.dao.FavoriteTracksDao
 import com.example.playlistmaker.data.db.dao.PlaylistDao
-import com.example.playlistmaker.data.db.models.RoomTrack
 import com.example.playlistmaker.data.db.models.FavoriteMap
 import com.example.playlistmaker.data.db.models.HistoryMap
 import com.example.playlistmaker.data.db.models.PlaylistTrackMap
 import com.example.playlistmaker.data.db.models.RoomPlaylist
+import com.example.playlistmaker.data.db.models.RoomTrack
 import com.example.playlistmaker.data.db.models.RoomTrackPlaylist
 
 @Database(

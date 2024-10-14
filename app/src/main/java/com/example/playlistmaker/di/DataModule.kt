@@ -7,9 +7,12 @@ import androidx.room.Room
 import com.example.playlistmaker.data.APP_SETTINGS_PREFERENCES
 import com.example.playlistmaker.data.api.search.Itunes
 import com.example.playlistmaker.data.db.TracksDB
+import com.example.playlistmaker.data.impl.common.NoticeRepositoryImpl
 import com.example.playlistmaker.data.impl.favorite.playlists.ImageSaver
 import com.example.playlistmaker.data.impl.player.MediaPlayerService
+import com.example.playlistmaker.domain.repository.common.NoticeRepository
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -47,5 +50,13 @@ val dataModule = module {
 
     factory<ImageSaver> {
         ImageSaver(context = androidContext())
+    }
+
+    factory<NoticeRepository>{
+        NoticeRepositoryImpl(noticeFlow = get())
+    }
+
+    single<MutableSharedFlow<String>>{
+        MutableSharedFlow()
     }
 }
