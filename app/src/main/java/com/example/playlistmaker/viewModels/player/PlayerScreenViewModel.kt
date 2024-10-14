@@ -4,13 +4,19 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.TracksHistoryInteractor
-import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
+import com.example.playlistmaker.domain.repository.favorite.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.repository.player.MediaPlayerInteractor
+import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
+import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -18,6 +24,7 @@ class PlayerScreenViewModel(
     private val context: Context,
     private val player: MediaPlayerInteractor,
     history: TracksHistoryInteractor,
+    private val favorite: FavoriteTracksInteractor,
     jsonTrack: String
 ) :
     ViewModel() {
@@ -33,10 +40,28 @@ class PlayerScreenViewModel(
     init {
 
         history.jsonToTrack(jsonTrack)?.let {
+
             track = it
-            liveData.setValue(PlayerScreenData.TrackData(track = track))
+
+            Log.d("WWW", "VM = " + Thread.currentThread().id)
+
+            viewModelScope.launch(Dispatchers.Main) {
+
+                Log.d("WWW", "Dispatchers.Main = " + Thread.currentThread().id)
+
+                favorite.findTrackIds(track.trackId).flowOn(Dispatchers.IO).collect { ids ->
+
+                    track.isFavorite = ids.isNotEmpty()
+
+                    liveData.setValue(PlayerScreenData.FavoriteStatus(isFavorite = ids.isNotEmpty()))
+
+                    Log.d("WWW", "collect = " + Thread.currentThread().id)
+                }
+            }
+
             player.setDataSource(track.previewUrl)
             player.setDisplayPorts(::showPlayProgress, null, ::onPlayingStopped, ::onPlayerError)
+            liveData.setValue(PlayerScreenData.TrackData(track = track))
         }
     }
 
@@ -68,7 +93,7 @@ class PlayerScreenViewModel(
         showToast(getString(R.string.player_screen_track_error))
     }
 
-    fun showToast(message: String, seconds: Int = 3) {
+    private fun showToast(message: String, seconds: Int = 3) {
 
         handlerToast.removeCallbacksAndMessages(obj)
 
@@ -92,19 +117,20 @@ class PlayerScreenViewModel(
     }
 
     fun addToFavorite() {
-        showToast(
-            String.format(
-                getString(R.string.player_screen_add_to_favorite), track.trackName
-            )
-        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+            favorite.saveTrack(track)
+        }
+
+        liveData.setStartValue(PlayerScreenData.FavoriteStatus(isFavorite = true))
     }
 
     fun removeFromFavorite() {
-        showToast(
-            String.format(
-                getString(R.string.player_screen_remove_from_favorite), track.trackName
-            )
-        )
+        viewModelScope.launch(Dispatchers.IO) {
+            favorite.deleteTrack(track.trackId)
+        }
+
+        liveData.setStartValue(PlayerScreenData.FavoriteStatus(isFavorite = false))
     }
 
     override fun onCleared() {

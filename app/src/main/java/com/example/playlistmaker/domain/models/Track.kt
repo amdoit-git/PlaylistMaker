@@ -13,7 +13,7 @@ data class Track(
     val country: String,//Страна выпустившая альбом
     var isPlaying: Boolean = false, //играет ли трек в данный момент
     var isLiked: Boolean = false,//трек добавлен в понравившиеся
-    var inFavorite: Boolean = false//трек добавлен в избранное
+    var isFavorite: Boolean = false//трек добавлен в избранное
 ) {
     fun getTrack(): Track {
         return Track(
@@ -29,7 +29,7 @@ data class Track(
             country = country ?: "-",
             isPlaying = isPlaying,
             isLiked = isLiked,
-            inFavorite = inFavorite
+            isFavorite = isFavorite
         )
     }
 }

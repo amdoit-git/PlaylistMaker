@@ -81,6 +81,10 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
                             binding.info.isVisible = it.isVisible
                         }
+
+                        is PlayerScreenData.FavoriteStatus -> {
+                            binding.favoriteBt.isChecked = it.isFavorite
+                        }
                     }
                 }
 

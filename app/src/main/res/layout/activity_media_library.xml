@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/windowBackground"
     android:orientation="vertical"
-    tools:context=".ui.favorite.MlFragment">
+    tools:context=".ui.favorite.MediaLibraryFragment">
 
     <FrameLayout
         android:layout_width="match_parent"

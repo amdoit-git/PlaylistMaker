@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.consumer.ConsumerData
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.TracksHistoryInteractor
+import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
 import com.example.playlistmaker.domain.repository.search.ITunesInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import kotlinx.coroutines.CancellationException
@@ -105,7 +105,7 @@ class SearchViewModel(
     private suspend fun showHistory() {
 
         if (tracksInHistory == null) {
-            tracksInHistory = history.getList()
+            tracksInHistory = history.getAll()
         }
 
         if (tracksInHistory.isNullOrEmpty()) {
