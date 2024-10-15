@@ -20,7 +20,8 @@ interface PlaylistDao : TrackDao {
     @Transaction
     suspend fun addPlaylist(playlist: RoomPlaylist): String {
         val playlistId = insertPlaylist(playlist).toInt()
-        val cover = "$playlistId.jpg"
+        val time = timestamp()
+        val cover = "$playlistId-$time.jpg"
         renameCover(playlistId, cover)
         return cover
     }

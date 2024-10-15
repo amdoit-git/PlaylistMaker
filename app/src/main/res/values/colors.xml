@@ -41,4 +41,7 @@
     <color name="playlistGridTextColor">#1A1B22</color>
     <color name="playlistListTitleColor">#000000</color>
     <color name="playlistListTextColor">#AEAFB4</color>
+    <color name="bottom_sheet_bg">#FFFFFF</color>
+    <color name="bottom_sheet_menu_dash">#E6E8EB</color>
+    <color name="play_list_add_to_list">#1A1B22</color>
 </resources>

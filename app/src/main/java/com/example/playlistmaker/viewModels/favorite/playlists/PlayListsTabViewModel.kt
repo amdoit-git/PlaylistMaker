@@ -23,7 +23,7 @@ class PlayListsTabViewModel(private val playlists: PlaylistsInteractor) : ViewMo
                     if (list.isNotEmpty()) {
                         PlaylistsTabData.Playlists(playlists = list)
                     } else {
-                        PlaylistsTabData.Error(message = "")
+                        PlaylistsTabData.PlaylistNotFound(message = "")
                     }
                 )
             }

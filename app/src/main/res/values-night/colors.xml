@@ -29,4 +29,7 @@
     <color name="playlistGridTextColor">#FFFFFF</color>
     <color name="playlistListTitleColor">#FFFFFF</color>
     <color name="playlistListTextColor">#FFFFFF</color>
+    <color name="bottom_sheet_bg">#1A1B22</color>
+    <color name="bottom_sheet_menu_dash">#FFFFFF</color>
+    <color name="play_list_add_to_list">#FFFFFF</color>
 </resources>

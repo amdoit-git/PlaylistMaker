@@ -7,8 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.common.NoticeInteractor
+import com.example.playlistmaker.domain.repository.favorite.playlists.PlaylistsInteractor
 import com.example.playlistmaker.domain.repository.favorite.tracks.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.repository.player.MediaPlayerInteractor
 import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
@@ -24,6 +26,7 @@ class PlayerScreenViewModel(
     private val player: MediaPlayerInteractor,
     private val favorite: FavoriteTracksInteractor,
     private val notice: NoticeInteractor,
+    private val playlists: PlaylistsInteractor,
     history: TracksHistoryInteractor,
     jsonTrack: String
 ) :
@@ -56,6 +59,20 @@ class PlayerScreenViewModel(
             player.setDataSource(track.previewUrl)
             player.setDisplayPorts(::showPlayProgress, null, ::onPlayingStopped, ::onPlayerError)
             liveData.setValue(PlayerScreenData.TrackData(track = track))
+        }
+
+        viewModelScope.launch(Dispatchers.Main) {
+
+            playlists.getPlaylists().flowOn(Dispatchers.IO).collect { list ->
+
+                liveData.setValue(
+                    if (list.isNotEmpty()) {
+                        PlayerScreenData.Playlists(playlists = list)
+                    } else {
+                        PlayerScreenData.PlaylistNotFound(message = "")
+                    }
+                )
+            }
         }
     }
 
@@ -115,6 +132,32 @@ class PlayerScreenViewModel(
         }
 
         liveData.setStartValue(PlayerScreenData.FavoriteStatus(isFavorite = false))
+    }
+
+    fun onPlaylistClick(playlist: Playlist, onSuccessTpl:String, onFailTpl:String) {
+        viewModelScope.launch {
+
+            if(playlists.containsTrack(
+                playlistId = playlist.id,
+                trackId = track.trackId
+            )){
+                notice.setMessage(onFailTpl.replace("[playlist]", playlist.title))
+            }
+            else{
+
+                playlists.addTrack(
+                    track = track, playlistId = playlist.id
+                )
+
+                setBottomSheetState(false)
+
+                notice.setMessage(onSuccessTpl.replace("[playlist]", playlist.title))
+            }
+        }
+    }
+
+    fun setBottomSheetState(opened:Boolean){
+        liveData.setValue(PlayerScreenData.BottomSheet(opened))
     }
 
     override fun onCleared() {

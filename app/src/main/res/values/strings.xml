@@ -45,5 +45,7 @@
     <string name="play_list_go_back_confirm">Завершить</string>
     <string name="play_list_go_back_cancel">Отмена</string>
     <string name="play_list_created_tpl">Плейлист [playlist] создан</string>
+    <string name="play_list_success_add_track_tpl">Добавлено в плейлист [playlist]</string>
+    <string name="play_list_fail_add_track_tpl">Трек уже добавлен в плейлист [playlist]</string>
     <string name="track_counter_declination">трек трека треков</string>
 </resources>

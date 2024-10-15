@@ -23,6 +23,7 @@ val viewModelModule = module {
             player = get(),
             favorite = get(),
             notice = get(),
+            playlists = get(),
             history = get(),
             jsonTrack
         )

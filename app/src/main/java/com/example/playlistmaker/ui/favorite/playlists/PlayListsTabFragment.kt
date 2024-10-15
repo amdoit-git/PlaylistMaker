@@ -62,7 +62,7 @@ class PlayListsTabFragment : Fragment() {
                     adapter.notifyDataSetChanged()
                 }
 
-                is PlaylistsTabData.Error -> {
+                is PlaylistsTabData.PlaylistNotFound -> {
                     recyclerView.isVisible = false
                     info.isVisible = true
                 }
@@ -77,7 +77,8 @@ class PlayListsTabFragment : Fragment() {
             playlists = mutableListOf(),
             onPlaylistClick = vModel::onPlaylistClick,
             scrollListToTop = ::scrollListToTop,
-            trackCounterDeclination = requireContext().getString(R.string.track_counter_declination)
+            trackCounterDeclination = requireContext().getString(R.string.track_counter_declination),
+            type = PlaylistRvType.GRID
         )
 
         recyclerView.adapter = adapter
