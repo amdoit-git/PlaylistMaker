@@ -19,6 +19,10 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, database: TracksDB)
 
     private val dao = database.playlistDao()
 
+    private fun getCoverFilename(isCoverExists: Boolean): String {
+        return if (isCoverExists) "${System.currentTimeMillis()}.jpg" else ""
+    }
+
     override suspend fun <T> saveCoverToTmpDir(cover: T): Uri {
 
         return when (cover) {
@@ -29,15 +33,19 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, database: TracksDB)
         }
     }
 
-    override suspend fun addPlaylist(playlist: Playlist) {
+    override suspend fun addNewPlaylist(playlist: Playlist) {
 
-        val coverFileName = dao.addPlaylist(
-            PlaylistToRoomPlaylistMapper.map(playlist)
+        val coverFileName = getCoverFilename(
+            isCoverExists = (playlist.coverUri != null)
         )
 
         playlist.coverUri?.let { uri ->
             saver.moveCoverFile(uri, coverFileName)
         }
+
+        dao.addPlaylist(
+            PlaylistToRoomPlaylistMapper.map(playlist, coverFileName)
+        )
     }
 
     override suspend fun addTrack(track: Track, playlistId: Int): Int {

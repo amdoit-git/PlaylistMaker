@@ -9,7 +9,7 @@ interface PlaylistsRepository {
 
     suspend fun <T> saveCoverToTmpDir(cover: T): Uri
 
-    suspend fun addPlaylist(playlist: Playlist)
+    suspend fun addNewPlaylist(playlist: Playlist)
 
     suspend fun addTrack(track: Track, playlistId: Int):Int
 

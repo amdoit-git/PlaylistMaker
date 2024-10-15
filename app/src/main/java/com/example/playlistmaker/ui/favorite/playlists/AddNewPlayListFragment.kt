@@ -208,7 +208,11 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
                 ).into(cover)
 
             cover.setBackgroundColor(requireContext().getColor(R.color.transparent))
+
         } else {
+
+            Glide.with(binding.cover).clear(binding.cover)
+
             cover.setBackgroundResource(R.drawable.add_photo_not_selected)
         }
     }

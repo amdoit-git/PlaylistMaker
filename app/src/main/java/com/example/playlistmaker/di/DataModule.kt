@@ -45,7 +45,7 @@ val dataModule = module {
     }
 
     single<TracksDB> {
-        Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks_y.db").build()
+        Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks_y.db").fallbackToDestructiveMigration().build()
     }
 
     single<ImageSaver> {

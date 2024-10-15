@@ -69,7 +69,13 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
 
-                binding.overlay.isVisible = (newState != BottomSheetBehavior.STATE_HIDDEN)
+                binding.overlay.isVisible = if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    vModel.setBottomSheetState(opened = false)
+
+                    false
+                } else {
+                    true
+                }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {

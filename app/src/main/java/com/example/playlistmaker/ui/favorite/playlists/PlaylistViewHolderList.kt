@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.favorite.playlists
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
@@ -18,6 +19,8 @@ class PlaylistViewHolderList(private val binding: PlaylistInListBinding) : Playl
             Glide.with(binding.cover).load(uri).transform(
                 CenterCrop(), RoundedCorners(dpToPx(8f, binding.cover.context))
             ).into(binding.cover)
+        } ?: run {
+            Glide.with(binding.cover).clear(binding.cover);
         }
 
         itemView.setOnClickListener {

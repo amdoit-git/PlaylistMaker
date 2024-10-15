@@ -5,8 +5,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.playlistmaker.data.db.models.RoomPlaylist
 import com.example.playlistmaker.data.db.models.PlaylistTrackMap
+import com.example.playlistmaker.data.db.models.RoomPlaylist
 import com.example.playlistmaker.data.db.models.RoomTrackPlaylist
 import kotlinx.coroutines.flow.Flow
 
@@ -18,12 +18,9 @@ interface PlaylistDao : TrackDao {
     }
 
     @Transaction
-    suspend fun addPlaylist(playlist: RoomPlaylist): String {
+    suspend fun addPlaylist(playlist: RoomPlaylist): Int {
         val playlistId = insertPlaylist(playlist).toInt()
-        val time = timestamp()
-        val cover = "$playlistId-$time.jpg"
-        renameCover(playlistId, cover)
-        return cover
+        return playlistId
     }
 
     @Insert

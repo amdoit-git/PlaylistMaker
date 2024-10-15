@@ -18,6 +18,8 @@ class PlaylistViewHolderGrid(private val binding: PlaylistInGridBinding) : Playl
             Glide.with(binding.cover).load(uri).transform(
                 CenterCrop(), RoundedCorners(dpToPx(8f, binding.cover.context))
             ).into(binding.cover)
+        }?: run {
+            Glide.with(binding.cover).clear(binding.cover);
         }
 
         itemView.setOnClickListener {

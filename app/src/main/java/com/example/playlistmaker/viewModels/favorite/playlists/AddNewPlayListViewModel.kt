@@ -2,6 +2,7 @@ package com.example.playlistmaker.viewModels.favorite.playlists
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,8 +10,12 @@ import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.repository.common.NoticeInteractor
 import com.example.playlistmaker.domain.repository.favorite.playlists.PlaylistsInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AddNewPlayListViewModel(
@@ -23,6 +28,7 @@ class AddNewPlayListViewModel(
     private var description = ""
     private var coverUri: Uri? = null
     private var playlistCreated = false
+    private var bitmapEncodeJob: Job? = null
 
     fun getLiveData(): LiveData<NewPlaylistTabData> {
         return liveData
@@ -36,7 +42,7 @@ class AddNewPlayListViewModel(
 
         if (bitmap != null) {
 
-            viewModelScope.launch(Dispatchers.Main) {
+            bitmapEncodeJob = viewModelScope.launch(Dispatchers.Main) {
 
                 coverUri = playlists.saveCoverToTmpDir(bitmap)
 
@@ -71,6 +77,9 @@ class AddNewPlayListViewModel(
 
         GlobalScope.launch(Dispatchers.IO) {
 
+            //ждем сохранения обложки (если размер картинки гигантский)
+            bitmapEncodeJob?.join()
+
             playlists.addPlaylist(
                 Playlist(
                     id = 0,
@@ -82,11 +91,18 @@ class AddNewPlayListViewModel(
             )
 
             notice.setMessage(tpl.replace("[playlist]", title))
+
+            Log.d("WWW", coverUri.toString())
         }
 
-        liveData.setSingleEventValue(
-            NewPlaylistTabData.Close(allowed = true)
-        )
+        viewModelScope.launch(Dispatchers.Main) {
+
+            bitmapEncodeJob?.join()
+
+            liveData.setSingleEventValue(
+                NewPlaylistTabData.Close(allowed = true)
+            )
+        }
 
         playlistCreated = true
     }
