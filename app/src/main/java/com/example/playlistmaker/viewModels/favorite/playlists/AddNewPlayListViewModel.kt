@@ -18,30 +18,30 @@ class AddNewPlayListViewModel(
     private val notice: NoticeInteractor
 ) : ViewModel() {
 
-    private val liveData = LiveDataWithStartDataSet<NewPlaylistData>()
+    private val liveData = LiveDataWithStartDataSet<NewPlaylistTabData>()
     private var title = ""
     private var description = ""
     private var coverUri: Uri? = null
     private var playlistCreated = false
 
-    fun getLiveData(): LiveData<NewPlaylistData> {
+    fun getLiveData(): LiveData<NewPlaylistTabData> {
         return liveData
     }
 
-    fun saveCoverToTmpStorage(bitmap: Bitmap?) {
+    fun saveCoverToTmpStorage(bitmap: Bitmap?, uri: Uri? = null) {
+
+        coverUri = uri
+
+        liveData.postValue(NewPlaylistTabData.Cover(uri = uri))
 
         if (bitmap != null) {
+
             viewModelScope.launch(Dispatchers.Main) {
 
                 coverUri = playlists.saveCoverToTmpDir(bitmap)
 
-                liveData.postValue(NewPlaylistData.Cover(uri = coverUri))
+                liveData.postValue(NewPlaylistTabData.Cover(uri = coverUri))
             }
-        } else {
-
-            coverUri = null
-
-            liveData.postValue(NewPlaylistData.Cover(uri = coverUri))
         }
     }
 
@@ -49,10 +49,10 @@ class AddNewPlayListViewModel(
 
         title = text
 
-        liveData.setStartValue(NewPlaylistData.Title(text))
+        liveData.setStartValue(NewPlaylistTabData.Title(text))
 
         liveData.postValue(
-            NewPlaylistData.Button(
+            NewPlaylistTabData.Button(
                 enabled = text.isNotBlank()
             )
         )
@@ -62,10 +62,10 @@ class AddNewPlayListViewModel(
 
         description = text
 
-        liveData.setStartValue(NewPlaylistData.Description(text))
+        liveData.setStartValue(NewPlaylistTabData.Description(text))
     }
 
-    fun onCreateButtonPressed(tpl:String) {
+    fun onCreateButtonPressed(tpl: String) {
 
         if (playlistCreated) return
 
@@ -76,7 +76,8 @@ class AddNewPlayListViewModel(
                     id = 0,
                     title = title,
                     description = description,
-                    coverUri = coverUri
+                    coverUri = coverUri,
+                    tracksTotal = 0
                 )
             )
 
@@ -84,7 +85,7 @@ class AddNewPlayListViewModel(
         }
 
         liveData.setSingleEventValue(
-            NewPlaylistData.Close(allowed = true)
+            NewPlaylistTabData.Close(allowed = true)
         )
 
         playlistCreated = true
@@ -92,7 +93,7 @@ class AddNewPlayListViewModel(
 
     fun onBackPressed() {
         liveData.setSingleEventValue(
-            NewPlaylistData.Close(
+            NewPlaylistTabData.Close(
                 allowed = title.isBlank() && description.isBlank() && (coverUri == null)
             )
         )

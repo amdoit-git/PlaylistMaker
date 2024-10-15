@@ -59,8 +59,8 @@ interface PlaylistDao : TrackDao {
         return tracksTotal
     }
 
-    @Query("UPDATE playlists SET lastMod=:addedDate WHERE playlistId=:playlistId")
-    suspend fun moveToTop(playlistId: Int, addedDate: Int)
+    @Query("UPDATE playlists SET lastMod=:lastMod WHERE playlistId=:playlistId")
+    suspend fun moveToTop(playlistId: Int, lastMod: Int)
 
     @Query("UPDATE playlists SET tracksTotal=:tracksTotal WHERE playlistId=:playlistId")
     suspend fun updatePlaylistLength(playlistId: Int, tracksTotal: Int)

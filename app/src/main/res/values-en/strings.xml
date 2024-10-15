@@ -42,4 +42,5 @@
     <string name="play_list_go_back_confirm">Close</string>
     <string name="play_list_go_back_cancel">Cancel</string>
     <string name="play_list_created_tpl">Playlist [playlist] created</string>
+    <string name="track_counter_declination">track tracks tracks</string>
 </resources>

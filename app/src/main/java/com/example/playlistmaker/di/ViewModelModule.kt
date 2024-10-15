@@ -1,9 +1,9 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.viewModels.favorite.MlViewModel
+import com.example.playlistmaker.viewModels.favorite.MediaLibraryViewModel
 import com.example.playlistmaker.viewModels.favorite.playlists.AddNewPlayListViewModel
 import com.example.playlistmaker.viewModels.favorite.playlists.PlayListsTabViewModel
-import com.example.playlistmaker.viewModels.favorite.tracks.MlFavoriteTracksTabViewModel
+import com.example.playlistmaker.viewModels.favorite.tracks.FavoriteTracksTabViewModel
 import com.example.playlistmaker.viewModels.main.MainActivityViewModel
 import com.example.playlistmaker.viewModels.player.PlayerScreenViewModel
 import com.example.playlistmaker.viewModels.search.SearchViewModel
@@ -33,15 +33,15 @@ val viewModelModule = module {
     }
 
     viewModel {
-        MlViewModel()
+        MediaLibraryViewModel()
     }
 
     viewModel {
-        MlFavoriteTracksTabViewModel(favorite = get(), history = get())
+        FavoriteTracksTabViewModel(favorite = get(), history = get())
     }
 
     viewModel {
-        PlayListsTabViewModel()
+        PlayListsTabViewModel(playlists = get())
     }
 
     viewModel {

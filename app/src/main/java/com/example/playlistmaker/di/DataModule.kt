@@ -48,15 +48,15 @@ val dataModule = module {
         Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks_y.db").build()
     }
 
-    factory<ImageSaver> {
+    single<ImageSaver> {
         ImageSaver(context = androidContext())
     }
 
-    factory<NoticeRepository>{
+    factory<NoticeRepository> {
         NoticeRepositoryImpl(noticeFlow = get())
     }
 
-    single<MutableSharedFlow<String>>{
+    single<MutableSharedFlow<String>> {
         MutableSharedFlow()
     }
 }

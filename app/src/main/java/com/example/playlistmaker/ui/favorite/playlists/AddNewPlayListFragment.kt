@@ -1,13 +1,12 @@
 package com.example.playlistmaker.ui.favorite.playlists
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +14,12 @@ import android.view.ViewTreeObserver
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -30,13 +29,12 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAddNewPlayListBinding
 import com.example.playlistmaker.ui.common.DpToPx
 import com.example.playlistmaker.viewModels.favorite.playlists.AddNewPlayListViewModel
-import com.example.playlistmaker.viewModels.favorite.playlists.NewPlaylistData
+import com.example.playlistmaker.viewModels.favorite.playlists.NewPlaylistTabData
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
+import kotlin.math.min
 
 
 class AddNewPlayListFragment : Fragment(), DpToPx {
@@ -96,25 +94,24 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
         vModel.getLiveData().observe(viewLifecycleOwner) {
 
             when (it) {
-                is NewPlaylistData.Button -> buttonsSetEnabled(it.enabled)
-                is NewPlaylistData.Cover -> setCoverImage(it.uri)
-                is NewPlaylistData.Description -> {
+                is NewPlaylistTabData.Button -> buttonsSetEnabled(it.enabled)
+                is NewPlaylistTabData.Cover -> setCoverImage(it.uri)
+                is NewPlaylistTabData.Description -> {
                     binding.etPlaylistDescription.setText(it.text)
                     calcButtonPosition()
                 }
 
-                is NewPlaylistData.Title -> {
+                is NewPlaylistTabData.Title -> {
                     binding.etPlaylistTitle.setText(it.text)
                     calcButtonPosition()
                 }
 
-                is NewPlaylistData.Close -> {
+                is NewPlaylistTabData.Close -> {
                     if (it.allowed) {
                         goBack()
                     } else {
                         MaterialAlertDialogBuilder(
-                            requireContext(),
-                            R.style.AlertDialogTheme
+                            requireContext(), R.style.AlertDialogTheme
                         ).setTitle(R.string.play_list_go_back_title)
                             .setMessage(R.string.play_list_go_back_description)
                             .setNegativeButton(R.string.play_list_go_back_cancel) { _, _ ->
@@ -156,7 +153,6 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
     }
 
     private fun goBack() {
-        Log.d("WWW", "goBack")
         findNavController().popBackStack()
     }
 
@@ -164,8 +160,16 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
 
         if (uri != null) {
 
-            Glide.with(binding.cover).asBitmap().load(uri).centerCrop()
-                .listener(object : RequestListener<Bitmap> {
+            val cover = binding.cover
+            val size = getMinSize()
+
+            Glide.with(cover).asBitmap().load(uri)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .override(size, size)
+                .transform(
+                    CenterCrop()
+                ).listener(object : RequestListener<Bitmap> {
                     override fun onLoadFailed(
                         e: GlideException?,
                         model: Any?,
@@ -183,13 +187,12 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
                         dataSource: DataSource,
                         isFirstResource: Boolean
                     ): Boolean {
-                        vModel.saveCoverToTmpStorage(resource)
+                        vModel.saveCoverToTmpStorage(resource, uri)
                         return false
                     }
 
                 }).submit()
         }
-        //.into(cover)
     }
 
     private fun setCoverImage(uri: Uri?) {
@@ -197,31 +200,16 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
         val cover = binding.cover
 
         if (uri != null) {
-            Glide.with(cover).load(uri).transform(
-                CenterCrop(), RoundedCorners(dpToPx(8f, cover.context))
-            ).into(cover)
+            Glide.with(cover).load(uri)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .transform(
+                    CenterCrop(), RoundedCorners(dpToPx(8f, cover.context))
+                ).into(cover)
 
             cover.setBackgroundColor(requireContext().getColor(R.color.transparent))
         } else {
             cover.setBackgroundResource(R.drawable.add_photo_not_selected)
-        }
-    }
-
-    private fun saveImageToPrivateStorage() {
-
-        val drawable = binding.cover.getDrawable() as BitmapDrawable
-
-        val dirName = "playlists_covers"
-
-        val file = File(requireContext().getDir(dirName, MODE_PRIVATE), "x.jpg")
-
-        try {
-            val out = FileOutputStream(file)
-            drawable.bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
-            out.flush()
-            out.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
@@ -279,6 +267,13 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
     private fun buttonsSetEnabled(isEnabled: Boolean) {
         binding.fixedButton.isEnabled = isEnabled
         binding.scrolledButton.isEnabled = isEnabled
+    }
+
+    private fun getMinSize(): Int {
+        return min(
+            Resources.getSystem().displayMetrics.widthPixels,
+            Resources.getSystem().displayMetrics.heightPixels
+        )
     }
 
     private fun getYPosition(elem: View): Int {

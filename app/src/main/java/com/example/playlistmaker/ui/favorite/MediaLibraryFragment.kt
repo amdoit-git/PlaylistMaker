@@ -10,7 +10,7 @@ import com.example.playlistmaker.databinding.ActivityMediaLibraryBinding
 import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
 import com.example.playlistmaker.ui.favorite.playlists.PlayListsTabFragment
 import com.example.playlistmaker.ui.favorite.tracks.FavoriteTracksTabFragment
-import com.example.playlistmaker.viewModels.favorite.MlViewModel
+import com.example.playlistmaker.viewModels.favorite.MediaLibraryViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Job
 import org.koin.android.ext.android.inject
@@ -24,7 +24,7 @@ class MediaLibraryFragment() : Fragment() {
 
     private var tabMediator: TabLayoutMediator? = null
 
-    private val vModel: MlViewModel by viewModel()
+    private val vModel: MediaLibraryViewModel by viewModel()
 
     private val history: TracksHistoryInteractor by inject()
 

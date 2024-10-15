@@ -11,9 +11,12 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import kotlin.random.Random
+import kotlin.concurrent.Volatile
 
 class ImageSaver(private val context: Context) {
+
+    @Volatile
+    private var tmpFilesCounter = 1
 
     fun coverUriFromFile(fileName: String): Uri? {
 
@@ -70,10 +73,11 @@ class ImageSaver(private val context: Context) {
     }
 
     private fun createTmpFile(ext: String = "jpg"): File {
-        val rnd = Random.nextInt(1, 100)
+        val rnd = tmpFilesCounter++
         val fileName = "tmp_$rnd.$ext"
         val file = File(context.cacheDir, fileName)
         file.createNewFile()
+        file.deleteOnExit()
         return file
     }
 
