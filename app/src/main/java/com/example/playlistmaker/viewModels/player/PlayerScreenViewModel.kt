@@ -81,7 +81,6 @@ class PlayerScreenViewModel(
         trackProgress.stopped = false
         player.play()
         displayProgress()
-        Log.d("WWW", "player.play()")
     }
 
     fun pause() {
