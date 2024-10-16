@@ -183,7 +183,7 @@ class PlayerScreenFragment : Fragment(), DpToPx {
             findNavController().navigate(direction)
         }
 
-        binding.overlay.setOnClickListener{
+        binding.overlay.setOnClickListener {
             vModel.setBottomSheetState(opened = false)
         }
     }
@@ -192,7 +192,7 @@ class PlayerScreenFragment : Fragment(), DpToPx {
         super.onStop()
         activity?.let {
             if (!it.isChangingConfigurations) {
-                vModel.pause()
+                binding.playPauseBt.isChecked = false
             }
         }
     }

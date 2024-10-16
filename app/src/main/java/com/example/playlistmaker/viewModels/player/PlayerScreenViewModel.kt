@@ -2,6 +2,7 @@ package com.example.playlistmaker.viewModels.player
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -80,6 +81,7 @@ class PlayerScreenViewModel(
         trackProgress.stopped = false
         player.play()
         displayProgress()
+        Log.d("WWW", "player.play()")
     }
 
     fun pause() {
