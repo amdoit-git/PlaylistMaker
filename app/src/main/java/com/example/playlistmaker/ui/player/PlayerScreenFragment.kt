@@ -121,13 +121,14 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
                         is PlayerScreenData.BottomSheet -> {
 
-                            bottomSheetBehavior.setState(
-                                if (it.opened) {
-                                    BottomSheetBehavior.STATE_HALF_EXPANDED
-                                } else {
-                                    BottomSheetBehavior.STATE_HIDDEN
-                                }
-                            )
+                            if (it.opened) {
+                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
+                                binding.overlay.isVisible = true
+                                binding.overlay.alpha = 0.5f
+                            } else {
+                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
+                                binding.overlay.isVisible = false
+                            }
                         }
                     }
                 }
@@ -180,6 +181,10 @@ class PlayerScreenFragment : Fragment(), DpToPx {
                 PlayerScreenFragmentDirections.actionPlayerScreenFragmentToAddNewPlayListFragment()
 
             findNavController().navigate(direction)
+        }
+
+        binding.overlay.setOnClickListener{
+            vModel.setBottomSheetState(opened = false)
         }
     }
 
