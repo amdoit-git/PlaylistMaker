@@ -12,7 +12,7 @@ interface FavoriteTracksDao : TrackDao {
     @Transaction
     suspend fun saveTrack(track: RoomTrack) {
         insertTrackInfo(track)
-        insertTrack(trackId = track.trackId, addedDate = (System.currentTimeMillis()/1000).toInt())
+        insertTrack(trackId = track.trackId, addedDate = timestamp())
     }
 
     @Query("UPDATE tracks_in_favorite SET addedDate=unixepoch() WHERE trackId=:trackId")

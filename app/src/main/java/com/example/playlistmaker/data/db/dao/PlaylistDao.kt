@@ -13,10 +13,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PlaylistDao : TrackDao {
 
-    private fun timestamp(): Int {
-        return (System.currentTimeMillis() / 1000).toInt()
-    }
-
     @Transaction
     suspend fun addPlaylist(playlist: RoomPlaylist): Int {
         val playlistId = insertPlaylist(playlist).toInt()

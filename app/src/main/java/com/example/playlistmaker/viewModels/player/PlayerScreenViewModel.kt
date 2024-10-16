@@ -1,6 +1,5 @@
 package com.example.playlistmaker.viewModels.player
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
@@ -9,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.repository.common.GetStringResourceUseCase
 import com.example.playlistmaker.domain.repository.common.NoticeInteractor
 import com.example.playlistmaker.domain.repository.favorite.playlists.PlaylistsInteractor
 import com.example.playlistmaker.domain.repository.favorite.tracks.FavoriteTracksInteractor
@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerScreenViewModel(
-    private val context: Context,
+    private val strings: GetStringResourceUseCase,
     private val player: MediaPlayerInteractor,
     private val favorite: FavoriteTracksInteractor,
     private val notice: NoticeInteractor,
@@ -104,7 +104,7 @@ class PlayerScreenViewModel(
 
         viewModelScope.launch {
             notice.setMessage(
-                context.resources.getString(R.string.player_screen_track_error)
+                strings(R.string.player_screen_track_error)
             )
         }
     }
@@ -134,16 +134,21 @@ class PlayerScreenViewModel(
         liveData.setStartValue(PlayerScreenData.FavoriteStatus(isFavorite = false))
     }
 
-    fun onPlaylistClick(playlist: Playlist, onSuccessTpl:String, onFailTpl:String) {
+    fun onPlaylistClick(playlist: Playlist) {
         viewModelScope.launch {
 
-            if(playlists.containsTrack(
-                playlistId = playlist.id,
-                trackId = track.trackId
-            )){
-                notice.setMessage(onFailTpl.replace("[playlist]", playlist.title))
-            }
-            else{
+            if (playlists.containsTrack(
+                    playlistId = playlist.id,
+                    trackId = track.trackId
+                )
+            ) {
+                notice.setMessage(
+                    strings(R.string.play_list_fail_add_track_tpl).replace(
+                        "[playlist]",
+                        playlist.title
+                    )
+                )
+            } else {
 
                 playlists.addTrack(
                     track = track, playlistId = playlist.id
@@ -151,12 +156,17 @@ class PlayerScreenViewModel(
 
                 setBottomSheetState(false)
 
-                notice.setMessage(onSuccessTpl.replace("[playlist]", playlist.title))
+                notice.setMessage(
+                    strings(R.string.play_list_success_add_track_tpl).replace(
+                        "[playlist]",
+                        playlist.title
+                    )
+                )
             }
         }
     }
 
-    fun setBottomSheetState(opened:Boolean){
+    fun setBottomSheetState(opened: Boolean) {
         liveData.setValue(PlayerScreenData.BottomSheet(opened))
     }
 

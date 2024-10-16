@@ -77,7 +77,7 @@ class PlayListsTabFragment : Fragment() {
             playlists = mutableListOf(),
             onPlaylistClick = vModel::onPlaylistClick,
             scrollListToTop = ::scrollListToTop,
-            trackCounterDeclination = requireContext().getString(R.string.track_counter_declination),
+            trackCounterDeclination = getString(R.string.track_counter_declination),
             type = PlaylistRvType.GRID
         )
 

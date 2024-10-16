@@ -2,25 +2,24 @@ package com.example.playlistmaker.viewModels.favorite.playlists
 
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.domain.repository.common.GetStringResourceUseCase
 import com.example.playlistmaker.domain.repository.common.NoticeInteractor
 import com.example.playlistmaker.domain.repository.favorite.playlists.PlaylistsInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AddNewPlayListViewModel(
     private val playlists: PlaylistsInteractor,
-    private val notice: NoticeInteractor
+    private val notice: NoticeInteractor,
+    private val strings: GetStringResourceUseCase
 ) : ViewModel() {
 
     private val liveData = LiveDataWithStartDataSet<NewPlaylistTabData>()
@@ -34,21 +33,30 @@ class AddNewPlayListViewModel(
         return liveData
     }
 
-    fun saveCoverToTmpStorage(bitmap: Bitmap?, uri: Uri? = null) {
-
-        coverUri = uri
+    fun saveCoverToTmpStorage(bitmap: Bitmap, uri: Uri) {
 
         liveData.postValue(NewPlaylistTabData.Cover(uri = uri))
 
-        if (bitmap != null) {
+        coverUri = uri
 
-            bitmapEncodeJob = viewModelScope.launch(Dispatchers.Main) {
+        bitmapEncodeJob = viewModelScope.launch(Dispatchers.Main) {
 
-                coverUri = playlists.saveCoverToTmpDir(bitmap)
+            coverUri = playlists.saveCoverToTmpDir(bitmap)
 
-                liveData.postValue(NewPlaylistTabData.Cover(uri = coverUri))
-            }
+            liveData.postValue(NewPlaylistTabData.Cover(uri = coverUri))
         }
+    }
+
+    fun showMessage(message: String) {
+
+        viewModelScope.launch {
+            notice.setMessage(text = message)
+        }
+    }
+
+    fun showMessage(id: Int) {
+
+       showMessage(message = strings(id))
     }
 
     fun onTitleChanged(text: String) {
@@ -71,7 +79,7 @@ class AddNewPlayListViewModel(
         liveData.setStartValue(NewPlaylistTabData.Description(text))
     }
 
-    fun onCreateButtonPressed(tpl: String) {
+    fun onCreateButtonPressed() {
 
         if (playlistCreated) return
 
@@ -90,9 +98,7 @@ class AddNewPlayListViewModel(
                 )
             )
 
-            notice.setMessage(tpl.replace("[playlist]", title))
-
-            Log.d("WWW", coverUri.toString())
+            notice.setMessage(strings(R.string.play_list_created_tpl).replace("[playlist]", title))
         }
 
         viewModelScope.launch(Dispatchers.Main) {

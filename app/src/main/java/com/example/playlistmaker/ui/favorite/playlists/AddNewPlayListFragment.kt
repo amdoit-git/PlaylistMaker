@@ -80,15 +80,11 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
         }
 
         binding.fixedButton.setOnClickListener {
-            vModel.onCreateButtonPressed(
-                requireContext().getString(R.string.play_list_created_tpl)
-            )
+            vModel.onCreateButtonPressed()
         }
 
         binding.scrolledButton.setOnClickListener {
-            vModel.onCreateButtonPressed(
-                requireContext().getString(R.string.play_list_created_tpl)
-            )
+            vModel.onCreateButtonPressed()
         }
 
         vModel.getLiveData().observe(viewLifecycleOwner) {
@@ -176,7 +172,9 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
                         target: Target<Bitmap>,
                         isFirstResource: Boolean
                     ): Boolean {
-                        vModel.saveCoverToTmpStorage(null)
+                        vModel.showMessage(
+                            R.string.play_list_image_error
+                        )
                         return false
                     }
 

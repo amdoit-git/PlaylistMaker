@@ -7,9 +7,11 @@ import androidx.room.Room
 import com.example.playlistmaker.data.APP_SETTINGS_PREFERENCES
 import com.example.playlistmaker.data.api.search.Itunes
 import com.example.playlistmaker.data.db.TracksDB
+import com.example.playlistmaker.data.impl.common.GetStringRepositoryImpl
 import com.example.playlistmaker.data.impl.common.NoticeRepositoryImpl
 import com.example.playlistmaker.data.impl.favorite.playlists.ImageSaver
 import com.example.playlistmaker.data.impl.player.MediaPlayerService
+import com.example.playlistmaker.domain.repository.common.GetStringRepository
 import com.example.playlistmaker.domain.repository.common.NoticeRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -45,7 +47,8 @@ val dataModule = module {
     }
 
     single<TracksDB> {
-        Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks_y.db").fallbackToDestructiveMigration().build()
+        Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks_y.db")
+            .fallbackToDestructiveMigration().build()
     }
 
     single<ImageSaver> {
@@ -58,5 +61,9 @@ val dataModule = module {
 
     single<MutableSharedFlow<String>> {
         MutableSharedFlow()
+    }
+
+    factory<GetStringRepository> {
+        GetStringRepositoryImpl(context = get())
     }
 }

@@ -9,6 +9,7 @@ import com.example.playlistmaker.domain.impl.search.TracksHistoryInteractorImpl
 import com.example.playlistmaker.domain.impl.settings.AppSettingsInteractorImpl
 import com.example.playlistmaker.domain.impl.settings.ExternalNavigatorInteractorImpl
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.repository.common.GetStringResourceUseCase
 import com.example.playlistmaker.domain.repository.common.NoticeInteractor
 import com.example.playlistmaker.domain.repository.favorite.playlists.PlaylistsInteractor
 import com.example.playlistmaker.domain.repository.favorite.tracks.FavoriteTracksInteractor
@@ -55,5 +56,9 @@ val interactorModule = module {
 
     factory<NoticeInteractor> {
         NoticeInteractorImpl(repository = get())
+    }
+
+    factory {
+        GetStringResourceUseCase(repository = get())
     }
 }

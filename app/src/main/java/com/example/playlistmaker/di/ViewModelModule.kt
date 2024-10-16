@@ -19,7 +19,7 @@ val viewModelModule = module {
 
     viewModel { (jsonTrack: String) ->
         PlayerScreenViewModel(
-            context = get(),
+            strings = get(),
             player = get(),
             favorite = get(),
             notice = get(),
@@ -46,7 +46,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        AddNewPlayListViewModel(playlists = get(), notice = get())
+        AddNewPlayListViewModel(playlists = get(), notice = get(), strings = get())
     }
 
     viewModel {

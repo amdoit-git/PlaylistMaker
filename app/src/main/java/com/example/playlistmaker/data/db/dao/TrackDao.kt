@@ -10,6 +10,10 @@ import com.example.playlistmaker.data.db.models.RoomTrack
 @Dao
 interface TrackDao {
 
+    fun timestamp(): Int {
+        return (System.currentTimeMillis() / 1000).toInt()
+    }
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTrackInfo(track: RoomTrack)
 
@@ -20,10 +24,10 @@ interface TrackDao {
     suspend fun deleteUnusedTrackInPlaylist()
 
     @Query("SELECT sqlite_version()")
-    suspend fun getDBVersion():String
+    suspend fun getDBVersion(): String
 
     @Transaction
-    suspend fun doOnConnect(){
+    suspend fun doOnConnect() {
         deleteUnusedTrackInfo()
         deleteUnusedTrackInPlaylist()
     }

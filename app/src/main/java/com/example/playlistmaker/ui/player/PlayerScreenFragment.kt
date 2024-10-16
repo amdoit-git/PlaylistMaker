@@ -138,7 +138,7 @@ class PlayerScreenFragment : Fragment(), DpToPx {
                     playlists = mutableListOf(),
                     onPlaylistClick = ::onPlaylistClick,
                     scrollListToTop = ::scrollListToTop,
-                    trackCounterDeclination = requireContext().getString(R.string.track_counter_declination),
+                    trackCounterDeclination = getString(R.string.track_counter_declination),
                     type = PlaylistRvType.LIST
                 )
 
@@ -261,14 +261,8 @@ class PlayerScreenFragment : Fragment(), DpToPx {
     private fun onPlaylistClick(playlist: Playlist) {
 
         vModel.onPlaylistClick(
-            playlist = playlist,
-            onSuccessTpl = getTpl(R.string.play_list_success_add_track_tpl),
-            onFailTpl = getTpl(R.string.play_list_fail_add_track_tpl)
+            playlist = playlist
         )
-    }
-
-    private fun getTpl(id: Int): String {
-        return requireContext().getString(id)
     }
 
     companion object {

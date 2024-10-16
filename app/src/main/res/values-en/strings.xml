@@ -45,4 +45,5 @@
     <string name="play_list_success_add_track_tpl">Added to playlist [playlist]</string>
     <string name="play_list_fail_add_track_tpl">The track has already been added to the playlist [playlist]</string>
     <string name="track_counter_declination">track tracks tracks</string>
+    <string name="play_list_image_error">Error: Unsupported image format</string>
 </resources>
