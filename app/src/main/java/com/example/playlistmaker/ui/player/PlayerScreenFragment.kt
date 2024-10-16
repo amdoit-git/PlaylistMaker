@@ -145,6 +145,8 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
                 recyclerView.adapter = adapter
 
+                binding.playPauseBt.isSaveEnabled = false
+
                 binding.playPauseBt.setOnCheckedChangeListener { _, isChecked ->
 
                     if (isChecked) {
@@ -157,6 +159,8 @@ class PlayerScreenFragment : Fragment(), DpToPx {
                 binding.backButton.setOnClickListener {
                     findNavController().popBackStack()
                 }
+
+                binding.favoriteBt.isSaveEnabled = false
 
                 binding.favoriteBt.setOnCheckedChangeListener { button, isChecked ->
 
@@ -192,7 +196,7 @@ class PlayerScreenFragment : Fragment(), DpToPx {
         super.onStop()
         activity?.let {
             if (!it.isChangingConfigurations) {
-                binding.playPauseBt.isChecked = false
+                vModel.pause()
             }
         }
     }
