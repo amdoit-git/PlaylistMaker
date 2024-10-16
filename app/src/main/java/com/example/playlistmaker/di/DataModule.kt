@@ -50,7 +50,7 @@ val dataModule = module {
     }
 
     single<TracksDB> {
-        Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks_y.db")
+        Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks.db")
             .fallbackToDestructiveMigration().build()
     }
 
