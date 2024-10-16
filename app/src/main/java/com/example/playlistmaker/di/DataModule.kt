@@ -7,6 +7,9 @@ import androidx.room.Room
 import com.example.playlistmaker.data.APP_SETTINGS_PREFERENCES
 import com.example.playlistmaker.data.api.search.Itunes
 import com.example.playlistmaker.data.db.TracksDB
+import com.example.playlistmaker.data.db.dao.FavoriteTracksDao
+import com.example.playlistmaker.data.db.dao.HistoryTracksDao
+import com.example.playlistmaker.data.db.dao.PlaylistDao
 import com.example.playlistmaker.data.impl.common.GetStringRepositoryImpl
 import com.example.playlistmaker.data.impl.common.NoticeRepositoryImpl
 import com.example.playlistmaker.data.impl.favorite.playlists.ImageSaver
@@ -49,6 +52,18 @@ val dataModule = module {
     single<TracksDB> {
         Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks_y.db")
             .fallbackToDestructiveMigration().build()
+    }
+
+    single<FavoriteTracksDao> {
+        get<TracksDB>().favoriteTracksDao()
+    }
+
+    single<PlaylistDao> {
+        get<TracksDB>().playlistDao()
+    }
+
+    single<HistoryTracksDao> {
+        get<TracksDB>().historyTracksDao()
     }
 
     single<ImageSaver> {

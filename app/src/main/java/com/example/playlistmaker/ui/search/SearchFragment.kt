@@ -222,6 +222,8 @@ class SearchFragment : Fragment() {
             closeKeyboard()
         }
 
+        editText.requestFocus()
+
         if (editText.hasFocus()) {
             vModel.onFocusChanged(true)
         }

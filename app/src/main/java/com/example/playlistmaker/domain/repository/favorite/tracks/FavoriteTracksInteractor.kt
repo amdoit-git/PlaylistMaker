@@ -5,8 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface FavoriteTracksInteractor {
 
-    fun containsInCache(trackId: Int): Boolean
-
     suspend fun saveTrack(track: Track)
 
     suspend fun deleteTrack(trackId: Int)

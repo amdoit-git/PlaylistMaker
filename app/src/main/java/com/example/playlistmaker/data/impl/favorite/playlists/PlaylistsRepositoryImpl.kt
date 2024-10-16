@@ -5,6 +5,7 @@ import android.net.Uri
 import com.example.playlistmaker.data.db.TracksDB
 import com.example.playlistmaker.data.db.converters.PlaylistToRoomPlaylistMapper
 import com.example.playlistmaker.data.db.converters.TrackToRoomTrackPlaylistMapper
+import com.example.playlistmaker.data.db.dao.PlaylistDao
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.favorite.playlists.PlaylistsRepository
@@ -14,10 +15,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import java.io.File
 
-class PlaylistsRepositoryImpl(private val saver: ImageSaver, database: TracksDB) :
+class PlaylistsRepositoryImpl(private val saver: ImageSaver, private val dao: PlaylistDao) :
     PlaylistsRepository {
-
-    private val dao = database.playlistDao()
 
     private fun getCoverFilename(isCoverExists: Boolean): String {
         return if (isCoverExists) "${System.currentTimeMillis()}.jpg" else ""

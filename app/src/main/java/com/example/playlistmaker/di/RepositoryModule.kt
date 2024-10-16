@@ -24,7 +24,7 @@ val repositoryModule = module {
     }
 
     factory<TracksHistoryRepository> {
-        TracksHistoryRepositoryImpl(sharedPrefs = get(), gson = get())
+        TracksHistoryRepositoryImpl(dao = get(), gson = get())
     }
 
     factory<ITunesRepository> {
@@ -40,10 +40,10 @@ val repositoryModule = module {
     }
 
     single<FavoriteTracksRepository> {
-        FavoriteTracksRepositoryImpl(database = get())
+        FavoriteTracksRepositoryImpl(dao = get())
     }
 
     factory<PlaylistsRepository> {
-        PlaylistsRepositoryImpl(saver = get(), database = get())
+        PlaylistsRepositoryImpl(saver = get(), dao = get())
     }
 }
