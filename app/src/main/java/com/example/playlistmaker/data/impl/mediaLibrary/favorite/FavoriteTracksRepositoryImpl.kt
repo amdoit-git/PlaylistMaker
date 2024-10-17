@@ -21,26 +21,12 @@ class FavoriteTracksRepositoryImpl(private val dao: FavoriteTracksDao) : Favorit
         dao.deleteTrack(trackId)
     }
 
-    override suspend fun findTracksById(vararg trackId: Int): Flow<List<Track>> = flow {
-        val list = TrackToRoomTrackMapper.map(dao.findTracksById(*trackId))
-        emit(list)
-    }
-
-    override suspend fun findTrackIds(vararg trackId: Int): Flow<List<Int>> = flow {
-        val list = dao.containsTracks(*trackId)
-        emit(list)
+    override suspend fun containsTrack(trackId: Int): Flow<Int> = flow {
+        emit(dao.containsTracks(trackId))
     }
 
     override suspend fun getAllTracks(): Flow<List<Track>> {
         return dao.getAllTracks().flowOn(Dispatchers.IO).distinctUntilChanged().map { TrackToRoomTrackMapper.map(it) }
-    }
-
-    override suspend fun getAllTracksIds(): Flow<List<Int>> {
-        return dao.getAllTracksIds().flowOn(Dispatchers.IO)
-    }
-
-    override suspend fun countTracks(): Int {
-        return dao.countTracks()
     }
 
     override suspend fun clearTracks() {
@@ -48,6 +34,6 @@ class FavoriteTracksRepositoryImpl(private val dao: FavoriteTracksDao) : Favorit
     }
 
     override suspend fun connect() {
-        dao.doOnConnect()
+        dao.doOnAppStart()
     }
 }

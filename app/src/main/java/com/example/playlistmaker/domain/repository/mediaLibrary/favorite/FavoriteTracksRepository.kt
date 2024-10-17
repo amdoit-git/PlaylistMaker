@@ -9,15 +9,9 @@ interface FavoriteTracksRepository {
 
     suspend fun deleteTrack(trackId: Int)
 
-    suspend fun findTracksById(vararg trackId: Int): Flow<List<Track>>
-
-    suspend fun findTrackIds(vararg trackId: Int): Flow<List<Int>>
+    suspend fun containsTrack(trackId: Int): Flow<Int>
 
     suspend fun getAllTracks(): Flow<List<Track>>
-
-    suspend fun getAllTracksIds(): Flow<List<Int>>
-
-    suspend fun countTracks(): Int
 
     suspend fun clearTracks()
 

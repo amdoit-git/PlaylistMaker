@@ -4,11 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "tracks")
-data class RoomTrack @JvmOverloads constructor(
+data class RoomTrack(
     @PrimaryKey val trackId: Int, //id трека
     val trackName: String, // Название композиции
     val artistName: String, // Имя исполнителя
-    val trackTime: Int, // Продолжительность трека
+    val duration: Int, // Продолжительность трека
     val trackCover: String, // Ссылка на изображение обложки
     val previewUrl: String, //ссылка на аудио или видео файл,
     val albumName: String,//название альбома

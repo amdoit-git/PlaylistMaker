@@ -10,7 +10,7 @@ object PlaylistToRoomPlaylistMapper {
         return (System.currentTimeMillis() / 1000).toInt()
     }
 
-    fun map(playlist: Playlist, coverFileName:String): RoomPlaylist = RoomPlaylist(
+    fun map(playlist: Playlist, coverFileName: String): RoomPlaylist = RoomPlaylist(
         playlistId = 0,
         title = playlist.title,
         description = playlist.description,

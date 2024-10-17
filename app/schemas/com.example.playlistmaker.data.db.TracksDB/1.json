@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "64c97da1630053a6e02d9bb5f0198a36",
+    "identityHash": "b9ec187294c2de0291f11479cf43708a",
     "entities": [
       {
         "tableName": "tracks",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trackId` INTEGER NOT NULL, `trackName` TEXT NOT NULL, `artistName` TEXT NOT NULL, `trackTime` INTEGER NOT NULL, `trackCover` TEXT NOT NULL, `previewUrl` TEXT NOT NULL, `albumName` TEXT NOT NULL, `albumYear` INTEGER NOT NULL, `genre` TEXT NOT NULL, `country` TEXT NOT NULL, PRIMARY KEY(`trackId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trackId` INTEGER NOT NULL, `trackName` TEXT NOT NULL, `artistName` TEXT NOT NULL, `duration` INTEGER NOT NULL, `trackCover` TEXT NOT NULL, `previewUrl` TEXT NOT NULL, `albumName` TEXT NOT NULL, `albumYear` INTEGER NOT NULL, `genre` TEXT NOT NULL, `country` TEXT NOT NULL, PRIMARY KEY(`trackId`))",
         "fields": [
           {
             "fieldPath": "trackId",
@@ -27,8 +27,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "trackTime",
-            "columnName": "trackTime",
+            "fieldPath": "duration",
+            "columnName": "duration",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -76,78 +76,6 @@
           ]
         },
         "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "tracks_in_favorite",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trackId` INTEGER NOT NULL, `addedDate` INTEGER NOT NULL, PRIMARY KEY(`trackId`))",
-        "fields": [
-          {
-            "fieldPath": "trackId",
-            "columnName": "trackId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "addedDate",
-            "columnName": "addedDate",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "trackId"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_tracks_in_favorite_addedDate",
-            "unique": false,
-            "columnNames": [
-              "addedDate"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_tracks_in_favorite_addedDate` ON `${TABLE_NAME}` (`addedDate`)"
-          }
-        ],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "tracks_in_history",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trackId` INTEGER NOT NULL, `addedDate` INTEGER NOT NULL, PRIMARY KEY(`trackId`))",
-        "fields": [
-          {
-            "fieldPath": "trackId",
-            "columnName": "trackId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "addedDate",
-            "columnName": "addedDate",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "trackId"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_tracks_in_history_addedDate",
-            "unique": false,
-            "columnNames": [
-              "addedDate"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_tracks_in_history_addedDate` ON `${TABLE_NAME}` (`addedDate`)"
-          }
-        ],
         "foreignKeys": []
       },
       {
@@ -217,80 +145,6 @@
         "foreignKeys": []
       },
       {
-        "tableName": "tracks_in_playlists",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trackId` INTEGER NOT NULL, `trackName` TEXT NOT NULL, `artistName` TEXT NOT NULL, `trackTime` INTEGER NOT NULL, `trackCover` TEXT NOT NULL, `previewUrl` TEXT NOT NULL, `albumName` TEXT NOT NULL, `albumYear` INTEGER NOT NULL, `genre` TEXT NOT NULL, `country` TEXT NOT NULL, PRIMARY KEY(`trackId`))",
-        "fields": [
-          {
-            "fieldPath": "trackId",
-            "columnName": "trackId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "trackName",
-            "columnName": "trackName",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "artistName",
-            "columnName": "artistName",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "trackTime",
-            "columnName": "trackTime",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "trackCover",
-            "columnName": "trackCover",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "previewUrl",
-            "columnName": "previewUrl",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "albumName",
-            "columnName": "albumName",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "albumYear",
-            "columnName": "albumYear",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "genre",
-            "columnName": "genre",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "country",
-            "columnName": "country",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "trackId"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
         "tableName": "playlist_track_map",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playlistId` INTEGER NOT NULL, `trackId` INTEGER NOT NULL, `addedDate` INTEGER NOT NULL, PRIMARY KEY(`playlistId`, `trackId`))",
         "fields": [
@@ -320,14 +174,36 @@
             "trackId"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_playlist_track_map_playlistId_addedDate",
+            "unique": false,
+            "columnNames": [
+              "playlistId",
+              "addedDate"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_playlist_track_map_playlistId_addedDate` ON `${TABLE_NAME}` (`playlistId`, `addedDate`)"
+          },
+          {
+            "name": "index_playlist_track_map_trackId_playlistId_addedDate",
+            "unique": false,
+            "columnNames": [
+              "trackId",
+              "playlistId",
+              "addedDate"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_playlist_track_map_trackId_playlistId_addedDate` ON `${TABLE_NAME}` (`trackId`, `playlistId`, `addedDate`)"
+          }
+        ],
         "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '64c97da1630053a6e02d9bb5f0198a36')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b9ec187294c2de0291f11479cf43708a')"
     ]
   }
 }
