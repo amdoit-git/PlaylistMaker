@@ -14,16 +14,13 @@ import com.example.playlistmaker.data.db.models.RoomTrack
 import com.example.playlistmaker.data.db.models.RoomTrackPlaylist
 
 @Database(
-    version = 2, entities = [
+    version = 1, entities = [
         RoomTrack::class,
         FavoriteMap::class,
         HistoryMap::class,
         RoomPlaylist::class,
         RoomTrackPlaylist::class,
         PlaylistTrackMap::class
-    ],
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2)
     ]
 )
 abstract class TracksDB : RoomDatabase() {
