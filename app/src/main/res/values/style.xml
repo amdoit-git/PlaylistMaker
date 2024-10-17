@@ -220,4 +220,71 @@
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="panelHeader">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_margin">4dp</item>
+    </style>
+
+    <style name="backButton" parent="panelHeader">
+        <item name="android:background">@drawable/arrow_back_on_screen_top</item>
+        <item name="android:paddingLeft">48dp</item>
+    </style>
+
+    <style name="panelHeaderText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:textColor">@color/arrow_back_title</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="CustomOutlineBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/box_input_layout_stroke_color_empty</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+        <item name="android:textColorHint">@color/addNewPlaylistEditTextColor</item>
+        <item name="hintTextColor">@color/addNewPlaylistEditTextColor</item>
+        <item name="cursorColor">@color/boxStrokeColor</item>
+    </style>
+
+
+    <style name="CustomOutlineEditText">
+        <item name="android:layout_marginHorizontal">0dp</item>
+        <item name="android:layout_marginVertical">0dp</item>
+        <item name="android:textColor">@color/addNewPlaylistEditTextColor</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorSurface">@color/BottomNavigation_bg</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/TitleTextStyle</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/BodyTextStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+    </style>
+    <style name="TitleTextStyle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/play_list_text_color_black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="BodyTextStyle" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textColor">@color/play_list_text_color_main</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/BottomNavigation_text</item>
+        <item name="rippleColor">@color/BottomNavigation_text_checked</item>
+    </style>
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/BottomNavigation_text</item>
+        <item name="rippleColor">@color/BottomNavigation_text_checked</item>
+    </style>
+
 </resources>

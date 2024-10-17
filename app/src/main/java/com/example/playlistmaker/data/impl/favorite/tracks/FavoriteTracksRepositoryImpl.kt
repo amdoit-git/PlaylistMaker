@@ -1,39 +1,21 @@
-package com.example.playlistmaker.data.impl.favorite
+package com.example.playlistmaker.data.impl.favorite.tracks
 
-import android.util.Log
 import com.example.playlistmaker.data.db.TracksDB
-import com.example.playlistmaker.data.db.converters.TrackToTrackInDBMapper
+import com.example.playlistmaker.data.db.converters.TrackToRoomTrackMapper
+import com.example.playlistmaker.data.db.dao.FavoriteTracksDao
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.favorite.FavoriteTracksRepository
+import com.example.playlistmaker.domain.repository.favorite.tracks.FavoriteTracksRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
-class FavoriteTracksRepositoryImpl(database: TracksDB) : FavoriteTracksRepository {
-
-    private val tracksCache: MutableSet<Int> = mutableSetOf()
-    private val dao = database.favoriteTracksDao()
-
-    override fun containsInCache(trackId: Int):Boolean{
-        return tracksCache.contains(trackId)
-    }
-
-    private fun loadToCache(vararg trackId: Int) {
-        trackId.map {
-            tracksCache.add(it)
-        }
-    }
-
-    private fun loadToCache(tracks:List<Track>) {
-        tracks.map {
-            tracksCache.add(it.trackId)
-        }
-    }
+class FavoriteTracksRepositoryImpl(private val dao: FavoriteTracksDao) : FavoriteTracksRepository {
 
     override suspend fun saveTrack(track: Track) {
-        dao.saveTrack(TrackToTrackInDBMapper.map(track))
+        dao.saveTrack(TrackToRoomTrackMapper.map(track))
     }
 
     override suspend fun deleteTrack(trackId: Int) {
@@ -41,7 +23,7 @@ class FavoriteTracksRepositoryImpl(database: TracksDB) : FavoriteTracksRepositor
     }
 
     override suspend fun findTracksById(vararg trackId: Int): Flow<List<Track>> = flow {
-        val list = TrackToTrackInDBMapper.map(dao.findTracksById(*trackId))
+        val list = TrackToRoomTrackMapper.map(dao.findTracksById(*trackId))
         emit(list)
     }
 
@@ -51,7 +33,7 @@ class FavoriteTracksRepositoryImpl(database: TracksDB) : FavoriteTracksRepositor
     }
 
     override suspend fun getAllTracks(): Flow<List<Track>> {
-        return dao.getAllTracks().flowOn(Dispatchers.IO).map { TrackToTrackInDBMapper.map(it) }
+        return dao.getAllTracks().flowOn(Dispatchers.IO).distinctUntilChanged().map { TrackToRoomTrackMapper.map(it) }
     }
 
     override suspend fun getAllTracksIds(): Flow<List<Int>> {
@@ -63,8 +45,7 @@ class FavoriteTracksRepositoryImpl(database: TracksDB) : FavoriteTracksRepositor
     }
 
     override suspend fun clearTracks() {
-        tracksCache.clear()
-        dao.clearTracks()
+         dao.clearTracks()
     }
 
     override suspend fun connect() {

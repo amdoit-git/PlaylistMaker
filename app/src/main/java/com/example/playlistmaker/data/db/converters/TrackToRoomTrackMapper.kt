@@ -1,11 +1,12 @@
 package com.example.playlistmaker.data.db.converters
 
-import com.example.playlistmaker.data.db.models.TrackInDB
+import com.example.playlistmaker.data.db.models.RoomTrack
+import com.example.playlistmaker.data.db.models.RoomTrackPlaylist
 import com.example.playlistmaker.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-object TrackToTrackInDBMapper {
+object TrackToRoomTrackMapper {
 
     private fun yearToString(year: Int): String {
         return year.toString()
@@ -30,7 +31,7 @@ object TrackToTrackInDBMapper {
         ).format(time * 1000L)
     }
 
-    fun map(track: Track): TrackInDB = TrackInDB(
+    fun map(track: Track): RoomTrack = RoomTrack(
         trackId = track.trackId,
         trackName = track.trackName,
         artistName = track.artistName,
@@ -43,7 +44,7 @@ object TrackToTrackInDBMapper {
         country = track.country
     )
 
-    fun map(track: TrackInDB): Track = Track(
+    fun map(track: RoomTrack): Track = Track(
         trackId = track.trackId,
         trackName = track.trackName,
         artistName = track.artistName,
@@ -56,5 +57,5 @@ object TrackToTrackInDBMapper {
         country = track.country
     )
 
-    fun map(tracks: List<TrackInDB>): List<Track> = tracks.map(::map)
+    fun map(tracks: List<RoomTrack>): List<Track> = tracks.map(::map)
 }

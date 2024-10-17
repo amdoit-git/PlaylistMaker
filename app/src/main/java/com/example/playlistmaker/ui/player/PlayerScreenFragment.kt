@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.player
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,16 +8,21 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerScreenBinding
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.common.DpToPx
+import com.example.playlistmaker.ui.favorite.playlists.PlaylistAdapter
+import com.example.playlistmaker.ui.favorite.playlists.PlaylistRvType
 import com.example.playlistmaker.viewModels.player.PlayerScreenData
 import com.example.playlistmaker.viewModels.player.PlayerScreenViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -36,11 +40,13 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
     private val binding get() = _binding!!
 
+    private lateinit var recyclerView: RecyclerView
+
+    private lateinit var adapter: PlaylistAdapter
+
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         _binding = ActivityPlayerScreenBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -51,7 +57,33 @@ class PlayerScreenFragment : Fragment(), DpToPx {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                binding.overlay.isVisible = if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    vModel.setBottomSheetState(opened = false)
+
+                    false
+                } else {
+                    true
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = (1 + slideOffset) / 2
+            }
+        })
+
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
 
         arguments?.let { args ->
 
@@ -75,18 +107,45 @@ class PlayerScreenFragment : Fragment(), DpToPx {
                             }
                         }
 
-                        is PlayerScreenData.ToastMessage -> {
-
-                            binding.infoText.text = it.message
-
-                            binding.info.isVisible = it.isVisible
-                        }
-
                         is PlayerScreenData.FavoriteStatus -> {
                             binding.favoriteBt.isChecked = it.isFavorite
                         }
+
+                        is PlayerScreenData.Playlists -> {
+                            adapter.setNewPlaylists(it.playlists)
+
+                            adapter.notifyDataSetChanged()
+                        }
+
+                        is PlayerScreenData.PlaylistNotFound -> {}
+
+                        is PlayerScreenData.BottomSheet -> {
+
+                            if (it.opened) {
+                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
+                                binding.overlay.isVisible = true
+                                binding.overlay.alpha = 0.5f
+                            } else {
+                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
+                                binding.overlay.isVisible = false
+                            }
+                        }
                     }
                 }
+
+                recyclerView = binding.recyclerView
+
+                adapter = PlaylistAdapter(
+                    playlists = mutableListOf(),
+                    onPlaylistClick = ::onPlaylistClick,
+                    scrollListToTop = ::scrollListToTop,
+                    trackCounterDeclination = getString(R.string.track_counter_declination),
+                    type = PlaylistRvType.LIST
+                )
+
+                recyclerView.adapter = adapter
+
+                binding.playPauseBt.isSaveEnabled = false
 
                 binding.playPauseBt.setOnCheckedChangeListener { _, isChecked ->
 
@@ -101,6 +160,8 @@ class PlayerScreenFragment : Fragment(), DpToPx {
                     findNavController().popBackStack()
                 }
 
+                binding.favoriteBt.isSaveEnabled = false
+
                 binding.favoriteBt.setOnCheckedChangeListener { button, isChecked ->
 
                     if (button.isPressed) {
@@ -113,6 +174,21 @@ class PlayerScreenFragment : Fragment(), DpToPx {
                     }
                 }
             }
+        }
+
+        binding.playlistBt.setOnClickListener {
+            vModel.setBottomSheetState(opened = true)
+        }
+
+        binding.btAddNewPlaylist.setOnClickListener {
+            val direction =
+                PlayerScreenFragmentDirections.actionPlayerScreenFragmentToAddNewPlayListFragment()
+
+            findNavController().navigate(direction)
+        }
+
+        binding.overlay.setOnClickListener {
+            vModel.setBottomSheetState(opened = false)
         }
     }
 
@@ -134,8 +210,9 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
         val coverUrl = track.trackCover.replaceAfterLast('/', "512x512bb.jpg")
 
-        Glide.with(cover).load(coverUrl).centerCrop().placeholder(R.drawable.track_placeholder)
-            .transform(RoundedCorners(dpToPx(8f, cover.context))).into(cover)
+        Glide.with(cover).load(coverUrl).transform(
+            CenterCrop(), RoundedCorners(dpToPx(8f, cover.context))
+        ).placeholder(R.drawable.track_placeholder).into(cover)
 
 
         val constraintLayout = binding.scrollBody
@@ -184,6 +261,17 @@ class PlayerScreenFragment : Fragment(), DpToPx {
         )
 
         constraintSet.applyTo(constraintLayout)
+    }
+
+    private fun scrollListToTop() {
+        recyclerView.scrollToPosition(0)
+    }
+
+    private fun onPlaylistClick(playlist: Playlist) {
+
+        vModel.onPlaylistClick(
+            playlist = playlist
+        )
     }
 
     companion object {

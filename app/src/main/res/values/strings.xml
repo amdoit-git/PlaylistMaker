@@ -35,6 +35,18 @@
     <string name="play_list_favorite_tracks">Избранные треки</string>
     <string name="play_list_playlists">Плейлисты</string>
     <string name="play_list_mediateka">Медиатека</string>
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="play_list_add_new_screen_title">Новый плейлист</string>
+    <string name="play_list_add_new_button">Создать</string>
+    <string name="play_list_add_to_list">Добавить в плейлист</string>
+    <string name="play_list_name_placeholder">Название*</string>
+    <string name="play_list_description_placeholder">Описание</string>
+    <string name="play_list_go_back_title">Завершить создание плейлиста?</string>
+    <string name="play_list_go_back_description">Все несохраненные данные будут потеряны</string>
+    <string name="play_list_go_back_confirm">Завершить</string>
+    <string name="play_list_go_back_cancel">Отмена</string>
+    <string name="play_list_created_tpl">Плейлист [playlist] создан</string>
+    <string name="play_list_success_add_track_tpl">Добавлено в плейлист [playlist]</string>
+    <string name="play_list_fail_add_track_tpl">Трек уже добавлен в плейлист [playlist]</string>
+    <string name="track_counter_declination">трек трека треков</string>
+    <string name="play_list_image_error">Ошибка: неподдерживаемый формат изображения</string>
 </resources>

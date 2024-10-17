@@ -1,15 +1,12 @@
-package com.example.playlistmaker.domain.impl.favorite
+package com.example.playlistmaker.domain.impl.favorite.tracks
 
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.favorite.FavoriteTracksInteractor
-import com.example.playlistmaker.domain.repository.favorite.FavoriteTracksRepository
+import com.example.playlistmaker.domain.repository.favorite.tracks.FavoriteTracksInteractor
+import com.example.playlistmaker.domain.repository.favorite.tracks.FavoriteTracksRepository
 import kotlinx.coroutines.flow.Flow
 
 class FavoriteTracksInteractorImpl(private val repository: FavoriteTracksRepository) :
     FavoriteTracksInteractor {
-    override fun containsInCache(trackId: Int): Boolean {
-        return repository.containsInCache(trackId)
-    }
 
     override suspend fun saveTrack(track: Track) {
         repository.saveTrack(track)

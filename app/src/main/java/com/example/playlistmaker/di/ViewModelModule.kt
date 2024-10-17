@@ -1,8 +1,10 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.viewModels.favorite.MlFavoriteTracksTabViewModel
-import com.example.playlistmaker.viewModels.favorite.MlPlayListsTabViewModel
-import com.example.playlistmaker.viewModels.favorite.MlViewModel
+import com.example.playlistmaker.viewModels.favorite.MediaLibraryViewModel
+import com.example.playlistmaker.viewModels.favorite.playlists.AddNewPlayListViewModel
+import com.example.playlistmaker.viewModels.favorite.playlists.PlayListsTabViewModel
+import com.example.playlistmaker.viewModels.favorite.tracks.FavoriteTracksTabViewModel
+import com.example.playlistmaker.viewModels.main.MainActivityViewModel
 import com.example.playlistmaker.viewModels.player.PlayerScreenViewModel
 import com.example.playlistmaker.viewModels.search.SearchViewModel
 import com.example.playlistmaker.viewModels.settings.SettingsViewModel
@@ -17,10 +19,12 @@ val viewModelModule = module {
 
     viewModel { (jsonTrack: String) ->
         PlayerScreenViewModel(
-            context = get(),
+            strings = get(),
             player = get(),
-            history = get(),
             favorite = get(),
+            notice = get(),
+            playlists = get(),
+            history = get(),
             jsonTrack
         )
     }
@@ -30,14 +34,22 @@ val viewModelModule = module {
     }
 
     viewModel {
-        MlViewModel()
+        MediaLibraryViewModel()
     }
 
     viewModel {
-        MlFavoriteTracksTabViewModel(favorite = get(), history = get())
+        FavoriteTracksTabViewModel(favorite = get(), history = get())
     }
 
     viewModel {
-        MlPlayListsTabViewModel()
+        PlayListsTabViewModel(playlists = get())
+    }
+
+    viewModel {
+        AddNewPlayListViewModel(playlists = get(), notice = get(), strings = get())
+    }
+
+    viewModel {
+        MainActivityViewModel(notice = get())
     }
 }

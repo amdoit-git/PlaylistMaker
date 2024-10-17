@@ -12,8 +12,8 @@ import com.example.playlistmaker.databinding.FragmentFavoriteTracksBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.favorite.MediaLibraryFragmentDirections
 import com.example.playlistmaker.ui.search.TrackAdapter
-import com.example.playlistmaker.viewModels.favorite.FavoriteData
-import com.example.playlistmaker.viewModels.favorite.MlFavoriteTracksTabViewModel
+import com.example.playlistmaker.viewModels.favorite.tracks.FavoriteTabData
+import com.example.playlistmaker.viewModels.favorite.tracks.FavoriteTracksTabViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -22,7 +22,7 @@ class FavoriteTracksTabFragment : Fragment() {
 
     private lateinit var tracksList: RecyclerView
 
-    private val vModel: MlFavoriteTracksTabViewModel by viewModel()
+    private val vModel: FavoriteTracksTabViewModel by viewModel()
 
     private val adapter: TrackAdapter by inject {
         parametersOf(vModel::onTrackClicked, vModel::clearHistory, ::scrollListToTop)
@@ -57,7 +57,7 @@ class FavoriteTracksTabFragment : Fragment() {
 
             when (it) {
 
-                is FavoriteData.TrackList -> {
+                is FavoriteTabData.TrackList -> {
 
                     if (it.tracks.isNotEmpty()) {
                         binding.tracksList.isVisible = true
@@ -70,11 +70,11 @@ class FavoriteTracksTabFragment : Fragment() {
                     }
                 }
 
-                is FavoriteData.MoveToTop -> {
+                is FavoriteTabData.MoveToTop -> {
                     adapter.moveTrackToTop(it.track)
                 }
 
-                is FavoriteData.OpenPlayerScreen -> {
+                is FavoriteTabData.OpenPlayerScreen -> {
 
                     val direction =
                         MediaLibraryFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(it.track)
@@ -82,7 +82,7 @@ class FavoriteTracksTabFragment : Fragment() {
                     findNavController().navigate(direction)
                 }
 
-                is FavoriteData.ScrollTracksList -> {
+                is FavoriteTabData.ScrollTracksList -> {
                     scrollTracksList(it.position)
                 }
             }

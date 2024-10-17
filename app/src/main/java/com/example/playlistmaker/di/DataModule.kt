@@ -1,13 +1,23 @@
 package com.example.playlistmaker.di
 
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import androidx.room.Room
 import com.example.playlistmaker.data.APP_SETTINGS_PREFERENCES
 import com.example.playlistmaker.data.api.search.Itunes
 import com.example.playlistmaker.data.db.TracksDB
+import com.example.playlistmaker.data.db.dao.FavoriteTracksDao
+import com.example.playlistmaker.data.db.dao.HistoryTracksDao
+import com.example.playlistmaker.data.db.dao.PlaylistDao
+import com.example.playlistmaker.data.impl.common.GetStringRepositoryImpl
+import com.example.playlistmaker.data.impl.common.NoticeRepositoryImpl
+import com.example.playlistmaker.data.impl.favorite.playlists.ImageSaver
 import com.example.playlistmaker.data.impl.player.MediaPlayerService
+import com.example.playlistmaker.domain.repository.common.GetStringRepository
+import com.example.playlistmaker.domain.repository.common.NoticeRepository
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -29,7 +39,7 @@ val dataModule = module {
         MediaPlayerService(mediaPlayer = get())
     }
 
-    single {
+    single<SharedPreferences> {
         androidContext().getSharedPreferences(
             APP_SETTINGS_PREFERENCES, MODE_PRIVATE
         )
@@ -40,6 +50,35 @@ val dataModule = module {
     }
 
     single<TracksDB> {
-        Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks.db").build()
+        Room.databaseBuilder(androidContext(), TracksDB::class.java, "tracks.db")
+            .fallbackToDestructiveMigration().build()
+    }
+
+    single<FavoriteTracksDao> {
+        get<TracksDB>().favoriteTracksDao()
+    }
+
+    single<PlaylistDao> {
+        get<TracksDB>().playlistDao()
+    }
+
+    single<HistoryTracksDao> {
+        get<TracksDB>().historyTracksDao()
+    }
+
+    single<ImageSaver> {
+        ImageSaver(context = androidContext())
+    }
+
+    factory<NoticeRepository> {
+        NoticeRepositoryImpl(noticeFlow = get())
+    }
+
+    single<MutableSharedFlow<String>> {
+        MutableSharedFlow()
+    }
+
+    factory<GetStringRepository> {
+        GetStringRepositoryImpl(context = get())
     }
 }

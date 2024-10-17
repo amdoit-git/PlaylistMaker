@@ -1,13 +1,12 @@
 package com.example.playlistmaker.ui.common
 
 import android.app.Application
-import android.util.Log
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule
 import com.example.playlistmaker.di.uiModule
 import com.example.playlistmaker.di.viewModelModule
-import com.example.playlistmaker.domain.repository.favorite.FavoriteTracksInteractor
+import com.example.playlistmaker.domain.repository.favorite.tracks.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.repository.settings.AppSettingsInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -40,14 +39,7 @@ class App : Application() {
         val favorite: FavoriteTracksInteractor by inject()
 
         GlobalScope.launch(Dispatchers.IO) {
-
-            var time = System.currentTimeMillis();
-
             favorite.connect()
-
-            time = System.currentTimeMillis() - time
-
-            Log.d("WWW", "DB connected in $time ms")
         }
     }
 }

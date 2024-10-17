@@ -15,6 +15,9 @@
             app:enterAnim="@anim/slide_in_right"
             app:launchSingleTop="false"
             app:popExitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_addNewPlayListFragment"
+            app:destination="@id/addNewPlayListFragment" />
     </fragment>
     <fragment
         android:id="@+id/playerScreenFragment"
@@ -24,6 +27,9 @@
         <argument
             android:name="track"
             app:argType="string" />
+        <action
+            android:id="@+id/action_playerScreenFragment_to_addNewPlayListFragment"
+            app:destination="@id/addNewPlayListFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -42,4 +48,9 @@
         android:name="com.example.playlistmaker.ui.settings.SettingsFragment"
         android:label="activity_settings"
         tools:layout="@layout/activity_settings" />
+    <fragment
+        android:id="@+id/addNewPlayListFragment"
+        android:name="com.example.playlistmaker.ui.favorite.playlists.AddNewPlayListFragment"
+        android:label="fragment_add_new_play_list"
+        tools:layout="@layout/fragment_add_new_play_list" />
 </navigation>

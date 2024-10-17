@@ -32,4 +32,18 @@
     <string name="play_list_favorite_tracks">Favorite tracks</string>
     <string name="play_list_playlists">Playlists</string>
     <string name="play_list_mediateka">Media Library</string>
+    <string name="play_list_add_new_screen_title">New playlist</string>
+    <string name="play_list_add_new_button">Create playlist</string>
+    <string name="play_list_add_to_list">Add to Playlist</string>
+    <string name="play_list_name_placeholder">Playlist title*</string>
+    <string name="play_list_description_placeholder">Description</string>
+    <string name="play_list_go_back_title">Close the playlist creation dialog?</string>
+    <string name="play_list_go_back_description">All unsaved data will be lost</string>
+    <string name="play_list_go_back_confirm">Close</string>
+    <string name="play_list_go_back_cancel">Cancel</string>
+    <string name="play_list_created_tpl">Playlist [playlist] created</string>
+    <string name="play_list_success_add_track_tpl">Added to playlist [playlist]</string>
+    <string name="play_list_fail_add_track_tpl">The track has already been added to the playlist [playlist]</string>
+    <string name="track_counter_declination">track tracks tracks</string>
+    <string name="play_list_image_error">Error: Unsupported image format</string>
 </resources>

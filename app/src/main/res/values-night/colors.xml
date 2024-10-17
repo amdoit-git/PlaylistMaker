@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#FFFFFF</color>
     <color name="main_bg">#1A1B22</color>
     <color name="settings_screen_bg">#1A1B22</color>
     <color name="arrow_back_title">#FFF</color>
@@ -23,4 +24,12 @@
     <color name="BottomNavigation_text">#FFFFFF</color>
     <color name="BottomNavigation_text_checked">#3772E7</color>
     <color name="windowBackground">#1A1B22</color>
+    <color name="boxStrokeColorEmpty">#FFFFFF</color>
+    <color name="addNewPlaylistEditTextColor">#FFFFFF</color>
+    <color name="playlistGridTextColor">#FFFFFF</color>
+    <color name="playlistListTitleColor">#FFFFFF</color>
+    <color name="playlistListTextColor">#FFFFFF</color>
+    <color name="bottom_sheet_bg">#1A1B22</color>
+    <color name="bottom_sheet_menu_dash">#FFFFFF</color>
+    <color name="play_list_add_to_list">#FFFFFF</color>
 </resources>

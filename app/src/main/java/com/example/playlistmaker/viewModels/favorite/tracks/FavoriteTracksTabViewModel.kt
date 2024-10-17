@@ -1,10 +1,10 @@
-package com.example.playlistmaker.viewModels.favorite
+package com.example.playlistmaker.viewModels.favorite.tracks
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.repository.favorite.FavoriteTracksInteractor
+import com.example.playlistmaker.domain.repository.favorite.tracks.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
-class MlFavoriteTracksTabViewModel(
+class FavoriteTracksTabViewModel(
     private val favorite: FavoriteTracksInteractor,
     private val history: TracksHistoryInteractor
 ) : ViewModel() {
@@ -23,20 +23,20 @@ class MlFavoriteTracksTabViewModel(
 
             favorite.getAllTracks().flowOn(Dispatchers.IO).collect { tracks ->
 
-                liveData.setValue(FavoriteData.TrackList(tracks = tracks))
+                liveData.setValue(FavoriteTabData.TrackList(tracks = tracks))
 
                 if (tracks.isNotEmpty()) {
-                    liveData.setSingleEventValue(FavoriteData.ScrollTracksList(0))
+                    liveData.setSingleEventValue(FavoriteTabData.ScrollTracksList(0))
                 }
             }
         }
     }
 
-    private val liveData = LiveDataWithStartDataSet<FavoriteData>()
+    private val liveData = LiveDataWithStartDataSet<FavoriteTabData>()
 
     private var trackClickAllowed = true
 
-    fun getLiveData(): LiveData<FavoriteData> {
+    fun getLiveData(): LiveData<FavoriteTabData> {
         return liveData
     }
 
@@ -44,7 +44,7 @@ class MlFavoriteTracksTabViewModel(
 
         if (!isClickAllowed()) return
 
-        liveData.setSingleEventValue(FavoriteData.OpenPlayerScreen(history.toJson(track)))
+        liveData.setSingleEventValue(FavoriteTabData.OpenPlayerScreen(history.toJson(track)))
     }
 
     private fun isClickAllowed(): Boolean {
@@ -65,6 +65,6 @@ class MlFavoriteTracksTabViewModel(
             favorite.clearTracks()
         }
 
-        liveData.setValue(FavoriteData.TrackList(tracks = listOf()))
+        liveData.setValue(FavoriteTabData.TrackList(tracks = listOf()))
     }
 }

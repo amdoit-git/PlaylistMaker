@@ -1,7 +1,8 @@
 package com.example.playlistmaker.data.impl.search
 
-import android.content.SharedPreferences
 import android.util.Log
+import com.example.playlistmaker.data.db.converters.TrackToRoomTrackMapper
+import com.example.playlistmaker.data.db.dao.HistoryTracksDao
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.search.TracksHistoryRepository
 import com.google.gson.Gson
@@ -11,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class TracksHistoryRepositoryImpl(
-    private val sharedPrefs: SharedPreferences,
+    private val dao: HistoryTracksDao,
     private val gson: Gson
 ) :
     TracksHistoryRepository {
@@ -40,38 +41,21 @@ class TracksHistoryRepositoryImpl(
     }
 
     override suspend fun save(track: Track) {
-        val tracks: MutableList<Track> =
-            mutableListOf(track.copy(isPlaying = false, isFavorite = false, isLiked = false))
 
-        getAll()?.let {
-            val loadedTracks = it.filter { t -> t.trackId != track.trackId }
-
-            for (i in 0 until minOf(MAX_TRACKS_IN_LIST - 1, loadedTracks.size)) {
-
-                tracks.add(loadedTracks[i])
-            }
-        }
-        withContext(Dispatchers.IO) {
-            sharedPrefs.edit().putString(LAST_VIEWED_TRACKS, toJson(tracks)).commit()
-        }
+        dao.saveTrack(TrackToRoomTrackMapper.map(track))
     }
 
     override suspend fun getAll(): List<Track>? {
 
-        return withContext(Dispatchers.IO) {
+        val list: List<Track> = TrackToRoomTrackMapper.map(dao.getAllTracks())
 
-            sharedPrefs.getString(LAST_VIEWED_TRACKS, null)?.let { json ->
-                return@withContext jsonToTracks(json)
-            }
-
-            return@withContext null
+        return list.ifEmpty {
+            null
         }
     }
 
     override suspend fun clear() {
-        withContext(Dispatchers.IO) {
-            sharedPrefs.edit().remove(LAST_VIEWED_TRACKS).commit()
-        }
+        dao.clearTracks()
     }
 
     override fun jsonToTrack(json: String): Track? {

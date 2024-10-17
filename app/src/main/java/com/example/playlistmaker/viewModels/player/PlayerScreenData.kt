@@ -1,6 +1,9 @@
 package com.example.playlistmaker.viewModels.player
 
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.viewModels.favorite.playlists.PlaylistsTabData
+import com.example.playlistmaker.viewModels.main.MainActivityData
 
 sealed interface PlayerScreenData {
     data class TrackData(val track: Track) : PlayerScreenData
@@ -11,7 +14,11 @@ sealed interface PlayerScreenData {
         var stopped: Boolean? = null
     ) : PlayerScreenData
 
-    data class ToastMessage(val message: String, val isVisible: Boolean) : PlayerScreenData
-
     data class FavoriteStatus(val isFavorite: Boolean) : PlayerScreenData
+
+    data class Playlists(val playlists: List<Playlist>) : PlayerScreenData
+
+    data class PlaylistNotFound(val message: String) : PlayerScreenData
+
+    data class BottomSheet(val opened:Boolean) : PlayerScreenData
 }

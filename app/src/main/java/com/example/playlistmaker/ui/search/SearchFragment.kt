@@ -4,17 +4,14 @@ import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.media3.common.text.TextAnnotation.Position
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.ActivitySearchBinding
@@ -40,6 +37,8 @@ class SearchFragment : Fragment() {
     private var _binding: ActivitySearchBinding? = null
 
     private val binding get() = _binding!!
+
+    private var isSearchActive = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,7 +76,7 @@ class SearchFragment : Fragment() {
                 is SearchData.SearchText -> {
                     binding.editText.setText(it.text)
                     binding.editTextDelete.isVisible = it.text.isNotEmpty()
-                    if(it.textInFocus){
+                    if (it.textInFocus) {
                         binding.editText.requestFocus()
                     }
                 }
@@ -132,7 +131,8 @@ class SearchFragment : Fragment() {
 
                 is SearchData.OpenPlayerScreen -> {
 
-                    val direction = SearchFragmentDirections.actionSearchFragmentToPlayerScreenFragment(it.track)
+                    val direction =
+                        SearchFragmentDirections.actionSearchFragmentToPlayerScreenFragment(it.track)
 
                     findNavController().navigate(direction)
                 }
@@ -142,16 +142,18 @@ class SearchFragment : Fragment() {
                 }
             }
         }
+
+        initTextField(binding.editText)
     }
 
     override fun onResume() {
         super.onResume()
-        initTextField(binding.editText)
+        isSearchActive = true
     }
 
     override fun onStop() {
         super.onStop()
-        disableTextField(binding.editText)
+        isSearchActive = false
     }
 
     private fun scrollListToTop() {
@@ -167,7 +169,7 @@ class SearchFragment : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
-    private fun scrollTracksList(position: Int){
+    private fun scrollTracksList(position: Int) {
         tracksList.smoothScrollToPosition(position)
     }
 
@@ -190,11 +192,14 @@ class SearchFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {
 
-                val text = editText.text.toString()
+                if (isSearchActive) {
 
-                binding.editTextDelete.isVisible = text.isNotEmpty()
+                    val text = editText.text.toString()
 
-                vModel.onTextChanged(text)
+                    binding.editTextDelete.isVisible = text.isNotEmpty()
+
+                    vModel.onTextChanged(text)
+                }
             }
         })
 
@@ -216,9 +221,15 @@ class SearchFragment : Fragment() {
             editText.setText("")
             closeKeyboard()
         }
+
+        editText.requestFocus()
+
+        if (editText.hasFocus()) {
+            vModel.onFocusChanged(true)
+        }
     }
 
-    private fun disableTextField(editText: EditText){
+    private fun disableTextField(editText: EditText) {
 
         editText.addTextChangedListener(null)
 
