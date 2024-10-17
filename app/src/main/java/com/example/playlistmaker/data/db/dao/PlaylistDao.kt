@@ -25,13 +25,16 @@ interface PlaylistDao : TrackDao {
     @Transaction
     suspend fun calcPlaylistLengthAndDuration(playlistId: Int) {
         val length = getPlaylistLength(playlistId)
-        updatePlaylistLength(
+        val duration = getPlaylistDuration(playlistId)
+        updatePlaylistLengthAndDuration(
             playlistId = playlistId,
-            tracksTotal = length
+            tracksTotal = length,
+            duration = duration
         )
     }
 
-
+    @Query("SELECT SUM(t.duration) FROM tracks t INNER JOIN playlist_track_map m ON t.trackId=m.trackId WHERE m.playlistId=:playlistId")
+    suspend fun getPlaylistDuration(playlistId: Int): Int
 
     @Query("SELECT COUNT(*) FROM tracks t INNER JOIN playlist_track_map m ON t.trackId=m.trackId WHERE m.playlistId=:playlistId")
     suspend fun getPlaylistLength(playlistId: Int): Int
@@ -39,8 +42,8 @@ interface PlaylistDao : TrackDao {
     @Query("UPDATE playlists SET lastMod=:lastMod WHERE playlistId=:playlistId")
     suspend fun movePlaylistToTop(playlistId: Int, lastMod: Int)
 
-    @Query("UPDATE playlists SET tracksTotal=:tracksTotal WHERE playlistId=:playlistId")
-    suspend fun updatePlaylistLength(playlistId: Int, tracksTotal: Int)
+    @Query("UPDATE playlists SET tracksTotal=:tracksTotal, duration=:duration WHERE playlistId=:playlistId")
+    suspend fun updatePlaylistLengthAndDuration(playlistId: Int, tracksTotal: Int, duration: Int)
 
     @Query("SELECT * FROM playlists ORDER BY lastMod DESC")
     fun getPlaylists(): Flow<List<RoomPlaylist>>
