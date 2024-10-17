@@ -12,7 +12,7 @@ import com.example.playlistmaker.data.db.dao.HistoryTracksDao
 import com.example.playlistmaker.data.db.dao.PlaylistDao
 import com.example.playlistmaker.data.impl.common.GetStringRepositoryImpl
 import com.example.playlistmaker.data.impl.common.NoticeRepositoryImpl
-import com.example.playlistmaker.data.impl.favorite.playlists.ImageSaver
+import com.example.playlistmaker.data.impl.mediaLibrary.playlists.ImageSaver
 import com.example.playlistmaker.data.impl.player.MediaPlayerService
 import com.example.playlistmaker.domain.repository.common.GetStringRepository
 import com.example.playlistmaker.domain.repository.common.NoticeRepository

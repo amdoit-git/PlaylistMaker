@@ -1,7 +1,7 @@
 package com.example.playlistmaker.data.db.converters
 
 import com.example.playlistmaker.data.db.models.RoomPlaylist
-import com.example.playlistmaker.data.impl.favorite.playlists.ImageSaver
+import com.example.playlistmaker.data.impl.mediaLibrary.playlists.ImageSaver
 import com.example.playlistmaker.domain.models.Playlist
 
 object PlaylistToRoomPlaylistMapper {

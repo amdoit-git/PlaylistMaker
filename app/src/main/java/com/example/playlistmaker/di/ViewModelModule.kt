@@ -1,9 +1,9 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.viewModels.favorite.MediaLibraryViewModel
-import com.example.playlistmaker.viewModels.favorite.playlists.AddNewPlayListViewModel
-import com.example.playlistmaker.viewModels.favorite.playlists.PlayListsTabViewModel
-import com.example.playlistmaker.viewModels.favorite.tracks.FavoriteTracksTabViewModel
+import com.example.playlistmaker.viewModels.mediaLibrary.MediaLibraryViewModel
+import com.example.playlistmaker.viewModels.mediaLibrary.playlists.AddNewPlayListViewModel
+import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlayListsTabViewModel
+import com.example.playlistmaker.viewModels.mediaLibrary.favorite.FavoriteTracksTabViewModel
 import com.example.playlistmaker.viewModels.main.MainActivityViewModel
 import com.example.playlistmaker.viewModels.player.PlayerScreenViewModel
 import com.example.playlistmaker.viewModels.search.SearchViewModel

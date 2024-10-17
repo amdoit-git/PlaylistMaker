@@ -18,8 +18,8 @@ import com.example.playlistmaker.databinding.ActivityPlayerScreenBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.common.DpToPx
-import com.example.playlistmaker.ui.favorite.playlists.PlaylistAdapter
-import com.example.playlistmaker.ui.favorite.playlists.PlaylistRvType
+import com.example.playlistmaker.ui.mediaLibrary.playlists.PlaylistAdapter
+import com.example.playlistmaker.ui.mediaLibrary.playlists.PlaylistRvType
 import com.example.playlistmaker.viewModels.player.PlayerScreenData
 import com.example.playlistmaker.viewModels.player.PlayerScreenViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior

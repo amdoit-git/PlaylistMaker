@@ -2,8 +2,6 @@ package com.example.playlistmaker.viewModels.player
 
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.viewModels.favorite.playlists.PlaylistsTabData
-import com.example.playlistmaker.viewModels.main.MainActivityData
 
 sealed interface PlayerScreenData {
     data class TrackData(val track: Track) : PlayerScreenData

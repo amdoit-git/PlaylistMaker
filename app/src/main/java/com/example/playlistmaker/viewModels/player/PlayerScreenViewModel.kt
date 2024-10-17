@@ -2,7 +2,6 @@ package com.example.playlistmaker.viewModels.player
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,8 +10,8 @@ import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.common.GetStringResourceUseCase
 import com.example.playlistmaker.domain.repository.common.NoticeInteractor
-import com.example.playlistmaker.domain.repository.favorite.playlists.PlaylistsInteractor
-import com.example.playlistmaker.domain.repository.favorite.tracks.FavoriteTracksInteractor
+import com.example.playlistmaker.domain.repository.mediaLibrary.playlists.PlaylistsInteractor
+import com.example.playlistmaker.domain.repository.mediaLibrary.favorite.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.repository.player.MediaPlayerInteractor
 import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet

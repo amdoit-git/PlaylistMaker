@@ -6,7 +6,7 @@
     app:startDestination="@id/mediaLibraryFragment">
     <fragment
         android:id="@+id/mediaLibraryFragment"
-        android:name="com.example.playlistmaker.ui.favorite.MediaLibraryFragment"
+        android:name="com.example.playlistmaker.ui.mediaLibrary.MediaLibraryFragment"
         android:label="activity_media_library"
         tools:layout="@layout/activity_media_library">
         <action
@@ -50,7 +50,7 @@
         tools:layout="@layout/activity_settings" />
     <fragment
         android:id="@+id/addNewPlayListFragment"
-        android:name="com.example.playlistmaker.ui.favorite.playlists.AddNewPlayListFragment"
+        android:name="com.example.playlistmaker.ui.mediaLibrary.playlists.AddNewPlayListFragment"
         android:label="fragment_add_new_play_list"
         tools:layout="@layout/fragment_add_new_play_list" />
 </navigation>
