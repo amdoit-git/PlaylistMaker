@@ -16,24 +16,12 @@ class FavoriteTracksInteractorImpl(private val repository: FavoriteTracksReposit
         repository.deleteTrack(trackId)
     }
 
-    override suspend fun findTracksById(vararg trackId: Int): Flow<List<Track>> {
-        return repository.findTracksById(*trackId)
-    }
-
-    override suspend fun findTrackIds(vararg trackId: Int): Flow<List<Int>> {
-        return repository.findTrackIds(*trackId)
+    override suspend fun containsTrack(trackId: Int): Flow<Int> {
+        return repository.containsTrack(trackId)
     }
 
     override suspend fun getAllTracks(): Flow<List<Track>> {
         return repository.getAllTracks()
-    }
-
-    override suspend fun getAllTracksIds(): Flow<List<Int>> {
-        return repository.getAllTracksIds()
-    }
-
-    override suspend fun countTracks(): Int {
-        return repository.countTracks()
     }
 
     override suspend fun clearTracks() {

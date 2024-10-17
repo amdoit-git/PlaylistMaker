@@ -48,11 +48,11 @@ class PlayerScreenViewModel(
 
             viewModelScope.launch(Dispatchers.Main) {
 
-                favorite.findTrackIds(track.trackId).flowOn(Dispatchers.IO).collect { ids ->
+                favorite.containsTrack(track.trackId).flowOn(Dispatchers.IO).collect { count ->
 
-                    track.isFavorite = ids.isNotEmpty()
+                    track.isFavorite = count>0
 
-                    liveData.setValue(PlayerScreenData.FavoriteStatus(isFavorite = ids.isNotEmpty()))
+                    liveData.setValue(PlayerScreenData.FavoriteStatus(isFavorite = track.isFavorite))
                 }
             }
 

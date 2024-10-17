@@ -1,7 +1,6 @@
 package com.example.playlistmaker.data.db.converters
 
 import com.example.playlistmaker.data.db.models.RoomTrack
-import com.example.playlistmaker.data.db.models.RoomTrackPlaylist
 import com.example.playlistmaker.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -35,7 +34,7 @@ object TrackToRoomTrackMapper {
         trackId = track.trackId,
         trackName = track.trackName,
         artistName = track.artistName,
-        trackTime = timeToInt(track.trackTime),
+        duration = timeToInt(track.trackTime),
         trackCover = track.trackCover,
         previewUrl = track.previewUrl,
         albumName = track.albumName,
@@ -48,7 +47,7 @@ object TrackToRoomTrackMapper {
         trackId = track.trackId,
         trackName = track.trackName,
         artistName = track.artistName,
-        trackTime = timeToString(track.trackTime),
+        trackTime = timeToString(track.duration),
         trackCover = track.trackCover,
         previewUrl = track.previewUrl,
         albumName = track.albumName,

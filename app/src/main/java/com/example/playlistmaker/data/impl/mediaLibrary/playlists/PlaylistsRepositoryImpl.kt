@@ -3,7 +3,7 @@ package com.example.playlistmaker.data.impl.mediaLibrary.playlists
 import android.graphics.Bitmap
 import android.net.Uri
 import com.example.playlistmaker.data.db.converters.PlaylistToRoomPlaylistMapper
-import com.example.playlistmaker.data.db.converters.TrackToRoomTrackPlaylistMapper
+import com.example.playlistmaker.data.db.converters.TrackToRoomTrackMapper
 import com.example.playlistmaker.data.db.dao.PlaylistDao
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
@@ -46,10 +46,10 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, private val dao: Pl
         )
     }
 
-    override suspend fun addTrack(track: Track, playlistId: Int): Int {
+    override suspend fun addTrack(track: Track, playlistId: Int) {
 
-        return dao.addTrack(
-            TrackToRoomTrackPlaylistMapper.map(track), playlistId
+        dao.addTrack(
+            TrackToRoomTrackMapper.map(track), playlistId
         )
     }
 
@@ -60,7 +60,7 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, private val dao: Pl
 
     override suspend fun getTracks(playlistId: Int): Flow<List<Track>> {
         return dao.getTracks(playlistId).flowOn(Dispatchers.IO)
-            .map { TrackToRoomTrackPlaylistMapper.map(it) }
+            .map { TrackToRoomTrackMapper.map(it) }
     }
 
     override suspend fun containsTrack(playlistId: Int, trackId: Int): Boolean {
