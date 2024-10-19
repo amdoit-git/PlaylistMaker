@@ -4,7 +4,6 @@ import android.app.Application
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule
-import com.example.playlistmaker.di.uiModule
 import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.domain.repository.mediaLibrary.favorite.FavoriteTracksInteractor
 import com.example.playlistmaker.domain.repository.settings.AppSettingsInteractor
@@ -27,7 +26,7 @@ class App : Application() {
             // Метод специального класса, переданного как this, для добавления контекста в граф
             androidContext(this@App)
             // Передаём все модули, чтобы их содержимое было передано в граф
-            modules(repositoryModule, interactorModule, viewModelModule, uiModule, dataModule)
+            modules(repositoryModule, interactorModule, viewModelModule, dataModule)
         }
 
         val settings: AppSettingsInteractor by inject()

@@ -1,17 +1,44 @@
 package com.example.playlistmaker.ui.search
 
+import android.util.Log
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.viewModels.common.SingleEventLiveData
 
-class TrackAdapter(
-    private val onTrackClick: (Track) -> Unit,
-    private val onButtonClick: () -> Unit,
-    private val scrollListToTop: () -> Unit,
-    private val tracks: MutableList<Track>
-) : RecyclerView.Adapter<SearchActivityHolder>() {
+class TrackAdapter(private val buttonText: String = "", private val longClickEnabled: Boolean = false) :
+    RecyclerView.Adapter<SearchActivityHolder>() {
 
+    private val tracks = mutableListOf<Track>()
     private var hasClearButton: Boolean = false
+    private val liveData = SingleEventLiveData<TrackAdapterData>()
+    private var clickedTrack: Track? = null
+
+    fun getLiveData(): LiveData<TrackAdapterData> {
+        return liveData
+    }
+
+    private fun onTrackClick(track: Track) {
+
+        clickedTrack = track
+
+        liveData.setValue(TrackAdapterData.TrackClick(track))
+    }
+
+    private fun onTrackLongClick(track: Track) {
+
+        clickedTrack = track
+
+        liveData.setValue(TrackAdapterData.TrackLongClick(track))
+    }
+
+    private fun onButtonClick() {
+
+        //tracks.containsAll()
+
+        liveData.setValue(TrackAdapterData.ButtonClick(true))
+    }
 
     fun setNewTracksList(tracks: List<Track>) {
         this.tracks.clear()
@@ -20,7 +47,34 @@ class TrackAdapter(
         }
     }
 
-    fun clearTracks(){
+
+//    private fun compare(old:List<Track>, new:List<Track>){
+//
+//        val newPos = mutableListOf<Int?>()
+//
+//        for(i in 0 until old.size){
+//
+//            val trackId = old[i].trackId
+//
+//            for(j in 0 until new.size){
+//
+//                if(new[j].trackId==trackId){
+//                    newPos.add(j)
+//                    break
+//                }
+//            }
+//
+//            if(newPos.size<i+1){
+//                newPos.add(null)
+//            }
+//        }
+//
+//        if(){
+//
+//        }
+//    }
+
+    fun clearTracks() {
         this.tracks.clear()
     }
 
@@ -39,8 +93,18 @@ class TrackAdapter(
     override fun onBindViewHolder(holder: SearchActivityHolder, position: Int) {
 
         when (getItemViewType(position)) {
-            TYPE_TRACK -> holder.bind(tracks[position], onTrackClick)
-            TYPE_BUTTON -> holder.onButtonClick(onButtonClick)
+
+            TYPE_TRACK -> holder.bind(
+                tracks[position],
+                onClick = ::onTrackClick,
+                onLongClick = if (longClickEnabled) ::onTrackLongClick else null
+            )
+
+            TYPE_BUTTON -> holder.bindButton(
+                buttonText = buttonText,
+                onClick = ::onButtonClick
+            )
+
             else -> throw IllegalArgumentException("Неизвестный тип SearchActivityHolder!!!")
         }
     }
@@ -66,7 +130,9 @@ class TrackAdapter(
         if (index > 0) {
             tracks.add(0, tracks.removeAt(index))
 
-            scrollListToTop()
+            liveData.setValue(TrackAdapterData.ScrollTracksList(0))
+
+            //this.notifyItemRemoved()
 
             this.notifyItemMoved(index, 0)
         }

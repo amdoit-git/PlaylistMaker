@@ -12,21 +12,18 @@ import com.example.playlistmaker.databinding.FragmentFavoriteTracksBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.mediaLibrary.MediaLibraryFragmentDirections
 import com.example.playlistmaker.ui.search.TrackAdapter
+import com.example.playlistmaker.ui.search.TrackAdapterData
 import com.example.playlistmaker.viewModels.mediaLibrary.favorite.FavoriteTabData
 import com.example.playlistmaker.viewModels.mediaLibrary.favorite.FavoriteTracksTabViewModel
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 class FavoriteTracksTabFragment : Fragment() {
 
     private lateinit var tracksList: RecyclerView
 
-    private val vModel: FavoriteTracksTabViewModel by viewModel()
+    private lateinit var adapter: TrackAdapter
 
-    private val adapter: TrackAdapter by inject {
-        parametersOf(vModel::onTrackClicked, vModel::clearHistory, ::scrollListToTop)
-    }
+    private val vModel: FavoriteTracksTabViewModel by viewModel()
 
     private var _binding: FragmentFavoriteTracksBinding? = null
 
@@ -48,6 +45,8 @@ class FavoriteTracksTabFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        adapter = TrackAdapter()
 
         tracksList = binding.tracksList
 
@@ -77,7 +76,9 @@ class FavoriteTracksTabFragment : Fragment() {
                 is FavoriteTabData.OpenPlayerScreen -> {
 
                     val direction =
-                        MediaLibraryFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(it.track.trackId)
+                        MediaLibraryFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(
+                            it.track.trackId
+                        )
 
                     findNavController().navigate(direction)
                 }
@@ -87,10 +88,25 @@ class FavoriteTracksTabFragment : Fragment() {
                 }
             }
         }
-    }
 
-    private fun scrollListToTop() {
-        tracksList.scrollToPosition(0)
+        adapter.getLiveData().observe(viewLifecycleOwner) {
+
+            when (it) {
+                is TrackAdapterData.ButtonClick -> {
+                    vModel.clearHistory()
+                }
+
+                is TrackAdapterData.ScrollTracksList -> {
+                    scrollTracksList(it.position)
+                }
+
+                is TrackAdapterData.TrackClick -> {
+                    vModel.onTrackClicked(it.track)
+                }
+
+                is TrackAdapterData.TrackLongClick -> {}
+            }
+        }
     }
 
     private fun showTracksList(tracks: List<Track>, showClearButton: Boolean = false) {

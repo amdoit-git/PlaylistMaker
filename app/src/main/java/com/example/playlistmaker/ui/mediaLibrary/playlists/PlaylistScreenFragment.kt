@@ -9,11 +9,16 @@ import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistScreenBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.ui.common.NumDeclension
+import com.example.playlistmaker.ui.mediaLibrary.MediaLibraryFragmentDirections
+import com.example.playlistmaker.ui.search.SearchFragmentDirections
+import com.example.playlistmaker.ui.search.TrackAdapter
+import com.example.playlistmaker.ui.search.TrackAdapterData
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenData
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -34,6 +39,8 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
     private val binding get() = _binding!!
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var tracksList: RecyclerView
+    private lateinit var adapter: TrackAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,7 +72,14 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
                             setTracksBSPeekHeight()
                         }
 
-                        is PlaylistScreenData.Tracks -> {}
+                        is PlaylistScreenData.Tracks -> {
+
+                            adapter.setNewTracksList(it.tracks)
+
+                            adapter.showClearButton(true)
+
+                            adapter.notifyDataSetChanged()
+                        }
                     }
                 }
             }
@@ -76,6 +90,33 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
         }
 
         setTracksBSPeekHeight()
+
+        adapter = TrackAdapter("Очистить плейлист", longClickEnabled = true)
+
+        tracksList = binding.recyclerView
+
+        tracksList.adapter = adapter
+
+        adapter.getLiveData().observe(viewLifecycleOwner) {
+
+            when(it){
+                is TrackAdapterData.ButtonClick -> {
+                    //vModel.clearHistory()
+                }
+                is TrackAdapterData.ScrollTracksList -> {
+                    //scrollTracksList(it.position)
+                }
+                is TrackAdapterData.TrackClick -> {
+                    //vModel.onTrackClicked(it.track)
+
+                    val direction =
+                        PlaylistScreenFragmentDirections.actionPlaylistScreenFragmentToPlayerScreenFragment(it.track.trackId)
+
+                    findNavController().navigate(direction)
+                }
+                is TrackAdapterData.TrackLongClick -> {}
+            }
+        }
     }
 
     private fun fillPlaylistInfo(playlist: Playlist) {

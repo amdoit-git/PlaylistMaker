@@ -7,10 +7,12 @@ import com.example.playlistmaker.databinding.ClearSearchHistoryButtonBinding
 class ButtonHolder(private val binding: ClearSearchHistoryButtonBinding) :
     SearchActivityHolder(binding.root) {
 
-    override fun onButtonClick(callback: () -> Unit) {
+    override fun bindButton(buttonText: String, onClick: () -> Unit) {
+
+        binding.clearSearchHistroyButton.text = buttonText
 
         binding.clearSearchHistroyButton.setOnClickListener {
-            callback()
+            onClick()
         }
     }
 

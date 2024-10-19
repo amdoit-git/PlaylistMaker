@@ -14,14 +14,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.viewModels.search.SearchData
 import com.example.playlistmaker.viewModels.search.SearchViewModel
 import com.example.playlistmaker.viewModels.search.TrackListState
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 
 class SearchFragment : Fragment() {
@@ -30,9 +29,7 @@ class SearchFragment : Fragment() {
 
     private val vModel: SearchViewModel by viewModel()
 
-    private val adapter: TrackAdapter by inject {
-        parametersOf(vModel::onTrackClicked, vModel::clearHistory, ::scrollListToTop)
-    }
+    private lateinit var adapter: TrackAdapter
 
     private var _binding: ActivitySearchBinding? = null
 
@@ -56,6 +53,8 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        adapter = TrackAdapter(getString(R.string.clear_search_history_button))
 
         tracksList = binding.tracksList
 
@@ -143,6 +142,22 @@ class SearchFragment : Fragment() {
             }
         }
 
+        adapter.getLiveData().observe(viewLifecycleOwner) {
+
+            when(it){
+                is TrackAdapterData.ButtonClick -> {
+                    vModel.clearHistory()
+                }
+                is TrackAdapterData.ScrollTracksList -> {
+                    scrollTracksList(it.position)
+                }
+                is TrackAdapterData.TrackClick -> {
+                    vModel.onTrackClicked(it.track)
+                }
+                is TrackAdapterData.TrackLongClick -> {}
+            }
+        }
+
         initTextField(binding.editText)
     }
 
@@ -154,10 +169,6 @@ class SearchFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         isSearchActive = false
-    }
-
-    private fun scrollListToTop() {
-        tracksList.scrollToPosition(0)
     }
 
     private fun showTracksList(tracks: List<Track>, showClearButton: Boolean = false) {
