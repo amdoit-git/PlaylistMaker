@@ -6,16 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistScreenBinding
 import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.ui.common.NumDeclension
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenData
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.math.round
 
-class PlaylistScreenFragment() : Fragment() {
+class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
     private val vModel: PlaylistScreenViewModel by viewModel {
         parametersOf(playlistId)
@@ -53,25 +59,49 @@ class PlaylistScreenFragment() : Fragment() {
 
                 vModel.getLiveData().observe(viewLifecycleOwner) {
 
-                    when(it){
+                    when (it) {
                         is PlaylistScreenData.Info -> {
                             fillPlaylistInfo(it.playlist)
                             setTracksBSPeekHeight()
                         }
-                        is PlaylistScreenData.Tracks -> TODO()
+
+                        is PlaylistScreenData.Tracks -> {}
                     }
                 }
             }
         }
 
+        binding.backButton.setOnClickListener{
+            findNavController().popBackStack()
+        }
+
         setTracksBSPeekHeight()
     }
 
-    private fun fillPlaylistInfo(playlist: Playlist){
+    private fun fillPlaylistInfo(playlist: Playlist) {
 
+        with(playlist) {
+            binding.title.text = title
+            binding.description.text = description
+            binding.description.isVisible = description.isNotBlank()
+            binding.totalTime.text = declension(
+                round(duration / 60f).toInt(),
+                getString(R.string.minutes_counter_declination)
+            )
+            binding.totalTracks.text =
+                declension(tracksTotal, getString(R.string.track_counter_declination))
+
+            coverUri?.let { uri ->
+
+                Glide.with(binding.cover).load(uri).into(binding.cover)
+            }
+        }
     }
 
     private fun setTracksBSPeekHeight() {
+
+        binding.playlistTracksBottomSheet.isVisible = true
+
         binding.root.post {
             bottomSheetBehavior.peekHeight =
                 Resources.getSystem().displayMetrics.heightPixels - getYPosition(binding.playlistInfoContainer) - binding.playlistInfoContainer.height

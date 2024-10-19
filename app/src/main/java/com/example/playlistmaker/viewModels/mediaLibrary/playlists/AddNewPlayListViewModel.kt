@@ -56,7 +56,7 @@ class AddNewPlayListViewModel(
 
     fun showMessage(id: Int) {
 
-       showMessage(message = strings(id))
+        showMessage(message = strings(id))
     }
 
     fun onTitleChanged(text: String) {
@@ -94,7 +94,8 @@ class AddNewPlayListViewModel(
                     title = title,
                     description = description,
                     coverUri = coverUri,
-                    tracksTotal = 0
+                    tracksTotal = 0,
+                    duration = 0
                 )
             )
 

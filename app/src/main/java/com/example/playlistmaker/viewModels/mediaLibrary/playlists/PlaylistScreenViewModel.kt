@@ -3,11 +3,16 @@ package com.example.playlistmaker.viewModels.mediaLibrary.playlists
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.repository.common.GetStringResourceUseCase
 import com.example.playlistmaker.domain.repository.mediaLibrary.playlists.PlaylistsInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import kotlinx.coroutines.launch
 
-class PlaylistScreenViewModel(private val playlists: PlaylistsInteractor, val playlistId: Int) :
+class PlaylistScreenViewModel(
+    private val playlists: PlaylistsInteractor,
+    private val strings: GetStringResourceUseCase,
+    private val playlistId: Int
+) :
     ViewModel() {
 
     private val liveData = LiveDataWithStartDataSet<PlaylistScreenData>()

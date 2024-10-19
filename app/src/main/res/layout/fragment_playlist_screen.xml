@@ -17,6 +17,8 @@
             android:id="@+id/backButton"
             android:layout_width="56dp"
             android:layout_height="56dp"
+            android:elevation="1dp"
+            android:translationZ="1dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -34,7 +36,7 @@
             android:layout_height="0dp"
             android:layout_marginHorizontal="0dp"
             android:layout_marginTop="0dp"
-            android:background="@drawable/add_photo_not_selected"
+            android:background="@drawable/track_placeholder"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -155,6 +157,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/bottom_sheet_bg"
         android:orientation="vertical"
+        android:visibility="gone"
         app:behavior_hideable="false"
         app:behavior_peekHeight="505dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
@@ -168,9 +171,9 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
-            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </LinearLayout>

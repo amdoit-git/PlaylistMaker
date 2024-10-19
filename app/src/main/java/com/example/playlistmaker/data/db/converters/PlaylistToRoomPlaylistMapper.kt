@@ -26,7 +26,8 @@ object PlaylistToRoomPlaylistMapper {
         title = playlist.title,
         description = playlist.description,
         coverUri = saver.getCoverUri(playlist.coverFileName),
-        tracksTotal = playlist.tracksTotal
+        tracksTotal = playlist.tracksTotal,
+        duration = playlist.duration
     )
 
     fun map(playlists: List<RoomPlaylist>, saver: ImageSaver): List<Playlist> =

@@ -48,7 +48,7 @@ interface PlaylistDao : TrackDao {
     fun getPlaylists(): Flow<List<RoomPlaylist>>
 
     @Query("SELECT * FROM playlists WHERE playlistId=:playlistId")
-    suspend fun getPlaylistInfo(playlistId: Int): Flow<RoomPlaylist>
+    fun getPlaylistInfo(playlistId: Int): Flow<RoomPlaylist>
 
     @Query("SELECT coverFileName FROM playlists WHERE playlistId=:playlistId")
     suspend fun getPlaylistCover(playlistId: Int): String
