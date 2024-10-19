@@ -33,6 +33,22 @@ class PlaylistsInteractorImpl(private val repository: PlaylistsRepository) : Pla
         return repository.getTrackInfo(trackId)
     }
 
+    override suspend fun getPlaylistInfo(playlistId: Int): Flow<Playlist> {
+        return repository.getPlaylistInfo(playlistId)
+    }
+
+    override suspend fun editPlaylist(playlist: Playlist) {
+        repository.editPlaylist(playlist)
+    }
+
+    override suspend fun deletePlaylist(playlistId: Int) {
+        repository.deletePlaylist(playlistId)
+    }
+
+    override suspend fun clearPlaylist(playlistId: Int) {
+        repository.clearPlaylist(playlistId)
+    }
+
     override suspend fun containsTrack(playlistId: Int, trackId: Int): Boolean {
         return repository.containsTrack(playlistId, trackId)
     }

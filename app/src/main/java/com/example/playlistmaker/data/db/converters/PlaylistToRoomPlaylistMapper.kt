@@ -25,7 +25,7 @@ object PlaylistToRoomPlaylistMapper {
         id = playlist.playlistId,
         title = playlist.title,
         description = playlist.description,
-        coverUri = saver.coverUriFromFile(playlist.coverFileName),
+        coverUri = saver.getCoverUri(playlist.coverFileName),
         tracksTotal = playlist.tracksTotal
     )
 

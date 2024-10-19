@@ -1,10 +1,11 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.viewModels.main.MainActivityViewModel
 import com.example.playlistmaker.viewModels.mediaLibrary.MediaLibraryViewModel
+import com.example.playlistmaker.viewModels.mediaLibrary.favorite.FavoriteTracksTabViewModel
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.AddNewPlayListViewModel
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlayListsTabViewModel
-import com.example.playlistmaker.viewModels.mediaLibrary.favorite.FavoriteTracksTabViewModel
-import com.example.playlistmaker.viewModels.main.MainActivityViewModel
+import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenViewModel
 import com.example.playlistmaker.viewModels.player.PlayerScreenViewModel
 import com.example.playlistmaker.viewModels.search.SearchViewModel
 import com.example.playlistmaker.viewModels.settings.SettingsViewModel
@@ -50,5 +51,10 @@ val viewModelModule = module {
 
     viewModel {
         MainActivityViewModel(notice = get())
+    }
+
+    viewModel { (playlistId: Int) ->
+
+        PlaylistScreenViewModel(playlists = get(), playlistId = playlistId)
     }
 }

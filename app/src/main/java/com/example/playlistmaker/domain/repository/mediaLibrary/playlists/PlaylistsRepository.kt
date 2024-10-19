@@ -19,5 +19,13 @@ interface PlaylistsRepository {
 
     suspend fun getTrackInfo(trackId: Int): Track?
 
+    suspend fun getPlaylistInfo(playlistId: Int): Flow<Playlist>
+
+    suspend fun editPlaylist(playlist: Playlist)
+
+    suspend fun deletePlaylist(playlistId: Int)
+
+    suspend fun clearPlaylist(playlistId: Int)
+
     suspend fun containsTrack(playlistId: Int, trackId: Int): Boolean
 }

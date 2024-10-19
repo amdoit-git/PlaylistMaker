@@ -47,6 +47,15 @@ interface PlaylistDao : TrackDao {
     @Query("SELECT * FROM playlists ORDER BY lastMod DESC")
     fun getPlaylists(): Flow<List<RoomPlaylist>>
 
+    @Query("SELECT * FROM playlists WHERE playlistId=:playlistId")
+    suspend fun getPlaylistInfo(playlistId: Int): Flow<RoomPlaylist>
+
+    @Query("SELECT coverFileName FROM playlists WHERE playlistId=:playlistId")
+    suspend fun getPlaylistCover(playlistId: Int): String
+
+    @Query("DELETE FROM playlists WHERE playlistId=:playlistId")
+    suspend fun deletePlaylistInfo(playlistId: Int)
+
     //tracks
 
     @Transaction

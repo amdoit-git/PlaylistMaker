@@ -2,18 +2,26 @@ package com.example.playlistmaker.ui.mediaLibrary.playlists
 
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentPlaylistScreenBinding
+import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenData
+import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class PlaylistScreenFragment() : Fragment() {
 
-    //private val vModel: PlaylistScreenViewModel by viewModel()
+    private val vModel: PlaylistScreenViewModel by viewModel {
+        parametersOf(playlistId)
+    }
+
+    private var playlistId = 0
 
     private var _binding: FragmentPlaylistScreenBinding? = null
 
@@ -37,19 +45,46 @@ class PlaylistScreenFragment() : Fragment() {
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
-        binding.root.post {
-            setTracksBSPeekHeight()
+        arguments?.let { args ->
+
+            args.getInt(PLAYLIST_ID).let { playlistId ->
+
+                this.playlistId = playlistId
+
+                vModel.getLiveData().observe(viewLifecycleOwner) {
+
+                    when(it){
+                        is PlaylistScreenData.Info -> {
+                            fillPlaylistInfo(it.playlist)
+                            setTracksBSPeekHeight()
+                        }
+                        is PlaylistScreenData.Tracks -> TODO()
+                    }
+                }
+            }
         }
+
+        setTracksBSPeekHeight()
+    }
+
+    private fun fillPlaylistInfo(playlist: Playlist){
+
     }
 
     private fun setTracksBSPeekHeight() {
-        bottomSheetBehavior.peekHeight =
-            Resources.getSystem().displayMetrics.heightPixels - getYPosition(binding.playlistInfoContainer) - binding.playlistInfoContainer.height
+        binding.root.post {
+            bottomSheetBehavior.peekHeight =
+                Resources.getSystem().displayMetrics.heightPixels - getYPosition(binding.playlistInfoContainer) - binding.playlistInfoContainer.height
+        }
     }
 
     private fun getYPosition(elem: View): Int {
         val xy = intArrayOf(0, 0)
         elem.getLocationOnScreen(xy)
         return xy[1]
+    }
+
+    companion object {
+        const val PLAYLIST_ID = "playlistId"
     }
 }
