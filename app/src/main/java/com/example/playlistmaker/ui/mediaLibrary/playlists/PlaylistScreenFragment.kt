@@ -15,8 +15,6 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistScreenBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.ui.common.NumDeclension
-import com.example.playlistmaker.ui.mediaLibrary.MediaLibraryFragmentDirections
-import com.example.playlistmaker.ui.search.SearchFragmentDirections
 import com.example.playlistmaker.ui.search.TrackAdapter
 import com.example.playlistmaker.ui.search.TrackAdapterData
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenData
@@ -85,11 +83,9 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
             }
         }
 
-        binding.backButton.setOnClickListener{
+        binding.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
-
-        setTracksBSPeekHeight()
 
         adapter = TrackAdapter("Очистить плейлист", longClickEnabled = true)
 
@@ -99,27 +95,55 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
         adapter.getLiveData().observe(viewLifecycleOwner) {
 
-            when(it){
+            when (it) {
                 is TrackAdapterData.ButtonClick -> {
                     //vModel.clearHistory()
                 }
+
                 is TrackAdapterData.ScrollTracksList -> {
                     //scrollTracksList(it.position)
                 }
+
                 is TrackAdapterData.TrackClick -> {
                     //vModel.onTrackClicked(it.track)
 
                     val direction =
-                        PlaylistScreenFragmentDirections.actionPlaylistScreenFragmentToPlayerScreenFragment(it.track.trackId)
+                        PlaylistScreenFragmentDirections.actionPlaylistScreenFragmentToPlayerScreenFragment(
+                            it.track.trackId
+                        )
 
                     findNavController().navigate(direction)
                 }
+
                 is TrackAdapterData.TrackLongClick -> {}
             }
+        }
+
+        binding.root.post {
+            val metrics = Resources.getSystem().displayMetrics
+            val expander = binding.spaceExpander
+
+            val params: ViewGroup.LayoutParams = expander.layoutParams
+
+            if (binding.cover.height > metrics.heightPixels) {
+
+                params.height = metrics.heightPixels / 2
+
+                binding.scrollView.setOnScrollChangeListener { _, _, _, _, _ ->
+                    setTracksBSPeekHeight()
+                }
+
+            } else {
+                params.height = 0
+            }
+
+            expander.layoutParams = params
         }
     }
 
     private fun fillPlaylistInfo(playlist: Playlist) {
+
+        val playlistInMenu = binding.playlistInMenu
 
         with(playlist) {
             binding.title.text = title
@@ -135,17 +159,25 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
             coverUri?.let { uri ->
 
                 Glide.with(binding.cover).load(uri).into(binding.cover)
+
+                Glide.with(playlistInMenu.cover).load(uri).into(playlistInMenu.cover)
             }
+
+            playlistInMenu.title.text = title
+            playlistInMenu.tracksTotal.text = declension(tracksTotal, getString(R.string.track_counter_declination))
         }
     }
 
     private fun setTracksBSPeekHeight() {
 
+        val metrics = Resources.getSystem().displayMetrics
+        val expander = binding.spaceExpander
+
         binding.playlistTracksBottomSheet.isVisible = true
 
         binding.root.post {
             bottomSheetBehavior.peekHeight =
-                Resources.getSystem().displayMetrics.heightPixels - getYPosition(binding.playlistInfoContainer) - binding.playlistInfoContainer.height
+                metrics.heightPixels - getYPosition(expander)
         }
     }
 
