@@ -63,6 +63,10 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, private val dao: Pl
             .map { TrackToRoomTrackMapper.map(it) }
     }
 
+    override suspend fun getTrackInfo(trackId: Int): Track? {
+        return TrackToRoomTrackMapper.mapWithNull(dao.getTrackInfo(trackId))
+    }
+
     override suspend fun containsTrack(playlistId: Int, trackId: Int): Boolean {
         return dao.containsTrack(playlistId, trackId) > 0
     }

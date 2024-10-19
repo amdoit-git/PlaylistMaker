@@ -30,10 +30,10 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
     data class TrackData(val keyId: Int, val valueId: Int, val value: String)
 
-    private lateinit var json: String
+    private var trackId: Int = 0
 
     private val vModel: PlayerScreenViewModel by viewModel {
-        parametersOf(json)
+        parametersOf(trackId)
     }
 
     private var _binding: ActivityPlayerScreenBinding? = null
@@ -87,9 +87,9 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
         arguments?.let { args ->
 
-            args.getString(TRACK)?.let { json ->
+            args.getInt(TRACK_ID).let { trackId ->
 
-                this.json = json
+                this.trackId = trackId
 
                 vModel.getLiveData().observe(viewLifecycleOwner) {
 
@@ -275,6 +275,6 @@ class PlayerScreenFragment : Fragment(), DpToPx {
     }
 
     companion object {
-        const val TRACK = "track"
+        const val TRACK_ID = "trackId"
     }
 }

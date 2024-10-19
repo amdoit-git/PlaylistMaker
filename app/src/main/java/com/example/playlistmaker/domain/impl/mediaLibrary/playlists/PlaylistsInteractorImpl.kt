@@ -29,6 +29,10 @@ class PlaylistsInteractorImpl(private val repository: PlaylistsRepository) : Pla
         return repository.getTracks(playlistId)
     }
 
+    override suspend fun getTrackInfo(trackId: Int): Track? {
+        return repository.getTrackInfo(trackId)
+    }
+
     override suspend fun containsTrack(playlistId: Int, trackId: Int): Boolean {
         return repository.containsTrack(playlistId, trackId)
     }

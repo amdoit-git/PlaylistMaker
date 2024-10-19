@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.mediaLibrary.favorite.FavoriteTracksInteractor
-import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -13,8 +12,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class FavoriteTracksTabViewModel(
-    private val favorite: FavoriteTracksInteractor,
-    private val history: TracksHistoryInteractor
+    private val favorite: FavoriteTracksInteractor
 ) : ViewModel() {
 
     init {
@@ -44,7 +42,7 @@ class FavoriteTracksTabViewModel(
 
         if (!isClickAllowed()) return
 
-        liveData.setSingleEventValue(FavoriteTabData.OpenPlayerScreen(history.toJson(track)))
+        liveData.setSingleEventValue(FavoriteTabData.OpenPlayerScreen(track))
     }
 
     private fun isClickAllowed(): Boolean {

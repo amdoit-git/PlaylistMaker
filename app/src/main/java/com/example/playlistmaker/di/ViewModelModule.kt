@@ -17,15 +17,14 @@ val viewModelModule = module {
         SearchViewModel(history = get(), iTunes = get())
     }
 
-    viewModel { (jsonTrack: String) ->
+    viewModel { (trackId: Int) ->
         PlayerScreenViewModel(
             strings = get(),
             player = get(),
             favorite = get(),
             notice = get(),
             playlists = get(),
-            history = get(),
-            jsonTrack
+            trackId
         )
     }
 
@@ -38,7 +37,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        FavoriteTracksTabViewModel(favorite = get(), history = get())
+        FavoriteTracksTabViewModel(favorite = get())
     }
 
     viewModel {

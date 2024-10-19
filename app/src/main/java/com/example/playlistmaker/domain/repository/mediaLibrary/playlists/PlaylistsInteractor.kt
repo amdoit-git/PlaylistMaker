@@ -17,5 +17,7 @@ interface PlaylistsInteractor {
 
     suspend fun getTracks(playlistId: Int): Flow<List<Track>>
 
+    suspend fun getTrackInfo(trackId: Int): Track?
+
     suspend fun containsTrack(playlistId: Int, trackId: Int): Boolean
 }

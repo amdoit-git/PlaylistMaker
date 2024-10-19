@@ -10,7 +10,6 @@ import com.example.playlistmaker.data.db.models.PlaylistTrackMap
 import com.example.playlistmaker.data.db.models.PlaylistUpdates
 import com.example.playlistmaker.data.db.models.RoomPlaylist
 import com.example.playlistmaker.data.db.models.RoomTrack
-import com.example.playlistmaker.domain.models.Playlist
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -86,4 +85,7 @@ interface PlaylistDao : TrackDao {
 
     @Query("SELECT t.* FROM tracks t INNER JOIN playlist_track_map m ON t.trackId=m.trackId WHERE m.playlistId=:playlistId ORDER BY m.addedDate DESC")
     fun getTracks(playlistId: Int): Flow<List<RoomTrack>>
+
+    @Query("DELETE FROM playlist_track_map WHERE playlistId=:playlistId")
+    suspend fun clearPlaylist(playlistId: Int)
 }

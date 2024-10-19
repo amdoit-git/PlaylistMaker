@@ -56,5 +56,14 @@ object TrackToRoomTrackMapper {
         country = track.country
     )
 
+    fun mapWithNull(track: RoomTrack?): Track? {
+
+        track?.let {
+            return map(it)
+        }
+
+        return null
+    }
+
     fun map(tracks: List<RoomTrack>): List<Track> = tracks.map(::map)
 }

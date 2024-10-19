@@ -77,7 +77,7 @@ class FavoriteTracksTabFragment : Fragment() {
                 is FavoriteTabData.OpenPlayerScreen -> {
 
                     val direction =
-                        MediaLibraryFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(it.track)
+                        MediaLibraryFragmentDirections.actionMediaLibraryFragmentToPlayerScreenFragment(it.track.trackId)
 
                     findNavController().navigate(direction)
                 }

@@ -132,7 +132,7 @@ class SearchFragment : Fragment() {
                 is SearchData.OpenPlayerScreen -> {
 
                     val direction =
-                        SearchFragmentDirections.actionSearchFragmentToPlayerScreenFragment(it.track)
+                        SearchFragmentDirections.actionSearchFragmentToPlayerScreenFragment(it.track.trackId)
 
                     findNavController().navigate(direction)
                 }
