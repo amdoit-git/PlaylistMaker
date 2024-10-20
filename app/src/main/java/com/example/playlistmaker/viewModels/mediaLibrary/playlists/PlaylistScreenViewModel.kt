@@ -3,10 +3,12 @@ package com.example.playlistmaker.viewModels.mediaLibrary.playlists
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.common.GetStringResourceUseCase
 import com.example.playlistmaker.domain.repository.mediaLibrary.playlists.PlaylistsInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class PlaylistScreenViewModel(
@@ -53,5 +55,22 @@ class PlaylistScreenViewModel(
 
     fun setTracksBsState(opened: Boolean) {
         liveData.setStartValue(PlaylistScreenData.TracksBsState(opened))
+    }
+
+    fun deleteTrack(track: Track) {
+
+        viewModelScope.launch {
+            playlists.deleteTrack(track.trackId, playlistId)
+        }
+    }
+
+    fun deletePlaylist() {
+
+        viewModelScope.launch(Dispatchers.Main) {
+
+            playlists.deletePlaylist(playlistId)
+
+            liveData.setValue(PlaylistScreenData.GoBack(true))
+        }
     }
 }

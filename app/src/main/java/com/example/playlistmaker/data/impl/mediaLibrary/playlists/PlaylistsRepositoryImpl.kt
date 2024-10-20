@@ -54,6 +54,10 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, private val dao: Pl
         )
     }
 
+    override suspend fun deleteTrack(trackId: Int, playlistId: Int) {
+        dao.deleteTrack(trackId, playlistId)
+    }
+
     override suspend fun getPlaylists(): Flow<List<Playlist>> {
         return dao.getPlaylists().flowOn(Dispatchers.IO)
             .map { PlaylistToRoomPlaylistMapper.map(it, saver) }
@@ -106,8 +110,7 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, private val dao: Pl
         saver.deleteCoverFile(
             fileName = dao.getPlaylistCover(playlistId)
         )
-        dao.clearPlaylist(playlistId)
-        dao.deletePlaylistInfo(playlistId)
+        dao.deletePlaylist(playlistId)
     }
 
     override suspend fun clearPlaylist(playlistId: Int) {

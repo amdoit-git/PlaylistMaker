@@ -56,6 +56,15 @@ interface PlaylistDao : TrackDao {
     @Query("DELETE FROM playlists WHERE playlistId=:playlistId")
     suspend fun deletePlaylistInfo(playlistId: Int)
 
+    @Query("DELETE FROM playlist_track_map WHERE playlistId=:playlistId")
+    suspend fun clearPlaylist(playlistId: Int)
+
+    @Transaction
+    suspend fun deletePlaylist(playlistId: Int){
+        clearPlaylist(playlistId)
+        deletePlaylistInfo(playlistId)
+    }
+
     //tracks
 
     @Transaction
@@ -94,7 +103,4 @@ interface PlaylistDao : TrackDao {
 
     @Query("SELECT t.* FROM tracks t INNER JOIN playlist_track_map m ON t.trackId=m.trackId WHERE m.playlistId=:playlistId ORDER BY m.addedDate DESC")
     fun getTracks(playlistId: Int): Flow<List<RoomTrack>>
-
-    @Query("DELETE FROM playlist_track_map WHERE playlistId=:playlistId")
-    suspend fun clearPlaylist(playlistId: Int)
 }

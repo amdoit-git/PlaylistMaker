@@ -98,6 +98,8 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
                                 BottomSheetBehavior.STATE_COLLAPSED
                             }
                         }
+
+                        is PlaylistScreenData.GoBack -> goBack()
                     }
                 }
             }
@@ -147,7 +149,7 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
                     playlist.title
                 ),
                 onConfirm = {
-
+                    vModel.deletePlaylist()
                 }
             )
         }
@@ -195,7 +197,7 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
                             it.track.trackName
                         ),
                         onConfirm = {
-
+                            vModel.deleteTrack(it.track)
                         }
                     )
                 }
