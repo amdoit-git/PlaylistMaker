@@ -75,21 +75,30 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, private val dao: Pl
 
     override suspend fun editPlaylist(playlist: Playlist) {
 
-        val coverFileName = getCoverFilename(
+        val newCover = getCoverFilename(
             isCoverExists = (playlist.coverUri != null)
         )
 
+        val oldCover = dao.getPlaylistCover(playlist.id)
+
         playlist.coverUri?.let { uri ->
-            saver.moveCoverFile(uri, coverFileName)
+
+            //удаляем старую обложку плейлиста
+            saver.deleteCoverFile(
+                fileName = oldCover
+            )
+
+            saver.moveCoverFile(uri, newCover)
+
         }
 
-        //удаляем старую обложку плейлиста
-        saver.deleteCoverFile(
-            fileName = dao.getPlaylistCover(playlist.id)
-        )
-
         dao.updatePlaylist(
-            PlaylistToPlaylistUpdatesMapper.map(playlist, coverFileName)
+            PlaylistToPlaylistUpdatesMapper.map(
+                playlist = playlist,
+                coverFileName = newCover.ifBlank {
+                    oldCover
+                }
+            )
         )
     }
 

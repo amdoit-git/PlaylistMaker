@@ -45,9 +45,19 @@
     <string name="play_list_go_back_confirm">Завершить</string>
     <string name="play_list_go_back_cancel">Отмена</string>
     <string name="play_list_created_tpl">Плейлист [playlist] создан</string>
-    <string name="play_list_success_add_track_tpl">Добавлено в плейлист [playlist]</string>
-    <string name="play_list_fail_add_track_tpl">Трек уже добавлен в плейлист [playlist]</string>
+    <string name="play_list_success_add_track_tpl">Добавлено в плейлист «[playlist]»</string>
+    <string name="play_list_fail_add_track_tpl">Трек уже добавлен в плейлист «[playlist]»</string>
     <string name="track_counter_declination">трек трека треков</string>
     <string name="minutes_counter_declination">минута минуты минут</string>
     <string name="play_list_image_error">Ошибка: неподдерживаемый формат изображения</string>
+    <string name="clear_playlist">Очистить плейлист</string>
+    <string name="playlist_menu_share">Поделиться</string>
+    <string name="playlist_menu_edit">Редактировать информацию</string>
+    <string name="playlist_menu_delete_playlist">Удалить плейлист</string>
+    <string name="playlist_menu_delete_track_question">Хотите удалить трек «[track]»?</string>
+    <string name="playlist_menu_delete_playlist_question">Хотите удалить плейлист «[playlist]»?</string>
+    <string name="YES">ДА</string>
+    <string name="NO">НЕТ</string>
+    <string name="playlist_edit_title">Редактировать</string>
+    <string name="playlist_edit_button_text">Сохранить</string>
 </resources>

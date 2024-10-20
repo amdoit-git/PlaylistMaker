@@ -45,8 +45,13 @@ val viewModelModule = module {
         PlayListsTabViewModel(playlists = get())
     }
 
-    viewModel {
-        AddNewPlayListViewModel(playlists = get(), notice = get(), strings = get())
+    viewModel { (playlistId: Int) ->
+        AddNewPlayListViewModel(
+            playlists = get(),
+            notice = get(),
+            strings = get(),
+            playlistId = playlistId
+        )
     }
 
     viewModel {

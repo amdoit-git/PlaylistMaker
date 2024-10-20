@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.mediaLibrary.playlists
 
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import com.example.playlistmaker.ui.search.TrackAdapterData
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenData
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.math.round
@@ -36,9 +38,11 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
     private val binding get() = _binding!!
 
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var tracksBS: BottomSheetBehavior<LinearLayout>
+    private lateinit var menuBS: BottomSheetBehavior<LinearLayout>
     private lateinit var tracksList: RecyclerView
     private lateinit var adapter: TrackAdapter
+    private lateinit var playlist: Playlist
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,10 +56,6 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistTracksBottomSheet).apply {
-            state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-
         arguments?.let { args ->
 
             args.getInt(PLAYLIST_ID).let { playlistId ->
@@ -68,26 +68,99 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
                         is PlaylistScreenData.Info -> {
                             fillPlaylistInfo(it.playlist)
                             setTracksBSPeekHeight()
+                            this.playlist = it.playlist
                         }
 
                         is PlaylistScreenData.Tracks -> {
 
                             adapter.setNewTracksList(it.tracks)
 
-                            adapter.showClearButton(true)
-
                             adapter.notifyDataSetChanged()
+                        }
+
+                        is PlaylistScreenData.MenuBsState -> {
+
+                            if (it.opened) {
+                                menuBS.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
+                                binding.overlay.isVisible = true
+                                binding.overlay.alpha = 0.5f
+                            } else {
+                                menuBS.setState(BottomSheetBehavior.STATE_HIDDEN)
+                                binding.overlay.isVisible = false
+                            }
+                        }
+
+                        is PlaylistScreenData.TracksBsState -> {
+
+                            tracksBS.state = if (it.opened) {
+                                BottomSheetBehavior.STATE_EXPANDED
+                            } else {
+                                BottomSheetBehavior.STATE_COLLAPSED
+                            }
                         }
                     }
                 }
             }
         }
 
+        //инициализация элементов обложки плейлиста
+
         binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
+            goBack()
         }
 
-        adapter = TrackAdapter("Очистить плейлист", longClickEnabled = true)
+        binding.sharePlaylistIcon.setOnClickListener {
+            vModel.sharePlaylist()
+
+        }
+
+        binding.menuPlaylist.setOnClickListener {
+            vModel.setMenuBsState(opened = true)
+        }
+
+        binding.overlay.setOnClickListener {
+            vModel.setMenuBsState(opened = false)
+        }
+
+        binding.shareButton.setOnClickListener {
+            vModel.sharePlaylist()
+
+            vModel.setMenuBsState(opened = false)
+        }
+
+        binding.editButton.setOnClickListener {
+
+            val direction =
+                PlaylistScreenFragmentDirections.actionPlaylistScreenFragmentToAddNewPlayListFragment(
+                    playlistId = playlistId
+                )
+
+            findNavController().navigate(direction)
+
+            vModel.setMenuBsState(opened = false)
+        }
+
+        binding.deleteButton.setOnClickListener {
+            confirm(
+                text = getString(R.string.playlist_menu_delete_playlist_question).replace(
+                    "[playlist]",
+                    playlist.title
+                ),
+                onConfirm = {
+
+                }
+            )
+        }
+
+        binding.menuBottomSheet.setOnClickListener {
+            //чтобы BS не пропускал клики в overlay и не закрывался когда не надо
+        }
+
+        //инициализация списка треков в плейлисте
+
+        adapter = TrackAdapter(getString(R.string.clear_playlist), longClickEnabled = true)
+
+        adapter.showClearButton(false)
 
         tracksList = binding.recyclerView
 
@@ -97,7 +170,7 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
             when (it) {
                 is TrackAdapterData.ButtonClick -> {
-                    //vModel.clearHistory()
+                    //vModel.clearPlaylist()
                 }
 
                 is TrackAdapterData.ScrollTracksList -> {
@@ -115,9 +188,65 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
                     findNavController().navigate(direction)
                 }
 
-                is TrackAdapterData.TrackLongClick -> {}
+                is TrackAdapterData.TrackLongClick -> {
+                    confirm(
+                        text = getString(R.string.playlist_menu_delete_track_question).replace(
+                            "[track]",
+                            it.track.trackName
+                        ),
+                        onConfirm = {
+
+                        }
+                    )
+                }
             }
         }
+
+        //инициализация BottomSheet
+
+        tracksBS = BottomSheetBehavior.from(binding.playlistTracksBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        tracksBS.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    vModel.setTracksBsState(opened = true)
+                } else {
+                    vModel.setTracksBsState(opened = false)
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        menuBS = BottomSheetBehavior.from(binding.menuBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        menuBS.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                binding.overlay.isVisible = if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    vModel.setMenuBsState(opened = false)
+
+                    false
+                } else {
+                    true
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = (1 + slideOffset) / 2
+            }
+        })
+
+        //устанавливаем высоту экрана так, чтобы список треков был видет на альбомной ориентации
 
         binding.root.post {
             val metrics = Resources.getSystem().displayMetrics
@@ -164,7 +293,8 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
             }
 
             playlistInMenu.title.text = title
-            playlistInMenu.tracksTotal.text = declension(tracksTotal, getString(R.string.track_counter_declination))
+            playlistInMenu.tracksTotal.text =
+                declension(tracksTotal, getString(R.string.track_counter_declination))
         }
     }
 
@@ -176,7 +306,7 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
         binding.playlistTracksBottomSheet.isVisible = true
 
         binding.root.post {
-            bottomSheetBehavior.peekHeight =
+            tracksBS.peekHeight =
                 metrics.heightPixels - getYPosition(expander)
         }
     }
@@ -185,6 +315,23 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
         val xy = intArrayOf(0, 0)
         elem.getLocationOnScreen(xy)
         return xy[1]
+    }
+
+    private fun goBack() {
+        findNavController().popBackStack()
+    }
+
+    private fun confirm(text: String, onConfirm: () -> Unit, onCancel: (() -> Unit)? = null) {
+        MaterialAlertDialogBuilder(
+            requireContext(), R.style.AlertDialogTheme
+        ).setTitle(text).setMessage("")
+            .setNegativeButton(R.string.NO) { _, _ ->
+                onCancel?.let {
+                    it()
+                }
+            }.setPositiveButton(R.string.YES) { _, _ ->
+                onConfirm()
+            }.show()
     }
 
     companion object {

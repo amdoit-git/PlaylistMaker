@@ -28,18 +28,24 @@ import com.bumptech.glide.request.target.Target
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAddNewPlayListBinding
 import com.example.playlistmaker.ui.common.DpToPx
+import com.example.playlistmaker.ui.mediaLibrary.playlists.PlaylistScreenFragment.Companion.PLAYLIST_ID
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.AddNewPlayListViewModel
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.NewPlaylistTabData
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.math.min
 
 
 class AddNewPlayListFragment : Fragment(), DpToPx {
 
-    private val vModel: AddNewPlayListViewModel by viewModel()
+    private var playlistId = 0
+
+    private val vModel: AddNewPlayListViewModel by viewModel {
+        parametersOf(playlistId)
+    }
 
     private var _binding: FragmentAddNewPlayListBinding? = null
 
@@ -58,6 +64,14 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        arguments?.let { args ->
+
+            args.getInt(PLAYLIST_ID).let { playlistId ->
+
+                this.playlistId = playlistId
+            }
+        }
 
         binding.root.getViewTreeObserver()
             .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -116,6 +130,14 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
                                 goBack()
                             }.show()
                     }
+                }
+
+                is NewPlaylistTabData.ButtonTitle -> {
+                    buttonsSetText(it.text)
+                }
+
+                is NewPlaylistTabData.ScreenTitle -> {
+                    binding.screenTitle.text = it.text
                 }
             }
         }
@@ -269,6 +291,11 @@ class AddNewPlayListFragment : Fragment(), DpToPx {
     private fun buttonsSetEnabled(isEnabled: Boolean) {
         binding.fixedButton.isEnabled = isEnabled
         binding.scrolledButton.isEnabled = isEnabled
+    }
+
+    private fun buttonsSetText(text: String) {
+        binding.fixedButton.text = text
+        binding.scrolledButton.text = text
     }
 
     private fun getMinSize(): Int {

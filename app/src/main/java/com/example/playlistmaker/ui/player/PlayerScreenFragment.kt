@@ -190,6 +190,8 @@ class PlayerScreenFragment : Fragment(), DpToPx {
         binding.overlay.setOnClickListener {
             vModel.setBottomSheetState(opened = false)
         }
+
+        binding.playlistsBottomSheet.setOnClickListener{}
     }
 
     override fun onStop() {

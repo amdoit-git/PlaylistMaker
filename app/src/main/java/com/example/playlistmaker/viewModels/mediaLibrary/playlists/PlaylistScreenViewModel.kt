@@ -42,4 +42,16 @@ class PlaylistScreenViewModel(
     fun getLiveData(): LiveData<PlaylistScreenData> {
         return liveData
     }
+
+    fun setMenuBsState(opened: Boolean) {
+        liveData.setValue(PlaylistScreenData.MenuBsState(opened))
+    }
+
+    fun sharePlaylist(){
+
+    }
+
+    fun setTracksBsState(opened: Boolean) {
+        liveData.setStartValue(PlaylistScreenData.TracksBsState(opened))
+    }
 }
