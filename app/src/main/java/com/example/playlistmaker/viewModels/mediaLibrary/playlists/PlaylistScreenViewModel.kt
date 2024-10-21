@@ -14,6 +14,8 @@ import com.example.playlistmaker.domain.repository.settings.ExternalNavigatorInt
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import com.example.playlistmaker.viewModels.common.NumDeclension
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -35,7 +37,12 @@ class PlaylistScreenViewModel(
             launch {
                 playlists.getPlaylistInfo(playlistId).collect { playlist ->
 
-                    liveData.setValue(PlaylistScreenData.Info(playlist = playlist))
+                    if (playlist != null) {
+                        liveData.setValue(PlaylistScreenData.Info(playlist = playlist))
+                    } else {
+
+                        liveData.setValue(PlaylistScreenData.GoBack(true))
+                    }
                 }
             }
 
@@ -60,7 +67,7 @@ class PlaylistScreenViewModel(
 
         viewModelScope.launch(Dispatchers.Main) {
 
-            val playlist: Playlist = playlists.getPlaylistInfo(playlistId).first()
+            val playlist: Playlist = playlists.getPlaylistInfo(playlistId).first()!!
 
             val tracks = playlists.getTracks(playlistId).first()
 
@@ -87,6 +94,7 @@ class PlaylistScreenViewModel(
                     ),
                     chooseApp = true
                 )
+
             } else {
                 notice.setMessage(
                     strings(R.string.playlist_no_tracks_to_share).replace(
@@ -111,11 +119,13 @@ class PlaylistScreenViewModel(
 
     fun deletePlaylist() {
 
-        viewModelScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(Dispatchers.Main) {
+
+            delay(500)
 
             playlists.deletePlaylist(playlistId)
-
-            liveData.setValue(PlaylistScreenData.GoBack(true))
         }
+
+        liveData.setValue(PlaylistScreenData.GoBack(true))
     }
 }

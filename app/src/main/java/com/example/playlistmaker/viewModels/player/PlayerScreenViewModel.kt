@@ -131,12 +131,10 @@ class PlayerScreenViewModel(
     }
 
     fun onPlaylistClick(playlist: Playlist) {
+
         viewModelScope.launch {
 
-            if (playlists.containsTrack(
-                    playlistId = playlist.id, trackId = track.trackId
-                )
-            ) {
+            if (playlists.containsTrack(playlistId = playlist.id, trackId = track.trackId)) {
                 notice.setMessage(
                     strings(R.string.play_list_fail_add_track_tpl).replace(
                         "[playlist]", playlist.title
@@ -144,17 +142,15 @@ class PlayerScreenViewModel(
                 )
             } else {
 
-                playlists.addTrack(
-                    track = track, playlistId = playlist.id
-                )
-
-                setBottomSheetState(false)
+                playlists.addTrack(track = track, playlistId = playlist.id)
 
                 notice.setMessage(
                     strings(R.string.play_list_success_add_track_tpl).replace(
                         "[playlist]", playlist.title
                     )
                 )
+
+                setBottomSheetState(false)
             }
         }
     }

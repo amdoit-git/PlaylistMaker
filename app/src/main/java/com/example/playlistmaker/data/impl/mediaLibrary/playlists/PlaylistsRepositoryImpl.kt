@@ -11,7 +11,6 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.mediaLibrary.playlists.PlaylistsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import java.io.File
@@ -73,9 +72,10 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, private val dao: Pl
         return TrackToRoomTrackMapper.mapWithNull(dao.getTrackInfo(trackId))
     }
 
-    override suspend fun getPlaylistInfo(playlistId: Int): Flow<Playlist> {
-        return dao.getPlaylistInfo(playlistId).flowOn(Dispatchers.IO).filterNot { it == null }
-            .map { PlaylistToRoomPlaylistMapper.map(it!!, saver) }
+    override suspend fun getPlaylistInfo(playlistId: Int): Flow<Playlist?> {
+        return dao.getPlaylistInfo(playlistId).flowOn(Dispatchers.IO).map {
+            if (it != null) PlaylistToRoomPlaylistMapper.map(it, saver) else null
+        }
     }
 
     override suspend fun editPlaylist(playlist: Playlist) {

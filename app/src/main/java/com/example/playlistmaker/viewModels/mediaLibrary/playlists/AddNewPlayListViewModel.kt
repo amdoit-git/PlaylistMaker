@@ -15,6 +15,7 @@ import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AddNewPlayListViewModel(
@@ -41,16 +42,16 @@ class AddNewPlayListViewModel(
 
             viewModelScope.launch(Dispatchers.Main) {
 
-                playlists.getPlaylistInfo(playlistId).collect { playList ->
+                playlists.getPlaylistInfo(playlistId).collect {
 
-                    Log.d("WWW", playList.toString())
-
-                    liveData.setValue(NewPlaylistTabData.Cover(uri = playList.coverUri))
-                    liveData.setValue(NewPlaylistTabData.Title(playList.title))
-                    liveData.setValue(NewPlaylistTabData.Description(playList.description))
-                    liveData.setValue(NewPlaylistTabData.ScreenTitle(strings(R.string.playlist_edit_title)))
-                    liveData.setValue(NewPlaylistTabData.ButtonTitle(strings(R.string.playlist_edit_button_text)))
-                    liveData.setValue(NewPlaylistTabData.Button(enabled = true))
+                    it?.let { playList ->
+                        liveData.setValue(NewPlaylistTabData.Cover(uri = playList.coverUri))
+                        liveData.setValue(NewPlaylistTabData.Title(playList.title))
+                        liveData.setValue(NewPlaylistTabData.Description(playList.description))
+                        liveData.setValue(NewPlaylistTabData.ScreenTitle(strings(R.string.playlist_edit_title)))
+                        liveData.setValue(NewPlaylistTabData.ButtonTitle(strings(R.string.playlist_edit_button_text)))
+                        liveData.setValue(NewPlaylistTabData.Button(enabled = true))
+                    }
                 }
             }
         }
@@ -112,6 +113,8 @@ class AddNewPlayListViewModel(
             bitmapEncodeJob?.join()
 
             if (playlistId == 0) {
+
+                delay(500)
 
                 playlists.addPlaylist(
                     Playlist(

@@ -21,7 +21,7 @@ interface PlaylistsInteractor {
 
     suspend fun getTrackInfo(trackId: Int): Track?
 
-    suspend fun getPlaylistInfo(playlistId: Int): Flow<Playlist>
+    suspend fun getPlaylistInfo(playlistId: Int): Flow<Playlist?>
 
     suspend fun editPlaylist(playlist: Playlist)
 
