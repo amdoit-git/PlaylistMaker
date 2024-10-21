@@ -62,11 +62,7 @@ class PlayerScreenViewModel(
             playlists.getPlaylists().flowOn(Dispatchers.IO).collect { list ->
 
                 liveData.setValue(
-                    if (list.isNotEmpty()) {
-                        PlayerScreenData.Playlists(playlists = list)
-                    } else {
-                        PlayerScreenData.PlaylistNotFound(message = "")
-                    }
+                    PlayerScreenData.Playlists(playlists = list)
                 )
             }
         }

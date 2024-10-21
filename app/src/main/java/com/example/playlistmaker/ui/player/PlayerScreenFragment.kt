@@ -115,8 +115,6 @@ class PlayerScreenFragment : Fragment(), DpToPx {
                             adapter.setNewPlaylists(it.playlists)
                         }
 
-                        is PlayerScreenData.PlaylistNotFound -> {}
-
                         is PlayerScreenData.BottomSheet -> {
 
                             if (it.opened) {

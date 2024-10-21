@@ -164,6 +164,10 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
             //чтобы BS не пропускал клики в overlay и не закрывался когда не надо
         }
 
+        binding.playlistTracksBottomSheet.setOnClickListener{
+            //чтобы BS не пропускал клики по кнопкам поделиться и меню под ним
+        }
+
         //инициализация списка треков в плейлисте
 
         adapter = TrackAdapter(getString(R.string.clear_playlist), longClickEnabled = true)

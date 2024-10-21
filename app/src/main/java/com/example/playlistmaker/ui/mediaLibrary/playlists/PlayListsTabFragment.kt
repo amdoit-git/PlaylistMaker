@@ -55,15 +55,15 @@ class PlayListsTabFragment : Fragment() {
             when (it) {
 
                 is PlaylistsTabData.Playlists -> {
-                    recyclerView.isVisible = true
-                    info.isVisible = false
 
-                    adapter.setNewPlaylists(it.playlists)
-                }
-
-                is PlaylistsTabData.PlaylistNotFound -> {
-                    recyclerView.isVisible = false
-                    info.isVisible = true
+                    if (it.playlists.isNotEmpty()) {
+                        recyclerView.isVisible = true
+                        info.isVisible = false
+                        adapter.setNewPlaylists(it.playlists)
+                    } else {
+                        recyclerView.isVisible = false
+                        info.isVisible = true
+                    }
                 }
             }
         }
