@@ -42,6 +42,10 @@ class MainActivity() : AppCompatActivity() {
                     hideBottomNavigation()
                 }
 
+                R.id.playlistScreenFragment -> {
+                    hideBottomNavigation()
+                }
+
                 else -> {
                     showBottomNavigation()
                 }

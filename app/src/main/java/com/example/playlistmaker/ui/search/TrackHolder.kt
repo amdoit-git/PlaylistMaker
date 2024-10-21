@@ -11,7 +11,7 @@ import com.example.playlistmaker.domain.models.Track
 
 class TrackHolder(private val binding: TrackInListBinding) : SearchActivityHolder(binding.root) {
 
-    override fun bind(track: Track, onTrackClick: (Track) -> Unit) {
+    override fun bind(track: Track, onClick: (Track) -> Unit, onLongClick: ((Track) -> Unit)?) {
         val url = if (track.isPlaying) R.drawable.playing else track.trackCover
         binding.trackName.text = track.trackName
         binding.artistName.text = track.artistName
@@ -21,8 +21,18 @@ class TrackHolder(private val binding: TrackInListBinding) : SearchActivityHolde
         ).placeholder(R.drawable.track_placeholder).into(binding.trackCover)
 
         itemView.setOnClickListener {
-            onTrackClick(track)
+            onClick(track)
         }
+
+        onLongClick?.let { callback ->
+
+            itemView.setOnLongClickListener {
+                callback(track)
+                return@setOnLongClickListener true
+            }
+        }
+
+        itemView
     }
 
     companion object {

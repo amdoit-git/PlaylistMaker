@@ -1,10 +1,11 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.viewModels.main.MainActivityViewModel
 import com.example.playlistmaker.viewModels.mediaLibrary.MediaLibraryViewModel
+import com.example.playlistmaker.viewModels.mediaLibrary.favorite.FavoriteTracksTabViewModel
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.AddNewPlayListViewModel
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlayListsTabViewModel
-import com.example.playlistmaker.viewModels.mediaLibrary.favorite.FavoriteTracksTabViewModel
-import com.example.playlistmaker.viewModels.main.MainActivityViewModel
+import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenViewModel
 import com.example.playlistmaker.viewModels.player.PlayerScreenViewModel
 import com.example.playlistmaker.viewModels.search.SearchViewModel
 import com.example.playlistmaker.viewModels.settings.SettingsViewModel
@@ -17,15 +18,14 @@ val viewModelModule = module {
         SearchViewModel(history = get(), iTunes = get())
     }
 
-    viewModel { (jsonTrack: String) ->
+    viewModel { (trackId: Int) ->
         PlayerScreenViewModel(
             strings = get(),
             player = get(),
             favorite = get(),
             notice = get(),
             playlists = get(),
-            history = get(),
-            jsonTrack
+            trackId
         )
     }
 
@@ -38,18 +38,34 @@ val viewModelModule = module {
     }
 
     viewModel {
-        FavoriteTracksTabViewModel(favorite = get(), history = get())
+        FavoriteTracksTabViewModel(favorite = get())
     }
 
     viewModel {
         PlayListsTabViewModel(playlists = get())
     }
 
-    viewModel {
-        AddNewPlayListViewModel(playlists = get(), notice = get(), strings = get())
+    viewModel { (playlistId: Int) ->
+        AddNewPlayListViewModel(
+            playlists = get(),
+            notice = get(),
+            strings = get(),
+            playlistId = playlistId
+        )
     }
 
     viewModel {
         MainActivityViewModel(notice = get())
+    }
+
+    viewModel { (playlistId: Int) ->
+
+        PlaylistScreenViewModel(
+            playlists = get(),
+            notice = get(),
+            strings = get(),
+            navigator = get(),
+            playlistId = playlistId
+        )
     }
 }

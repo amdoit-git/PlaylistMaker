@@ -129,7 +129,7 @@ class SearchViewModel(
             history.save(track)
         }
 
-        liveData.setSingleEventValue(SearchData.OpenPlayerScreen(history.toJson(track)))
+        liveData.setSingleEventValue(SearchData.OpenPlayerScreen(track))
 
         tracksInHistory?.let { list ->
             tracksInHistory =

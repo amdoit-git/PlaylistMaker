@@ -2,6 +2,7 @@ package com.example.playlistmaker.viewModels.mediaLibrary.playlists
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,12 +15,14 @@ import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AddNewPlayListViewModel(
     private val playlists: PlaylistsInteractor,
     private val notice: NoticeInteractor,
-    private val strings: GetStringResourceUseCase
+    private val strings: GetStringResourceUseCase,
+    private val playlistId: Int
 ) : ViewModel() {
 
     private val liveData = LiveDataWithStartDataSet<NewPlaylistTabData>()
@@ -31,6 +34,27 @@ class AddNewPlayListViewModel(
 
     fun getLiveData(): LiveData<NewPlaylistTabData> {
         return liveData
+    }
+
+    init {
+
+        if (playlistId > 0) {
+
+            viewModelScope.launch(Dispatchers.Main) {
+
+                playlists.getPlaylistInfo(playlistId).collect {
+
+                    it?.let { playList ->
+                        liveData.setValue(NewPlaylistTabData.Cover(uri = playList.coverUri))
+                        liveData.setValue(NewPlaylistTabData.Title(playList.title))
+                        liveData.setValue(NewPlaylistTabData.Description(playList.description))
+                        liveData.setValue(NewPlaylistTabData.ScreenTitle(strings(R.string.playlist_edit_title)))
+                        liveData.setValue(NewPlaylistTabData.ButtonTitle(strings(R.string.playlist_edit_button_text)))
+                        liveData.setValue(NewPlaylistTabData.Button(enabled = true))
+                    }
+                }
+            }
+        }
     }
 
     fun saveCoverToTmpStorage(bitmap: Bitmap, uri: Uri) {
@@ -56,7 +80,7 @@ class AddNewPlayListViewModel(
 
     fun showMessage(id: Int) {
 
-       showMessage(message = strings(id))
+        showMessage(message = strings(id))
     }
 
     fun onTitleChanged(text: String) {
@@ -88,17 +112,40 @@ class AddNewPlayListViewModel(
             //ждем сохранения обложки (если размер картинки гигантский)
             bitmapEncodeJob?.join()
 
-            playlists.addPlaylist(
-                Playlist(
-                    id = 0,
-                    title = title,
-                    description = description,
-                    coverUri = coverUri,
-                    tracksTotal = 0
-                )
-            )
+            if (playlistId == 0) {
 
-            notice.setMessage(strings(R.string.play_list_created_tpl).replace("[playlist]", title))
+                delay(500)
+
+                playlists.addPlaylist(
+                    Playlist(
+                        id = 0,
+                        title = title,
+                        description = description,
+                        coverUri = coverUri,
+                        tracksTotal = 0,
+                        duration = 0
+                    )
+                )
+
+                notice.setMessage(
+                    strings(R.string.play_list_created_tpl).replace(
+                        "[playlist]",
+                        title
+                    )
+                )
+            } else {
+
+                playlists.editPlaylist(
+                    Playlist(
+                        id = playlistId,
+                        title = title,
+                        description = description,
+                        coverUri = coverUri,
+                        tracksTotal = 0,
+                        duration = 0
+                    )
+                )
+            }
         }
 
         viewModelScope.launch(Dispatchers.Main) {
@@ -116,7 +163,7 @@ class AddNewPlayListViewModel(
     fun onBackPressed() {
         liveData.setSingleEventValue(
             NewPlaylistTabData.Close(
-                allowed = title.isBlank() && description.isBlank() && (coverUri == null)
+                allowed = playlistId > 0 || title.isBlank() && description.isBlank() && (coverUri == null)
             )
         )
     }
