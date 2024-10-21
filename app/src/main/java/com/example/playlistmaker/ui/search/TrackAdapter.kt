@@ -45,6 +45,8 @@ class TrackAdapter(private val buttonText: String = "", private val longClickEna
         tracks.forEach {
             this.tracks.add(it)
         }
+
+        this.notifyDataSetChanged()
     }
 
 

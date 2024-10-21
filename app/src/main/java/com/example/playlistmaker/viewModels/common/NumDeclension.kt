@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.common
+package com.example.playlistmaker.viewModels.common
 
 import java.util.Locale
 

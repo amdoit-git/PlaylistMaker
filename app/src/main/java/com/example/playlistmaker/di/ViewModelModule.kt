@@ -60,6 +60,12 @@ val viewModelModule = module {
 
     viewModel { (playlistId: Int) ->
 
-        PlaylistScreenViewModel(playlists = get(), strings = get(), playlistId = playlistId)
+        PlaylistScreenViewModel(
+            playlists = get(),
+            notice = get(),
+            strings = get(),
+            navigator = get(),
+            playlistId = playlistId
+        )
     }
 }

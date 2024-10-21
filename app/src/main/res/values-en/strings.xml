@@ -51,10 +51,13 @@
     <string name="playlist_menu_share">Share</string>
     <string name="playlist_menu_edit">Edit information</string>
     <string name="playlist_menu_delete_playlist">Delete playlist</string>
+    <string name="playlist_menu_delete_track">Delete track</string>
     <string name="playlist_menu_delete_track_question">Do you want to delete track «[track]»?</string>
     <string name="playlist_menu_delete_playlist_question">Do you want to delete playlist «[playlist]»?</string>
-    <string name="YES">YES</string>
-    <string name="NO">NO</string>
+    <string name="YES">Delete</string>
+    <string name="NO">Cancel</string>
     <string name="playlist_edit_title">Edit</string>
     <string name="playlist_edit_button_text">Save</string>
+    <string name="playlist_no_tracks_to_share">There is no track list to share in the «[playlist]» playlist</string>
+    <string name="playlist_no_tracks">There is no track in the playlist</string>
 </resources>

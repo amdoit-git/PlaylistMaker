@@ -32,7 +32,7 @@ interface PlaylistDao : TrackDao {
         )
     }
 
-    @Query("SELECT SUM(t.duration) FROM tracks t INNER JOIN playlist_track_map m ON t.trackId=m.trackId WHERE m.playlistId=:playlistId")
+    @Query("SELECT COALESCE(SUM(t.duration), 0) FROM tracks t INNER JOIN playlist_track_map m ON t.trackId=m.trackId WHERE m.playlistId=:playlistId")
     suspend fun getPlaylistDuration(playlistId: Int): Int
 
     @Query("SELECT COUNT(*) FROM tracks t INNER JOIN playlist_track_map m ON t.trackId=m.trackId WHERE m.playlistId=:playlistId")
@@ -48,7 +48,7 @@ interface PlaylistDao : TrackDao {
     fun getPlaylists(): Flow<List<RoomPlaylist>>
 
     @Query("SELECT * FROM playlists WHERE playlistId=:playlistId")
-    fun getPlaylistInfo(playlistId: Int): Flow<RoomPlaylist>
+    fun getPlaylistInfo(playlistId: Int): Flow<RoomPlaylist?>
 
     @Query("SELECT coverFileName FROM playlists WHERE playlistId=:playlistId")
     suspend fun getPlaylistCover(playlistId: Int): String

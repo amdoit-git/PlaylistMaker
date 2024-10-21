@@ -54,10 +54,13 @@
     <string name="playlist_menu_share">Поделиться</string>
     <string name="playlist_menu_edit">Редактировать информацию</string>
     <string name="playlist_menu_delete_playlist">Удалить плейлист</string>
+    <string name="playlist_menu_delete_track">Удалить трек</string>
     <string name="playlist_menu_delete_track_question">Хотите удалить трек «[track]»?</string>
     <string name="playlist_menu_delete_playlist_question">Хотите удалить плейлист «[playlist]»?</string>
-    <string name="YES">ДА</string>
-    <string name="NO">НЕТ</string>
+    <string name="YES">Удалить</string>
+    <string name="NO">Отмена</string>
     <string name="playlist_edit_title">Редактировать</string>
     <string name="playlist_edit_button_text">Сохранить</string>
+    <string name="playlist_no_tracks_to_share">В плейлисте «[playlist]» нет списка треков, которым можно поделиться</string>
+    <string name="playlist_no_tracks">В плейлисте нет треков</string>
 </resources>

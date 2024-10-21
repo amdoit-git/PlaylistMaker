@@ -2,7 +2,6 @@ package com.example.playlistmaker.ui.mediaLibrary.playlists
 
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,10 +72,16 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
                         is PlaylistScreenData.Tracks -> {
 
-                            adapter.setNewTracksList(it.tracks)
-
-                            adapter.notifyDataSetChanged()
+                            if (it.tracks.isNotEmpty()) {
+                                adapter.setNewTracksList(it.tracks)
+                                binding.recyclerView.isVisible = true
+                                binding.noTracks.isVisible = false
+                            } else {
+                                binding.recyclerView.isVisible = false
+                                binding.noTracks.isVisible = true
+                            }
                         }
+
 
                         is PlaylistScreenData.MenuBsState -> {
 
@@ -144,6 +149,7 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
         binding.deleteButton.setOnClickListener {
             confirm(
+                title = getString(R.string.playlist_menu_delete_playlist),
                 text = getString(R.string.playlist_menu_delete_playlist_question).replace(
                     "[playlist]",
                     playlist.title
@@ -192,6 +198,7 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
                 is TrackAdapterData.TrackLongClick -> {
                     confirm(
+                        title = getString(R.string.playlist_menu_delete_track),
                         text = getString(R.string.playlist_menu_delete_track_question).replace(
                             "[track]",
                             it.track.trackName
@@ -323,14 +330,12 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
         findNavController().popBackStack()
     }
 
-    private fun confirm(text: String, onConfirm: () -> Unit, onCancel: (() -> Unit)? = null) {
+    private fun confirm(title: String, text: String, onConfirm: () -> Unit) {
         MaterialAlertDialogBuilder(
             requireContext(), R.style.AlertDialogTheme
-        ).setTitle(text).setMessage("")
+        ).setTitle(title).setMessage(text)
             .setNegativeButton(R.string.NO) { _, _ ->
-                onCancel?.let {
-                    it()
-                }
+
             }.setPositiveButton(R.string.YES) { _, _ ->
                 onConfirm()
             }.show()
