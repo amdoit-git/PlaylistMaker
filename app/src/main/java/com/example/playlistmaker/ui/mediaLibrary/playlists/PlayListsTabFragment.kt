@@ -59,8 +59,6 @@ class PlayListsTabFragment : Fragment() {
                     info.isVisible = false
 
                     adapter.setNewPlaylists(it.playlists)
-
-                    adapter.notifyDataSetChanged()
                 }
 
                 is PlaylistsTabData.PlaylistNotFound -> {
@@ -93,8 +91,8 @@ class PlayListsTabFragment : Fragment() {
         }
     }
 
-    private fun scrollListToTop() {
-        recyclerView.scrollToPosition(0)
+    private fun scrollListToTop(position: Int) {
+        recyclerView.scrollToPosition(position)
     }
 
     private fun onPlaylistClick(playlist: Playlist) {

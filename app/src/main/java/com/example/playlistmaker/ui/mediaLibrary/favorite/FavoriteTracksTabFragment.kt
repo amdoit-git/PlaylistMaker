@@ -111,11 +111,7 @@ class FavoriteTracksTabFragment : Fragment() {
 
     private fun showTracksList(tracks: List<Track>, showClearButton: Boolean = false) {
 
-        adapter.setNewTracksList(tracks)
-
-        adapter.showClearButton(showClearButton)
-
-        adapter.notifyDataSetChanged()
+        adapter.setNewTracksList(tracks, showClearButton)
     }
 
     private fun scrollTracksList(position: Int) {
@@ -124,8 +120,6 @@ class FavoriteTracksTabFragment : Fragment() {
 
     private fun clearTracksList() {
         adapter.clearTracks()
-        adapter.showClearButton(false)
-        adapter.notifyDataSetChanged()
     }
 
     companion object {

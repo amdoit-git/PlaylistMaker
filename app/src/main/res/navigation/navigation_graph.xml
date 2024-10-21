@@ -16,9 +16,15 @@
             app:launchSingleTop="false"
             app:popExitAnim="@anim/slide_out_left" />
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:launchSingleTop="false"
+            app:popExitAnim="@anim/slide_out_left"
             android:id="@+id/action_mediaLibraryFragment_to_addNewPlayListFragment"
             app:destination="@id/addNewPlayListFragment" />
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:launchSingleTop="false"
+            app:popExitAnim="@anim/slide_out_left"
             android:id="@+id/action_mediaLibraryFragment_to_playlistScreenFragment"
             app:destination="@id/playlistScreenFragment" />
     </fragment>
@@ -31,6 +37,9 @@
             android:name="trackId"
             app:argType="integer" />
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:launchSingleTop="false"
+            app:popExitAnim="@anim/slide_out_left"
             android:id="@+id/action_playerScreenFragment_to_addNewPlayListFragment"
             app:destination="@id/addNewPlayListFragment" />
     </fragment>
@@ -71,9 +80,15 @@
             app:argType="integer"
             android:defaultValue="0" />
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:launchSingleTop="false"
+            app:popExitAnim="@anim/slide_out_left"
             android:id="@+id/action_playlistScreenFragment_to_addNewPlayListFragment"
             app:destination="@id/addNewPlayListFragment" />
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:launchSingleTop="false"
+            app:popExitAnim="@anim/slide_out_left"
             android:id="@+id/action_playlistScreenFragment_to_playerScreenFragment"
             app:destination="@id/playerScreenFragment" />
     </fragment>

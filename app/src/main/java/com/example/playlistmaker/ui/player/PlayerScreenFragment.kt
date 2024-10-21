@@ -113,8 +113,6 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
                         is PlayerScreenData.Playlists -> {
                             adapter.setNewPlaylists(it.playlists)
-
-                            adapter.notifyDataSetChanged()
                         }
 
                         is PlayerScreenData.PlaylistNotFound -> {}
@@ -191,7 +189,7 @@ class PlayerScreenFragment : Fragment(), DpToPx {
             vModel.setBottomSheetState(opened = false)
         }
 
-        binding.playlistsBottomSheet.setOnClickListener{}
+        binding.playlistsBottomSheet.setOnClickListener {}
     }
 
     override fun onStop() {
@@ -265,8 +263,8 @@ class PlayerScreenFragment : Fragment(), DpToPx {
         constraintSet.applyTo(constraintLayout)
     }
 
-    private fun scrollListToTop() {
-        recyclerView.scrollToPosition(0)
+    private fun scrollListToTop(position: Int) {
+        recyclerView.scrollToPosition(position)
     }
 
     private fun onPlaylistClick(playlist: Playlist) {

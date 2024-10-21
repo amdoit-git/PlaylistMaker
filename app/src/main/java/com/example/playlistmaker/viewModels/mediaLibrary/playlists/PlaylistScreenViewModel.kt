@@ -64,7 +64,7 @@ class PlaylistScreenViewModel(
 
             val tracks = playlists.getTracks(playlistId).first()
 
-            if(tracks.isNotEmpty()){
+            if (tracks.isNotEmpty()) {
 
                 val text = mutableListOf<String>()
 
@@ -84,11 +84,16 @@ class PlaylistScreenViewModel(
                 navigator.share(
                     ShareData(
                         text = text.filterNot { it.isBlank() }.joinToString(separator = "\n")
+                    ),
+                    chooseApp = true
+                )
+            } else {
+                notice.setMessage(
+                    strings(R.string.playlist_no_tracks_to_share).replace(
+                        "[playlist]",
+                        playlist.title
                     )
                 )
-            }
-            else{
-                notice.setMessage(strings(R.string.playlist_no_tracks_to_share).replace("[playlist]", playlist.title))
             }
         }
     }

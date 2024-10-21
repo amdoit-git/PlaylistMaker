@@ -168,8 +168,6 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
         adapter = TrackAdapter(getString(R.string.clear_playlist), longClickEnabled = true)
 
-        adapter.showClearButton(false)
-
         tracksList = binding.recyclerView
 
         tracksList.adapter = adapter
