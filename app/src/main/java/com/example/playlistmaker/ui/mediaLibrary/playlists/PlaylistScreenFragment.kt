@@ -2,12 +2,14 @@ package com.example.playlistmaker.ui.mediaLibrary.playlists
 
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -22,8 +24,11 @@ import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScree
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.math.abs
 import kotlin.math.round
 
 class PlaylistScreenFragment() : Fragment(), NumDeclension {
@@ -277,8 +282,10 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
                 }
 
             } else {
-                params.height = 0
+                params.height = 1
             }
+
+            setTracksBSPeekHeight()
 
             expander.layoutParams = params
         }
@@ -320,18 +327,52 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
         val metrics = Resources.getSystem().displayMetrics
         val expander = binding.spaceExpander
-
-        binding.playlistTracksBottomSheet.isVisible = true
+        val tracksLL = binding.playlistTracksBottomSheet
 
         binding.root.post {
-            tracksBS.peekHeight =
-                metrics.heightPixels - getYPosition(expander)
+
+            val markY = getYPosition(expander)
+
+            val dY = markY -  getYPosition(tracksLL)
+
+            if(binding.cover.height > metrics.heightPixels){
+
+                tracksBS.peekHeight =
+                    metrics.heightPixels - getYPosition(expander)
+
+                if(markY<metrics.heightPixels) {
+                    tracksLL.visibility = View.VISIBLE
+                }
+                else{
+                    tracksLL.visibility = View.INVISIBLE
+                }
+            }
+            else{
+
+                tracksLL.visibility = View.VISIBLE
+
+                if(abs(dY)>1) {
+
+                    tracksBS.peekHeight -= dY
+
+                    lifecycleScope.launch {
+                        delay(100)
+                        setTracksBSPeekHeight()
+                    }
+                }
+            }
         }
     }
 
     private fun getYPosition(elem: View): Int {
         val xy = intArrayOf(0, 0)
         elem.getLocationOnScreen(xy)
+        return xy[1]
+    }
+
+    private fun getYPositionWindow(elem: View): Int {
+        val xy = intArrayOf(0, 0)
+        elem.getLocationInWindow(xy)
         return xy[1]
     }
 
