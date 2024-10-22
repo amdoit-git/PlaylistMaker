@@ -282,7 +282,7 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
                 }
 
             } else {
-                params.height = 1
+                params.height = 50
             }
 
             setTracksBSPeekHeight()
@@ -335,7 +335,11 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
             val dY = markY -  getYPosition(tracksLL)
 
-            if(binding.cover.height > metrics.heightPixels){
+            val forTest = true
+
+            if(forTest || binding.cover.height > metrics.heightPixels){
+
+                //тут мы вычисляем высоту подъема указанным в вопросе способом
 
                 tracksBS.peekHeight =
                     metrics.heightPixels - getYPosition(expander)
@@ -348,6 +352,8 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
                 }
             }
             else{
+
+                //тут мы вычисляем высоту подъема другим способом
 
                 tracksLL.visibility = View.VISIBLE
 
@@ -367,12 +373,6 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
     private fun getYPosition(elem: View): Int {
         val xy = intArrayOf(0, 0)
         elem.getLocationOnScreen(xy)
-        return xy[1]
-    }
-
-    private fun getYPositionWindow(elem: View): Int {
-        val xy = intArrayOf(0, 0)
-        elem.getLocationInWindow(xy)
         return xy[1]
     }
 
