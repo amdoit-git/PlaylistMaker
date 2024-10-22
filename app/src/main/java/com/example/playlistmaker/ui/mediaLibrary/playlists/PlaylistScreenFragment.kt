@@ -15,6 +15,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistScreenBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.ui.common.NumDeclension
+import com.example.playlistmaker.ui.common.LockableBottomSheetBehavior
 import com.example.playlistmaker.ui.search.TrackAdapter
 import com.example.playlistmaker.ui.search.TrackAdapterData
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenData
@@ -164,9 +165,10 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
             //чтобы BS не пропускал клики в overlay и не закрывался когда не надо
         }
 
-        binding.playlistTracksBottomSheet.setOnClickListener{
+        binding.playlistTracksBottomSheet.setOnClickListener {
             //чтобы BS не пропускал клики по кнопкам поделиться и меню под ним
         }
+
 
         //инициализация списка треков в плейлисте
 
@@ -245,9 +247,10 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
                 binding.overlay.isVisible = if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     vModel.setMenuBsState(opened = false)
-
+                    enableMenuDrag(true)
                     false
                 } else {
+                    enableMenuDrag(false)
                     true
                 }
             }
@@ -279,6 +282,10 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
             expander.layoutParams = params
         }
+    }
+
+    private fun enableMenuDrag(isEnabled: Boolean) {
+        (tracksBS as LockableBottomSheetBehavior).swipeEnabled = isEnabled
     }
 
     private fun fillPlaylistInfo(playlist: Playlist) {

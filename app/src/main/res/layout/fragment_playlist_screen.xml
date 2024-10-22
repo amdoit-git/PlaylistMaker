@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/rootElem"
     android:background="#E6E8EB"
     android:orientation="vertical"
     tools:context=".ui.mediaLibrary.playlists.PlaylistScreenFragment">
@@ -163,27 +164,17 @@
 
     </ScrollView>
 
-    <View
-        android:id="@+id/overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.5"
-        android:background="#1A1B22"
-        android:elevation="2dp"
-        android:translationZ="2dp"
-        android:visibility="gone" />
-
-
     <LinearLayout
         android:id="@+id/playlist_tracks_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:filterTouchesWhenObscured="true"
         android:background="@drawable/bottom_sheet_bg"
         android:orientation="vertical"
         android:visibility="gone"
         app:behavior_hideable="false"
         app:behavior_peekHeight="505dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        app:layout_behavior="com.example.playlistmaker.ui.common.LockableBottomSheetBehavior">
 
         <View
             android:layout_width="50dp"
@@ -230,6 +221,15 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:background="#1A1B22"
+        android:elevation="2dp"
+        android:translationZ="2dp"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/menu_bottom_sheet"
