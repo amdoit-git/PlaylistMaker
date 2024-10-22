@@ -11,7 +11,7 @@ object PlaylistToPlaylistUpdatesMapper {
     }
 
     fun map(playlist: Playlist, coverFileName:String): PlaylistUpdates = PlaylistUpdates(
-        playlistId = 0,
+        playlistId = playlist.id,
         title = playlist.title,
         description = playlist.description,
         coverFileName = coverFileName,

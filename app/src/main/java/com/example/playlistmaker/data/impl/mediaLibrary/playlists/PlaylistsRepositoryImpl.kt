@@ -2,6 +2,7 @@ package com.example.playlistmaker.data.impl.mediaLibrary.playlists
 
 import android.graphics.Bitmap
 import android.net.Uri
+import com.example.playlistmaker.data.db.converters.PlaylistToPlaylistUpdatesMapper
 import com.example.playlistmaker.data.db.converters.PlaylistToRoomPlaylistMapper
 import com.example.playlistmaker.data.db.converters.TrackToRoomTrackMapper
 import com.example.playlistmaker.data.db.dao.PlaylistDao
@@ -53,6 +54,10 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, private val dao: Pl
         )
     }
 
+    override suspend fun deleteTrack(trackId: Int, playlistId: Int) {
+        dao.deleteTrack(trackId, playlistId)
+    }
+
     override suspend fun getPlaylists(): Flow<List<Playlist>> {
         return dao.getPlaylists().flowOn(Dispatchers.IO)
             .map { PlaylistToRoomPlaylistMapper.map(it, saver) }
@@ -61,6 +66,56 @@ class PlaylistsRepositoryImpl(private val saver: ImageSaver, private val dao: Pl
     override suspend fun getTracks(playlistId: Int): Flow<List<Track>> {
         return dao.getTracks(playlistId).flowOn(Dispatchers.IO)
             .map { TrackToRoomTrackMapper.map(it) }
+    }
+
+    override suspend fun getTrackInfo(trackId: Int): Track? {
+        return TrackToRoomTrackMapper.mapWithNull(dao.getTrackInfo(trackId))
+    }
+
+    override suspend fun getPlaylistInfo(playlistId: Int): Flow<Playlist?> {
+        return dao.getPlaylistInfo(playlistId).flowOn(Dispatchers.IO).map {
+            if (it != null) PlaylistToRoomPlaylistMapper.map(it, saver) else null
+        }
+    }
+
+    override suspend fun editPlaylist(playlist: Playlist) {
+
+        val newCover = getCoverFilename(
+            isCoverExists = (playlist.coverUri != null)
+        )
+
+        val oldCover = dao.getPlaylistCover(playlist.id)
+
+        playlist.coverUri?.let { uri ->
+
+            //удаляем старую обложку плейлиста
+            saver.deleteCoverFile(
+                fileName = oldCover
+            )
+
+            saver.moveCoverFile(uri, newCover)
+
+        }
+
+        dao.updatePlaylist(
+            PlaylistToPlaylistUpdatesMapper.map(
+                playlist = playlist,
+                coverFileName = newCover.ifBlank {
+                    oldCover
+                }
+            )
+        )
+    }
+
+    override suspend fun deletePlaylist(playlistId: Int) {
+        saver.deleteCoverFile(
+            fileName = dao.getPlaylistCover(playlistId)
+        )
+        dao.deletePlaylist(playlistId)
+    }
+
+    override suspend fun clearPlaylist(playlistId: Int) {
+        dao.clearPlaylist(playlistId)
     }
 
     override suspend fun containsTrack(playlistId: Int, trackId: Int): Boolean {

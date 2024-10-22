@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -39,6 +40,10 @@ class MainActivity() : AppCompatActivity() {
                 }
 
                 R.id.addNewPlayListFragment -> {
+                    hideBottomNavigation()
+                }
+
+                R.id.playlistScreenFragment -> {
                     hideBottomNavigation()
                 }
 
