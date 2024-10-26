@@ -2,33 +2,28 @@ package com.example.playlistmaker.ui.mediaLibrary.playlists
 
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistScreenBinding
 import com.example.playlistmaker.domain.models.Playlist
-import com.example.playlistmaker.ui.common.NumDeclension
 import com.example.playlistmaker.ui.common.LockableBottomSheetBehavior
+import com.example.playlistmaker.ui.common.NumDeclension
 import com.example.playlistmaker.ui.search.TrackAdapter
 import com.example.playlistmaker.ui.search.TrackAdapterData
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenData
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistScreenViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.math.abs
 import kotlin.math.round
 
 class PlaylistScreenFragment() : Fragment(), NumDeclension {
@@ -95,6 +90,7 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
                                 menuBS.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
                                 binding.overlay.isVisible = true
                                 binding.overlay.alpha = 0.5f
+                                binding.menuBottomSheet.isVisible = true
                             } else {
                                 menuBS.setState(BottomSheetBehavior.STATE_HIDDEN)
                                 binding.overlay.isVisible = false
@@ -333,39 +329,13 @@ class PlaylistScreenFragment() : Fragment(), NumDeclension {
 
             val markY = getYPosition(expander)
 
-            val dY = markY -  getYPosition(tracksLL)
+            tracksBS.peekHeight =
+                getYPosition(binding.green) - markY
 
-            val forTest = true
-
-            if(forTest || binding.cover.height > metrics.heightPixels){
-
-                //тут мы вычисляем высоту подъема указанным в вопросе способом
-
-                tracksBS.peekHeight =
-                    metrics.heightPixels - getYPosition(expander)
-
-                if(markY<metrics.heightPixels) {
-                    tracksLL.visibility = View.VISIBLE
-                }
-                else{
-                    tracksLL.visibility = View.INVISIBLE
-                }
-            }
-            else{
-
-                //тут мы вычисляем высоту подъема другим способом
-
+            if (markY < metrics.heightPixels) {
                 tracksLL.visibility = View.VISIBLE
-
-                if(abs(dY)>1) {
-
-                    tracksBS.peekHeight -= dY
-
-                    lifecycleScope.launch {
-                        delay(100)
-                        setTracksBSPeekHeight()
-                    }
-                }
+            } else {
+                tracksLL.visibility = View.INVISIBLE
             }
         }
     }
