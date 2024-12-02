@@ -16,7 +16,5 @@ sealed interface PlayerScreenData {
 
     data class Playlists(val playlists: List<Playlist>) : PlayerScreenData
 
-    data class PlaylistNotFound(val message: String) : PlayerScreenData
-
-    data class BottomSheet(val opened:Boolean) : PlayerScreenData
+    data class BottomSheet(val opened: Boolean) : PlayerScreenData
 }

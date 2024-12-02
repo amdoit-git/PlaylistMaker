@@ -30,10 +30,10 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
     data class TrackData(val keyId: Int, val valueId: Int, val value: String)
 
-    private lateinit var json: String
+    private var trackId: Int = 0
 
     private val vModel: PlayerScreenViewModel by viewModel {
-        parametersOf(json)
+        parametersOf(trackId)
     }
 
     private var _binding: ActivityPlayerScreenBinding? = null
@@ -87,9 +87,9 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
         arguments?.let { args ->
 
-            args.getString(TRACK)?.let { json ->
+            args.getInt(TRACK_ID).let { trackId ->
 
-                this.json = json
+                this.trackId = trackId
 
                 vModel.getLiveData().observe(viewLifecycleOwner) {
 
@@ -113,11 +113,7 @@ class PlayerScreenFragment : Fragment(), DpToPx {
 
                         is PlayerScreenData.Playlists -> {
                             adapter.setNewPlaylists(it.playlists)
-
-                            adapter.notifyDataSetChanged()
                         }
-
-                        is PlayerScreenData.PlaylistNotFound -> {}
 
                         is PlayerScreenData.BottomSheet -> {
 
@@ -190,6 +186,8 @@ class PlayerScreenFragment : Fragment(), DpToPx {
         binding.overlay.setOnClickListener {
             vModel.setBottomSheetState(opened = false)
         }
+
+        binding.playlistsBottomSheet.setOnClickListener {}
     }
 
     override fun onStop() {
@@ -263,8 +261,8 @@ class PlayerScreenFragment : Fragment(), DpToPx {
         constraintSet.applyTo(constraintLayout)
     }
 
-    private fun scrollListToTop() {
-        recyclerView.scrollToPosition(0)
+    private fun scrollListToTop(position: Int) {
+        recyclerView.scrollToPosition(position)
     }
 
     private fun onPlaylistClick(playlist: Playlist) {
@@ -275,6 +273,6 @@ class PlayerScreenFragment : Fragment(), DpToPx {
     }
 
     companion object {
-        const val TRACK = "track"
+        const val TRACK_ID = "trackId"
     }
 }

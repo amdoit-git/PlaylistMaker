@@ -2,6 +2,7 @@ package com.example.playlistmaker.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import com.example.playlistmaker.data.db.dao.HistoryTracksDao.Companion
 import com.example.playlistmaker.data.db.models.RoomTrack
 import kotlinx.coroutines.flow.Flow
 
@@ -23,8 +24,9 @@ interface FavoriteTracksDao : PlaylistDao {
     @Query("SELECT COUNT(*) FROM playlist_track_map WHERE playlistId=$PLAYLIST_ID")
     suspend fun countTracks(): Int
 
-    @Query("DELETE FROM playlist_track_map WHERE playlistId=$PLAYLIST_ID")
-    suspend fun clearTracks()
+    suspend fun clearTracks(){
+        clearPlaylist(PLAYLIST_ID)
+    }
 
     suspend fun containsTracks(trackId: Int): Int {
         return containsTrack(PLAYLIST_ID, trackId)

@@ -10,10 +10,9 @@ import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repository.common.GetStringResourceUseCase
 import com.example.playlistmaker.domain.repository.common.NoticeInteractor
-import com.example.playlistmaker.domain.repository.mediaLibrary.playlists.PlaylistsInteractor
 import com.example.playlistmaker.domain.repository.mediaLibrary.favorite.FavoriteTracksInteractor
+import com.example.playlistmaker.domain.repository.mediaLibrary.playlists.PlaylistsInteractor
 import com.example.playlistmaker.domain.repository.player.MediaPlayerInteractor
-import com.example.playlistmaker.domain.repository.search.TracksHistoryInteractor
 import com.example.playlistmaker.viewModels.common.LiveDataWithStartDataSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -27,10 +26,8 @@ class PlayerScreenViewModel(
     private val favorite: FavoriteTracksInteractor,
     private val notice: NoticeInteractor,
     private val playlists: PlaylistsInteractor,
-    history: TracksHistoryInteractor,
-    jsonTrack: String
-) :
-    ViewModel() {
+    trackId: Int
+) : ViewModel() {
 
     private val liveData = LiveDataWithStartDataSet<PlayerScreenData>()
     private val trackProgress = PlayerScreenData.TrackProgress()
@@ -42,35 +39,30 @@ class PlayerScreenViewModel(
 
     init {
 
-        history.jsonToTrack(jsonTrack)?.let {
+        viewModelScope.launch(Dispatchers.Main) {
 
-            track = it
+            playlists.getTrackInfo(trackId)?.let {
 
-            viewModelScope.launch(Dispatchers.Main) {
+                track = it
 
-                favorite.containsTrack(track.trackId).flowOn(Dispatchers.IO).collect { count ->
+                favorite.containsTrack(trackId).flowOn(Dispatchers.IO).collect { count ->
 
-                    track.isFavorite = count>0
+                    track.isFavorite = count > 0
 
                     liveData.setValue(PlayerScreenData.FavoriteStatus(isFavorite = track.isFavorite))
                 }
+
+                player.setDataSource(track.previewUrl)
+                player.setDisplayPorts(
+                    ::showPlayProgress, null, ::onPlayingStopped, ::onPlayerError
+                )
+                liveData.setValue(PlayerScreenData.TrackData(track = track))
             }
-
-            player.setDataSource(track.previewUrl)
-            player.setDisplayPorts(::showPlayProgress, null, ::onPlayingStopped, ::onPlayerError)
-            liveData.setValue(PlayerScreenData.TrackData(track = track))
-        }
-
-        viewModelScope.launch(Dispatchers.Main) {
 
             playlists.getPlaylists().flowOn(Dispatchers.IO).collect { list ->
 
                 liveData.setValue(
-                    if (list.isNotEmpty()) {
-                        PlayerScreenData.Playlists(playlists = list)
-                    } else {
-                        PlayerScreenData.PlaylistNotFound(message = "")
-                    }
+                    PlayerScreenData.Playlists(playlists = list)
                 )
             }
         }
@@ -135,33 +127,26 @@ class PlayerScreenViewModel(
     }
 
     fun onPlaylistClick(playlist: Playlist) {
+
         viewModelScope.launch {
 
-            if (playlists.containsTrack(
-                    playlistId = playlist.id,
-                    trackId = track.trackId
-                )
-            ) {
+            if (playlists.containsTrack(playlistId = playlist.id, trackId = track.trackId)) {
                 notice.setMessage(
                     strings(R.string.play_list_fail_add_track_tpl).replace(
-                        "[playlist]",
-                        playlist.title
+                        "[playlist]", playlist.title
                     )
                 )
             } else {
 
-                playlists.addTrack(
-                    track = track, playlistId = playlist.id
-                )
-
-                setBottomSheetState(false)
+                playlists.addTrack(track = track, playlistId = playlist.id)
 
                 notice.setMessage(
                     strings(R.string.play_list_success_add_track_tpl).replace(
-                        "[playlist]",
-                        playlist.title
+                        "[playlist]", playlist.title
                     )
                 )
+
+                setBottomSheetState(false)
             }
         }
     }

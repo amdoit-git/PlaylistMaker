@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsGridBinding
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.ui.mediaLibrary.MediaLibraryFragmentDirections
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlayListsTabViewModel
 import com.example.playlistmaker.viewModels.mediaLibrary.playlists.PlaylistsTabData
@@ -54,17 +55,15 @@ class PlayListsTabFragment : Fragment() {
             when (it) {
 
                 is PlaylistsTabData.Playlists -> {
-                    recyclerView.isVisible = true
-                    info.isVisible = false
 
-                    adapter.setNewPlaylists(it.playlists)
-
-                    adapter.notifyDataSetChanged()
-                }
-
-                is PlaylistsTabData.PlaylistNotFound -> {
-                    recyclerView.isVisible = false
-                    info.isVisible = true
+                    if (it.playlists.isNotEmpty()) {
+                        recyclerView.isVisible = true
+                        info.isVisible = false
+                        adapter.setNewPlaylists(it.playlists)
+                    } else {
+                        recyclerView.isVisible = false
+                        info.isVisible = true
+                    }
                 }
             }
         }
@@ -76,7 +75,7 @@ class PlayListsTabFragment : Fragment() {
 
         adapter = PlaylistAdapter(
             playlists = mutableListOf(),
-            onPlaylistClick = vModel::onPlaylistClick,
+            onPlaylistClick = ::onPlaylistClick,
             scrollListToTop = ::scrollListToTop,
             trackCounterDeclination = getString(R.string.track_counter_declination),
             type = PlaylistRvType.GRID
@@ -92,8 +91,18 @@ class PlayListsTabFragment : Fragment() {
         }
     }
 
-    private fun scrollListToTop() {
-        recyclerView.scrollToPosition(0)
+    private fun scrollListToTop(position: Int) {
+        recyclerView.scrollToPosition(position)
+    }
+
+    private fun onPlaylistClick(playlist: Playlist) {
+
+        val direction =
+            MediaLibraryFragmentDirections.actionMediaLibraryFragmentToPlaylistScreenFragment(
+                playlistId = playlist.id
+            )
+
+        findNavController().navigate(direction)
     }
 
     companion object {

@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.org.apache.commons.compress.harmony.pack200.PackingUtils.config
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -7,11 +9,20 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file("E:\\Расширения для браузера\\Android\\keyForWallpapers.jks")
+            storePassword = "ilovesex"
+            keyAlias = "key0"
+            keyPassword = "ilovesex"
+        }
+    }
     namespace = "com.example.playlistmaker"
     compileSdk = 34
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
     defaultConfig {
@@ -22,17 +33,38 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            manifestPlaceholders["applicationLabel"] = "@string/app_name"
+            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
+            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
+        }
+
+        create("vip") {
+            applicationIdSuffix = ".vip"
+            isMinifyEnabled = false
+            manifestPlaceholders["applicationLabel"] = "@string/app_name_for_vips"
+            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_vip"
+            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_vip_round"
+        }
+
+        debug {
+            manifestPlaceholders["applicationLabel"] = "Debug"
+            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
+            manifestPlaceholders["appIconRound"] = "@mipmap/ic_launcher_round"
+            isMinifyEnabled = false
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

@@ -18,7 +18,7 @@ class ImageSaver(private val context: Context) {
     @Volatile
     private var tmpFilesCounter = 1
 
-    fun coverUriFromFile(fileName: String): Uri? {
+    fun getCoverUri(fileName: String): Uri? {
 
         if (fileName.isBlank()) return null
 
@@ -28,6 +28,19 @@ class ImageSaver(private val context: Context) {
             Uri.fromFile(file)
         } else {
             null
+        }
+    }
+
+    fun deleteCoverFile(fileName: String) {
+
+        if (fileName.isNotBlank()){
+
+            val file = File(context.getDir(PLAYLIST_COVERS, MODE_PRIVATE), fileName)
+
+            if(file.exists()){
+
+                file.delete()
+            }
         }
     }
 

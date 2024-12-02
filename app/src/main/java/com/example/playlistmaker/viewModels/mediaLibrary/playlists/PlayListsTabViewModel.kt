@@ -20,11 +20,7 @@ class PlayListsTabViewModel(private val playlists: PlaylistsInteractor) : ViewMo
             playlists.getPlaylists().flowOn(Dispatchers.IO).collect { list ->
 
                 liveData.setValue(
-                    if (list.isNotEmpty()) {
-                        PlaylistsTabData.Playlists(playlists = list)
-                    } else {
-                        PlaylistsTabData.PlaylistNotFound(message = "")
-                    }
+                    PlaylistsTabData.Playlists(playlists = list)
                 )
             }
         }

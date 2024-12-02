@@ -7,5 +7,7 @@ sealed interface NewPlaylistTabData {
     data class Title(val text: String) : NewPlaylistTabData
     data class Description(val text: String) : NewPlaylistTabData
     data class Button(val enabled: Boolean) : NewPlaylistTabData
-    data class Close(val allowed:Boolean) : NewPlaylistTabData
+    data class Close(val allowed: Boolean) : NewPlaylistTabData
+    data class ScreenTitle(val text: String) : NewPlaylistTabData
+    data class ButtonTitle(val text: String) : NewPlaylistTabData
 }

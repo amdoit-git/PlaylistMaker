@@ -16,8 +16,17 @@
             app:launchSingleTop="false"
             app:popExitAnim="@anim/slide_out_left" />
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:launchSingleTop="false"
+            app:popExitAnim="@anim/slide_out_left"
             android:id="@+id/action_mediaLibraryFragment_to_addNewPlayListFragment"
             app:destination="@id/addNewPlayListFragment" />
+        <action
+            app:enterAnim="@anim/slide_in_right"
+            app:launchSingleTop="false"
+            app:popExitAnim="@anim/slide_out_left"
+            android:id="@+id/action_mediaLibraryFragment_to_playlistScreenFragment"
+            app:destination="@id/playlistScreenFragment" />
     </fragment>
     <fragment
         android:id="@+id/playerScreenFragment"
@@ -25,9 +34,12 @@
         android:label="activity_player_screen"
         tools:layout="@layout/activity_player_screen">
         <argument
-            android:name="track"
-            app:argType="string" />
+            android:name="trackId"
+            app:argType="integer" />
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:launchSingleTop="false"
+            app:popExitAnim="@anim/slide_out_left"
             android:id="@+id/action_playerScreenFragment_to_addNewPlayListFragment"
             app:destination="@id/addNewPlayListFragment" />
     </fragment>
@@ -52,5 +64,32 @@
         android:id="@+id/addNewPlayListFragment"
         android:name="com.example.playlistmaker.ui.mediaLibrary.playlists.AddNewPlayListFragment"
         android:label="fragment_add_new_play_list"
-        tools:layout="@layout/fragment_add_new_play_list" />
+        tools:layout="@layout/fragment_add_new_play_list" >
+        <argument
+            android:name="playlistId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/playlistScreenFragment"
+        android:name="com.example.playlistmaker.ui.mediaLibrary.playlists.PlaylistScreenFragment"
+        android:label="fragment_playlist_screen"
+        tools:layout="@layout/fragment_playlist_screen" >
+        <argument
+            android:name="playlistId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <action
+            app:enterAnim="@anim/slide_in_right"
+            app:launchSingleTop="false"
+            app:popExitAnim="@anim/slide_out_left"
+            android:id="@+id/action_playlistScreenFragment_to_addNewPlayListFragment"
+            app:destination="@id/addNewPlayListFragment" />
+        <action
+            app:enterAnim="@anim/slide_in_right"
+            app:launchSingleTop="false"
+            app:popExitAnim="@anim/slide_out_left"
+            android:id="@+id/action_playlistScreenFragment_to_playerScreenFragment"
+            app:destination="@id/playerScreenFragment" />
+    </fragment>
 </navigation>

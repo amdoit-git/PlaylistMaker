@@ -11,6 +11,7 @@ data class RoomPlaylist(
     val description: String,
     val coverFileName: String,//название файла с обложкой (если есть)
     val tracksTotal: Int,//число треков в плейлисте
+    val duration: Int,//суммарная дительность плейлиста
     val addedDate: Int,//Время создания плейлистаv
     val lastMod: Int//Время обновления плейлиста
 )

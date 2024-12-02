@@ -10,12 +10,13 @@ object PlaylistToRoomPlaylistMapper {
         return (System.currentTimeMillis() / 1000).toInt()
     }
 
-    fun map(playlist: Playlist, coverFileName: String): RoomPlaylist = RoomPlaylist(
+    fun map(playlist: Playlist, coverFileName:String): RoomPlaylist = RoomPlaylist(
         playlistId = 0,
         title = playlist.title,
         description = playlist.description,
         coverFileName = coverFileName,
         tracksTotal = 0,
+        duration = 0,
         addedDate = timestamp(),
         lastMod = timestamp()
     )
@@ -24,8 +25,9 @@ object PlaylistToRoomPlaylistMapper {
         id = playlist.playlistId,
         title = playlist.title,
         description = playlist.description,
-        coverUri = saver.coverUriFromFile(playlist.coverFileName),
-        tracksTotal = playlist.tracksTotal
+        coverUri = saver.getCoverUri(playlist.coverFileName),
+        tracksTotal = playlist.tracksTotal,
+        duration = playlist.duration
     )
 
     fun map(playlists: List<RoomPlaylist>, saver: ImageSaver): List<Playlist> =

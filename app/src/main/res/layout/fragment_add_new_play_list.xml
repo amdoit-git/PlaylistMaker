@@ -11,6 +11,7 @@
         style="@style/backButton">
 
         <TextView
+            android:id="@+id/screenTitle"
             style="@style/panelHeaderText"
             android:text="@string/play_list_add_new_screen_title" />
     </FrameLayout>

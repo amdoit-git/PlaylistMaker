@@ -20,10 +20,10 @@ interface HistoryTracksDao : PlaylistDao {
     @Query("SELECT t.* FROM tracks t INNER JOIN playlist_track_map m ON t.trackId=m.trackId WHERE playlistId=$PLAYLIST_ID ORDER BY m.addedDate DESC")
     suspend fun getAllTracks(): List<RoomTrack>
 
-    @Query("DELETE FROM playlist_track_map WHERE playlistId=$PLAYLIST_ID")
-    suspend fun clearTracks()
+    suspend fun clearTracks(){
+        clearPlaylist(PLAYLIST_ID)
+    }
 
-    @Transaction
     suspend fun containsTracks(trackId: Int): Int {
         return containsTrack(PLAYLIST_ID, trackId)
     }

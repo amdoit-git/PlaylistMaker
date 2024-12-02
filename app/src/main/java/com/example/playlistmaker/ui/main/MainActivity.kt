@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.main
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
@@ -42,15 +43,19 @@ class MainActivity() : AppCompatActivity() {
                     hideBottomNavigation()
                 }
 
+                R.id.playlistScreenFragment -> {
+                    hideBottomNavigation()
+                }
+
                 else -> {
                     showBottomNavigation()
                 }
             }
         }
 
-        vModel.getLiveData().observe(this){
+        vModel.getLiveData().observe(this) {
 
-            when(it){
+            when (it) {
                 is MainActivityData.ToastMessage -> {
                     binding.infoText.text = it.message
 
